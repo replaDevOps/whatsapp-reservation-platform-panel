@@ -1,0 +1,29 @@
+/* Header row styling */
+.custom-table .ant-table-thead > tr > th {
+  background-color: #0ABAB5 !important; /* adjust based on your image */
+  color: #fff !important;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 2px solid #d9d9d9 !important;
+  padding: 12px;
+}
+
+/* Center text in cells */
+.custom-table .ant-table-tbody > tr > td {
+  /* text-align: center; */
+  padding: 10px;
+}
+.custom-table .ant-table-cell {
+  border: none !important;
+}
+.custom-table .ant-table-tbody > tr > td {
+  text-align: center;
+  padding: 12px;
+}
+.custom-table .ant-table-tbody > tr:hover > td {
+  background: #fafafa;
+}
+/* Even rows background color */
+.custom-table .ant-table-tbody > tr:nth-child(even) > td {
+  background-color: #F4F7FE !important;
+}

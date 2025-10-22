@@ -1,0 +1,88 @@
+.registered-card {
+  border-radius: 8px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 0;
+}
+
+.title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 0;
+  color: gray;
+  font-size: 12px;
+}
+
+.total {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.month-btn {
+  border-radius: 8px;
+  padding: 10px 20px !important;
+  font-size: 14px;
+  color: black;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  /* margin-top: 12px; */
+}
+
+.chart {
+  flex: 0 0 50%;
+}
+
+.legend {
+  flex: 0 0 50%;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  border-bottom: 0.5px solid rgb(209, 209, 209);
+  padding: 10px 0px;
+  gap: 12px;
+  width: 190px;
+}
+
+.legend-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+}
+
+.legend-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.plan {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.value {
+  font-weight: 600;
+  font-size: 20px;
+}
