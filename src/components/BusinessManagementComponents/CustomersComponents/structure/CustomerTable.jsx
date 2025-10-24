@@ -1,0 +1,103 @@
+import { useState } from 'react';
+import { Button, Card, Flex, Table, Typography, Row, Col, Form, Image } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { ModuleTopHeading } from '../../../PageComponent';
+import { CustomPagination } from '../../../Ui';
+import { customerColumn, customertableData } from '../../../../data';
+import { MyDatepicker, SearchInput } from '../../../Forms';
+import { AddCustomerModal } from '../modal';
+import moment from 'moment';
+
+const { Text } = Typography;
+
+const CustomerTable = () => {
+
+    const [form] = Form.useForm();
+    const [pageSize, setPageSize] = useState(10);
+    const [current, setCurrent] = useState(1);
+    const [ visible, setVisible ] = useState(false)
+    const [selectedYear, setSelectedYear] = useState(moment());
+
+    const handlePageChange = (page, size) => {
+        setCurrent(page);
+        setPageSize(size);
+    };
+    
+    return (
+        <>
+            <Card className='radius-12 card-cs border-gray h-100'>
+                <Flex vertical gap={10} className='mb-2'>
+                    <Flex justify='space-between' align='center' gap={10}>
+                        <Flex vertical>
+                            <ModuleTopHeading level={4} name='Customers' />
+                            <Text className='text-gray fs-13'>Manage all the Customers in your system</Text>
+                        </Flex>
+                        <Button className='btncancel' onClick={()=>{setVisible(true)}}> 
+                          <PlusOutlined /> Add Customer
+                        </Button>
+                    </Flex>
+                    <Form layout="vertical" form={form}>
+                        <Row gutter={[16, 16]} justify={'space-between'}>
+                            <Col span={24} md={24} lg={7}>
+                                <SearchInput
+                                    name='name'
+                                    placeholder='Search by Customer Name'
+                                    // value={search}
+                                    // onChange={(e) => {
+                                    //     setSearch(e.target.value);
+                                    // }}
+                                    prefix={<img src='/assets/icons/search.png' width={14} alt='search icon' fetchPriority="high" />}
+                                    className='border-light-gray pad-x ps-0 radius-8 fs-13'
+                                />
+                            </Col>
+                            <Col span={24} md={8} lg={8}>
+                                <Flex justify='end' gap={10}>         
+                                    <Button className='btncancel'> 
+                                        <Flex align='center' gap={10}>
+                                            <Image src='/assets/icons/export.png' width={20} preview={false} alt='export icons' fetchPriority="high" /> Export
+                                        </Flex>
+                                    </Button>
+                                    <MyDatepicker
+                                        withoutForm
+                                        rangePicker
+                                        className="datepicker-cs"
+                                        placeholder="Select Year"
+                                        value={selectedYear}
+                                        onChange={(year) => setSelectedYear(year)}
+                                    />
+                                </Flex>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Flex>
+                <Flex vertical gap={20}>
+                    <Table
+                        size='large'
+                        columns={customerColumn}
+                        dataSource={customertableData}
+                        className='pagination table-cs table'
+                        showSorterTooltip={false}
+                        scroll={{ x: 1000 }}
+                        rowHoverable={false}
+                        pagination={false}
+                        // loading={isLoading}
+                    />
+                    <CustomPagination 
+                        total={12}
+                        current={current}
+                        pageSize={pageSize}
+                        onPageChange={handlePageChange}
+                    />
+                </Flex>
+            </Card>
+
+            
+            <AddCustomerModal 
+                visible={visible}
+                onClose={()=>setVisible(false)}
+            />
+        </>
+    );
+};
+
+export { CustomerTable };
