@@ -1,14 +1,12 @@
 import { Breadcrumb, Card, Flex, Typography } from 'antd'
-import { BasicPlanCard, RenewSubscriptionModal, SubscriptionPlanTable } from '../../components'
-import { useState } from 'react'
+import { SubscriptionPlanTab } from '../../components'
+import { ModuleTopHeading } from '../../components'
 
 const { Text } = Typography
 const SubscriptionPlanPage = () => {
 
-    const [ renewvisible, setRenewVisible ] = useState(false)
-    const [ renewstate, setRenewState ] = useState(null)
     return (
-        <Flex vertical gap={10}>
+        <Flex vertical gap={15}>
             <Card className='card-bg card-cs radius-12 border-gray'>
                 <Breadcrumb
                     separator="/"
@@ -26,22 +24,13 @@ const SubscriptionPlanPage = () => {
                     ]}
                 />
             </Card>
-            <BasicPlanCard  
-                setRenewVisible={setRenewVisible}
-                setRenewState={setRenewState}
-            />
-            <SubscriptionPlanTable 
-                renewvisible={renewvisible}
-                setRenewVisible={setRenewVisible}
-                renewstate={renewstate}
-                setRenewState={setRenewState}
-            />
-
-            <RenewSubscriptionModal 
-                visible={renewvisible}
-                renewstate={renewstate}
-                onClose={()=>{setRenewVisible(false);setRenewState(null)}}
-            />
+            <Card className='card-bg card-cs radius-12 border-gray'>
+                <Flex vertical>
+                    <ModuleTopHeading level={4} name='Subscription Plan' />
+                    <Text className='text-gray fs-13'>Manage all the subscription plan in your system</Text>
+                </Flex>
+            </Card>
+            <SubscriptionPlanTab />
         </Flex>
     )
 }

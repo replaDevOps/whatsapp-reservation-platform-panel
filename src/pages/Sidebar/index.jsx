@@ -9,6 +9,18 @@ import { CustomersPage } from '../CustomersPage';
 import { MenuItems } from './MenuItems';
 import { BookingPage } from '../BookingPage';
 import { RevenuePage } from '../RevenuePage';
+import { DemoRequestPage } from '../DemoRequestPage';
+import { StaffPage } from '../StaffPage';
+import { AddEditBusiness, AddEditStaff } from '../../components';
+import { SubscriptionPlanPage } from '../SubscriptionPlanPage';
+import { SubscriptionManagementPage } from '../SubscriptionManagementPage';
+import { DiscountPage } from '../DiscountPage';
+import { TermsConditionPage } from '../TermsConditionPage';
+import { FaqsPage } from '../FaqsPage';
+import { PrivacyPolicyPage } from '../PrivacyPolicyPage';
+import { SettingsPage } from '../SettingsPage';
+import { ActivityLogPage } from '../ActivityLogPage';
+import { AllBusinessPage } from '../AllBusinessPage';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography
@@ -27,7 +39,7 @@ const Sidebar = () => {
       tab === 'booking' ? '4'  :
       tab === 'revenue' ? '5' :
       tab === 'demorequest' ? '6' :
-      tab === 'staff' ? '7'  :
+      tab === 'staff' || tab === 'addstaff' || tab === 'staffmanagement/editstaff/' ? '7' :
       tab === 'subscriptionplan' ? '8' :
       tab === 'subscriptionmanage' ? '9'  :
       tab === 'discount' ? '10'  :
@@ -171,9 +183,23 @@ const Sidebar = () => {
         <Content className="scroll-bar content-css">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/allbusiness" element={<AllBusinessPage />} />
+            <Route path="/addbusiness" element={<AddEditBusiness />} />
             <Route path="/customer" element={<CustomersPage />} />
             <Route path="/booking" element={<BookingPage />} />
             <Route path="/revenue" element={<RevenuePage />} />
+            <Route path="/demorequest" element={<DemoRequestPage />} />
+            <Route path="/staff" element={<StaffPage />} />
+            <Route path="/addstaff" element={<AddEditStaff />} />
+            <Route path="/staffmanagement/editstaff/:id" element={<AddEditStaff />} />
+            <Route path="/subscriptionplan" element={<SubscriptionPlanPage />} />
+            <Route path="/subscriptionmanage" element={<SubscriptionManagementPage />} />
+            <Route path="/discount" element={<DiscountPage />} />
+            <Route path="/termscondition" element={<TermsConditionPage />} />
+            <Route path="/faqs" element={<FaqsPage />} />
+            <Route path="/privacypolicy" element={<PrivacyPolicyPage />} />
+            <Route path="/setting" element={<SettingsPage />} />
+            <Route path="/activitylog" element={<ActivityLogPage />} />
           </Routes>
         </Content>
       </Layout>

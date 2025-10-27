@@ -31,15 +31,15 @@ const periodoption = [
 const rolestaffopt = [
     {
         id: 1,
-        name: 'Staff Manager'
+        name: 'Supper Admin'
     },
     {
         id: 2,
-        name: 'Service Provider'
+        name: 'Techincal Admin'
     },
     {
         id: 3,
-        name: 'Receptionist'
+        name: 'Demo Admin'
     },
 ]
 
@@ -158,6 +158,68 @@ const statusItem = [
     { key: 'cancelled', label: 'Cancelled' },
 ]
 
+const typeItems = [
+    { key: 'general', label: 'General' },
+    { key: 'barber', label: 'Barber' },
+    { key: 'clinic', label: 'Clinic' },
+    { key: 'spa', label: 'Spa' },
+];
+
+const typeOp = [
+    { id: 1, name: 'General' },
+    { id: 2, name: 'Barber' },
+    { id: 3, name: 'Clinic' },
+    { id: 4, name: 'Spa' },
+];
+
+const subscriptionItems = [
+    { key: 'bp', label: 'BP' },
+    { key: 'sp', label: 'SP' },
+    { key: 'pp', label: 'PP' },
+    { key: 'ep', label: 'EP' },
+];
+
+const subscriptionplanOp = [
+    {
+        id: 1,
+        name: 'Basic'
+    },
+    {
+        id: 2,
+        name: 'Standard'
+    },
+    {
+        id: 3,
+        name: 'Pro'
+    },
+    {
+        id: 4,
+        name: 'Enterprise'
+    },
+]
+
+const periodOp = [
+    {
+        id: 1,
+        name: 'Monthly'
+    },
+    {
+        id: 2,
+        name: 'Yearly'
+    },
+]
+
+const typeamountItem = [
+    {
+        key: 'fixed',
+        label: 'Fixed'
+    },
+    {
+        key: 'percentage',
+        label: 'Percentage'
+    },
+]
+
 
 export { 
     planoption, 
@@ -173,5 +235,11 @@ export {
     requestuserOpt,
     whatsappflowOp,
 
-    statusItem
+    statusItem,
+    typeItems,
+    typeOp,
+    subscriptionItems,
+    subscriptionplanOp,
+    periodOp,
+    typeamountItem
 }

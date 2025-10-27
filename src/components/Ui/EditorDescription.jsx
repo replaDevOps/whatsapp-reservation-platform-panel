@@ -32,7 +32,7 @@ const EditorDescription = ({ descriptionData, onChange, label }) => {
     ];
 
     return (
-        <Flex vertical gap={5}>
+        <Flex vertical gap={10}>
             {
                 label && 
                 <Title level={5} className='m-0 fw-500'>

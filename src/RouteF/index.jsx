@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Sidebar } from '../pages/Sidebar';
-import { ForgotPassword, LoginPage, SignInTabletPage } from '../pages';
+import { ForgotPassword, LoginPage } from '../pages';
 import { Fallback } from './Fallback';
 
 const isLoggedIn = () => !!localStorage.getItem('email')
@@ -31,12 +31,6 @@ const RouteF = () => {
           path='/login'
           element={
               <LoginPage />
-          }
-        />
-        <Route
-          path='/signintablet'
-          element={
-              <SignInTabletPage />
           }
         />
         <Route

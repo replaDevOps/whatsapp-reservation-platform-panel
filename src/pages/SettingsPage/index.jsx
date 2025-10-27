@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { EditFilled } from '@ant-design/icons'
 import { Breadcrumb, Button, Card, Col, Divider, Flex, Form, Row, Switch, Tag, Typography } from 'antd'
-import { ChangePasswordSetting, GeneralSetting, LanguageSetting, ModuleTopHeading, MyInput, SingleFileUpload, TimeForm } from '../../components'
+import { ChangePasswordSetting, GeneralSetting, LanguageSetting, MaintenanceModeSetting, ModuleTopHeading, MyInput, SingleFileUpload, TimeForm } from '../../components'
 
 const { Text, Title } = Typography
 const SettingsPage = () => {
@@ -36,6 +36,7 @@ const SettingsPage = () => {
             <GeneralSetting />
             <LanguageSetting />
             <ChangePasswordSetting />
+            <MaintenanceModeSetting />
         </Flex>
     )
 }

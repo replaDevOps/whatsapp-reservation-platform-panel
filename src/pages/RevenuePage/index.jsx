@@ -1,5 +1,5 @@
 import { Breadcrumb, Card, Flex, Typography } from 'antd'
-import { ModuleTopHeading, PromotionTable, RevenueCard, RevenueTable } from '../../components'
+import { ModuleTopHeading, RevenueCard, RevenueTable } from '../../components'
 
 const { Text } = Typography
 const RevenuePage = () => {

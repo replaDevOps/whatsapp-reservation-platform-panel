@@ -1,4 +1,3 @@
-export * from './BasicPlanCard'
 export * from './DashboardCards'
 export * from './BookingLineChart'
 export * from './CustomerLineChart'

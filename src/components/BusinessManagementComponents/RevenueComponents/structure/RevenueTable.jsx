@@ -5,6 +5,7 @@ import { CustomPagination, } from '../../../Ui';
 import { revenueColumns, revenueData } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
+import { subscriptionItems, typeItems } from '../../../../shared';
 
 
 const RevenueTable = () => {
@@ -15,21 +16,6 @@ const RevenueTable = () => {
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
     const [selectedYear, setSelectedYear] = useState(moment());
-
-
-    const subscriptionItems = [
-        { key: 'bp', label: 'BP' },
-        { key: 'sp', label: 'SP' },
-        { key: 'pp', label: 'PP' },
-        { key: 'ep', label: 'EP' },
-    ];
-
-     const typeItems = [
-        { key: 'general', label: 'General' },
-        { key: 'barber', label: 'Barber' },
-        { key: 'clinic', label: 'Clinic' },
-        { key: 'spa', label: 'Spa' },
-    ];
 
     const handlePageChange = (page, size) => {
         setCurrent(page);

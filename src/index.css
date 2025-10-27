@@ -16,6 +16,8 @@
     --dark-brand: #07938F;
     --secondary-color: #D8E4FC;
     --light-brand: #E4F2FA;
+    --lightest-brand: #F7FDFC;
+    --light-brand-2: #E7F9F8;
     --dark-blue: #07072D;
     --light-blue: #0C1342;
     --white-text:#fff;
@@ -35,7 +37,6 @@
     --light-violet: #7D40FF;
     --bright-red: #EF4444;
     --apple-green: #74B500;
-    --light-brand-2: #BED5FA;
     --sky-color: #3B82F6;
     --lightest-sky: #F2F7FE;
     --light-branded: #DCF0F0;
@@ -63,6 +64,7 @@
     --time-slot-color: #F1F1F9;
     --pending-brown: #D2A82B;
     --pending-brown-bg: #F1F0E9;
+    --tab-color: #777E90;
 }   
 
 .card-bg{
@@ -1345,6 +1347,66 @@
     padding-top: 24px !important;
 }
 
+.custom-tabs-css .ant-tabs-content-holder{
+    display: none;
+}
+
+.custom-tabs-css .ant-tabs-nav{
+    width: 100%;
+}
+
+.custom-tabs-css .ant-tabs-tab{
+    color: var(--tab-color) !important;
+    border-radius: 5px !important;
+}
+
+.custom-tabs-css .ant-tabs-tab-active{
+    background-color: var(--light-brand) !important;
+}
+
+.custom-tabs-css .ant-tabs-tab-active .ant-tabs-tab-btn{
+    color: var(--brand-color) !important;
+}
+
+.custom-tabs-css .ant-tabs-ink-bar{
+    width: 0px !important;  
+}
+
+.w-100px{
+    width: 100px;
+}
+
+.tab-fill .ant-tabs-tab{
+    padding: 8px 14px;
+    border-radius: 5px;
+}
+
+.tab-fill .ant-tabs-tab-active{
+    background-color: var(--dark-brand) !important;
+    color: var(--white-text) !important;
+}
+
+.tab-fill .ant-tabs-ink-bar{
+    width: 0px !important;  
+}
+
+.tab-fill .ant-tabs-tab+.ant-tabs-tab{
+    margin-left: 20px !important;
+    font-size: 13px !important;
+}
+
+.tab-fill .ant-tabs-tab-active .ant-tabs-tab-btn{
+    color: var(--white-text) !important;
+}
+
+.tab-fill >.ant-tabs-nav::before{
+    border: 0px !important;
+}
+
+.active-radio{
+    border-color: var(--brand-color) !important;
+    background-color: var(--lightest-brand) !important;
+}
 
 /* =================================================== media querry =============================================== */
 @media (max-width: 991px){
