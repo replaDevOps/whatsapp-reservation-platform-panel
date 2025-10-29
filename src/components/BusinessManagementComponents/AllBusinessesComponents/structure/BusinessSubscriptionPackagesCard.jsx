@@ -4,7 +4,7 @@ import { MyInput } from '../../../Forms';
 
 const { Text, Title } = Typography;
 
-const SubscriptionPackagesCard = ({ data, selectedvalue, onSelect }) => {
+const BusinessSubscriptionPackagesCard = ({ data, selectedvalue, onSelect }) => {
     const [selectedId, setSelectedId] = useState(1);
 
     const handleSelect = (id) => {
@@ -86,4 +86,4 @@ const SubscriptionPackagesCard = ({ data, selectedvalue, onSelect }) => {
     );
 };
 
-export { SubscriptionPackagesCard };
+export { BusinessSubscriptionPackagesCard };

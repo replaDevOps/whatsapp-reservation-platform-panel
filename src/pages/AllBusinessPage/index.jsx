@@ -1,44 +1,55 @@
-import { Breadcrumb, Button, Card, Flex, Typography } from 'antd'
-import { AllBusinessCards, AllBusinessTable, ModuleTopHeading } from '../../components'
-import { PlusOutlined } from '@ant-design/icons'
+import { Flex } from 'antd'
+import { AllBusinessTable, BreadCrumbCard, StatisticsCommonCards, TitleCard } from '../../components'
 import { useNavigate } from 'react-router-dom'
 
-const { Text } = Typography
 const AllBusinessPage = () => {
 
     const navigate = useNavigate()
 
+    const cardsData = [
+        {
+            id: 1,
+            icon:'/assets/icons/plan-business.webp',
+            title: '50',
+            subtitle: 'Basic Plan Business',
+        },
+        {
+            id: 2,
+            icon:'/assets/icons/plan-business.webp',
+            title: '30',
+            subtitle: 'Standard Plan Business',
+        },
+        {
+            id: 3,
+            icon:'/assets/icons/plan-business.webp',
+            title: '16',
+            subtitle: 'Pro Plan Business',
+        },
+        {
+            id: 4,
+            icon:'/assets/icons/plan-business.webp',
+            title: '8',
+            subtitle: 'Enterprise Plan Business',
+        },
+    ];
+
     return (
         <Flex vertical gap={10}>
-            <Card className='card-bg card-cs radius-12 border-gray'>
-                <Breadcrumb
-                    separator="/"
-                    items={[
-                        {
-                            title: (
-                                <Text className="fs-13 text-gray">
-                                    Business Management
-                                </Text>
-                            ),
-                        },
-                        {
-                            title: <Text className="fw-500 fs-14 text-black">All Businesses</Text>,
-                        },
-                    ]}
-                />
-            </Card>
-            <Card className='card-bg card-cs radius-12 border-gray'>
-                <Flex align='center' justify='space-between' gap={10}>
-                    <Flex vertical>
-                        <ModuleTopHeading level={4} name='All Businesses' />
-                        <Text className='text-gray fs-13'>Manage all the businesses in your system</Text>
-                    </Flex>
-                    <Button className='btncancel' onClick={()=>navigate('/addbusiness')}> 
-                        <PlusOutlined /> Add Business
-                    </Button>
-                </Flex>
-            </Card>
-            <AllBusinessCards />
+            <BreadCrumbCard 
+                items={[
+                    { title: 'Business Management', },
+                    { title: 'All Businesses' },
+                ]}
+            />
+            <TitleCard 
+                title={'All Businesses'}
+                subtitle={'Manage all the businesses in your system'}
+                btntext={'Add Business'}
+                onClick={()=>navigate('/addbusiness')}
+            />
+            <StatisticsCommonCards 
+                data={cardsData}
+            />
             <AllBusinessTable />
         </Flex>
     )

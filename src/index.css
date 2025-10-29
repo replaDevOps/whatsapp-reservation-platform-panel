@@ -1408,10 +1408,23 @@
     background-color: var(--lightest-brand) !important;
 }
 
+.tab-fill .ant-tabs-nav-list{
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid var(--light-gray);
+}
+
+.ml-20{
+    margin-left: 20px;
+}
+
 /* =================================================== media querry =============================================== */
 @media (max-width: 991px){
     .width-drag{
         width: 90%;
+    }
+    .ml-20{
+        margin-left: 0;
     }
 }
 

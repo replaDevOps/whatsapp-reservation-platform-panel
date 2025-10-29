@@ -1,26 +1,17 @@
-import { useEffect, useState } from 'react'
-import { EditFilled } from '@ant-design/icons'
-import { Breadcrumb, Button, Card, Col, Divider, Flex, Form, Row, Select, Typography } from 'antd'
-import { ChooseSubscriptionPlan, MyInput, SingleFileUpload } from '../../../../components'
+import { useState } from 'react'
+import { ArrowLeftOutlined, EditFilled } from '@ant-design/icons'
+import { Button, Card, Col, Divider, Flex, Form, Row, Select, Typography } from 'antd'
+import { BreadCrumbCard, BusinessChooseSubscriptionPlan, ConfirmModal, MyInput, SingleFileUpload } from '../../../../components'
 import { MySelect } from '../../../Forms'
+import { useNavigate } from 'react-router-dom'
 
 const { Text, Title } = Typography
 const AddEditBusiness = () => {
 
     const [form] = Form.useForm();
     const [ previewimage, setPreviewImage ] = useState(null)
-    const [ edititem, setEditItem ] = useState(false)
-
-
-    useEffect(()=>{
-        if(edititem){
-            form.setFieldsValue({
-                name: edititem?.name,
-                website: edititem?.website,
-            })
-            setPreviewImage(edititem?.img)
-        }
-    },[edititem])
+    const [ confirmsubmit, setConfirmSubmit ] = useState(false)
+    const navigate = useNavigate()
 
     const handleChangeImage = () => {
         setPreviewImage(null);
@@ -34,26 +25,20 @@ const AddEditBusiness = () => {
     return (
         <>
             <Flex vertical gap={10}>
-                <Card className='card-bg card-cs radius-12 border-gray'>
-                    <Breadcrumb
-                        separator="/"
-                        items={[
-                            {
-                                title: (
-                                    <Text className="fs-13 text-gray">
-                                        Business Management
-                                    </Text>
-                                ),
-                            },
-                            {
-                                title: <Text className="fw-500 fs-14 text-black">All Businesses</Text>,
-                            },
-                        ]}
-                    />
-                </Card>
+                <BreadCrumbCard 
+                    items={[
+                        { title: 'Business Management', },
+                        { title: 'All Businesses' },
+                    ]}
+                />
                 <Card className='card-bg card-cs radius-12 border-gray'>
                     <Flex gap={10} vertical>
-                        <Title level={4} className="fw-500 m-0">Add Business</Title>
+                        <Flex gap={10} align="center">
+                            <Button className="border-0 p-0 bg-transparent" onClick={() => navigate("/allbusiness")}>
+                                <ArrowLeftOutlined />
+                            </Button>
+                            <Title level={4} className="fw-500 m-0">Add Business</Title>
+                        </Flex>
                         <Form layout="vertical" 
                             form={form} 
                             onFinish={onFinish} 
@@ -159,18 +144,19 @@ const AddEditBusiness = () => {
                                     <Title level={5} className='fw-500 my-3'>Choose  Subscription Plan</Title>
                                 </Col>
                                 <Col span={24}>
-                                    <ChooseSubscriptionPlan />
+                                    <BusinessChooseSubscriptionPlan />
                                 </Col>
                                 <Col span={24}>
                                     <Divider className='bg-divider' />
                                 </Col>
                                 <Col span={24}>
                                     <Flex justify='end' gap={5} >
-                                        <Button type='button' onClick={()=>setEditItem(false)} className='btncancel text-black border-gray' >
+                                        <Button type='button' className='btncancel text-black border-gray' >
                                             Cancel
                                         </Button>
-                                        <Button htmlType='submit' className={`btnsave border-0 text-white brand-bg`}>
-                                            {edititem?'Update':'Save'}
+                                        <Button onClick={()=>setConfirmSubmit(true)} className={`btnsave border-0 text-white brand-bg`}>
+                                            {/* {edititem?'Update':'Save'} */}
+                                            Save
                                         </Button>
                                     </Flex>
                                 </Col>
@@ -179,6 +165,15 @@ const AddEditBusiness = () => {
                     </Flex>
                 </Card>
             </Flex>
+
+            <ConfirmModal 
+                type={'danger'}
+                visible={confirmsubmit}
+                title={'Are you sure?'}
+                subtitle={'Please confirm that all business details are correct and a subscription plan is assigned before proceeding.'}
+                onClose={()=>setConfirmSubmit(false)}
+                onConfirm={()=>{form.submit();setConfirmSubmit(false)}}
+            />
         </>
     )
 }

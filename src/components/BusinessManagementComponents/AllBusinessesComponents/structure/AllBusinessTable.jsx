@@ -6,7 +6,8 @@ import { allbusinessColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
 import { allbusinessData } from '../../../../data';
-import { typeOp } from '../../../../shared';
+import { typeitemsCust } from '../../../../shared';
+import { useNavigate } from 'react-router-dom';
 
 
 const AllBusinessTable = () => {
@@ -19,6 +20,7 @@ const AllBusinessTable = () => {
     const [selectedYear, setSelectedYear] = useState(moment());
     const [ deleteitem, setDeleteItem ] = useState(false)
     const [ statuschange, setStatusChange ] = useState(false)
+    const navigate = useNavigate()
 
 
     const statusItem = [
@@ -66,7 +68,7 @@ const AllBusinessTable = () => {
                                     <Flex gap={5}>
                                         <Dropdown
                                             menu={{
-                                                items: typeOp.map((item) => ({
+                                                items: typeitemsCust.map((item) => ({
                                                     key: String(item.key),
                                                     label: item.label
                                                 })),
@@ -76,7 +78,7 @@ const AllBusinessTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {typeOp.find((i) => i.key === selectedAction)?.label || "Type"}
+                                                    {typeitemsCust.find((i) => i.key === selectedAction)?.label || "Type"}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -119,7 +121,7 @@ const AllBusinessTable = () => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={allbusinessColumns({setDeleteItem,setStatusChange})}
+                        columns={allbusinessColumns({setDeleteItem,setStatusChange,navigate})}
                         dataSource={allbusinessData}
                         className='pagination table-cs table'
                         showSorterTooltip={false}
@@ -141,7 +143,7 @@ const AllBusinessTable = () => {
                 type={'danger'}
                 visible={statuschange}
                 title={'Are you sure?'}
-                subtitle={'This action cannot be undone. Are you sure you want to deactivate this Business?'}
+                subtitle={'This action cannot be undone. Are you sure you want to change status of this Business?'}
                 onClose={()=>setStatusChange(false)}
             />
             <DeleteModal 

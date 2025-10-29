@@ -11,7 +11,7 @@ import { BookingPage } from '../BookingPage';
 import { RevenuePage } from '../RevenuePage';
 import { DemoRequestPage } from '../DemoRequestPage';
 import { StaffPage } from '../StaffPage';
-import { AddEditBusiness, AddEditStaff } from '../../components';
+import { AddEditBusiness, AddEditStaff, SingleViewBusiness } from '../../components';
 import { SubscriptionPlanPage } from '../SubscriptionPlanPage';
 import { SubscriptionManagementPage } from '../SubscriptionManagementPage';
 import { DiscountPage } from '../DiscountPage';
@@ -34,12 +34,12 @@ const Sidebar = () => {
   useEffect(() => {
     let tab = location?.pathname?.split("/")[1];
     tab = tab === '' ? '1' :
-      tab === 'allbusiness' ? '2' :
+      tab === 'allbusiness' || tab === 'addbusiness' ? '2':
       tab === 'customer' ? '3' :
       tab === 'booking' ? '4'  :
       tab === 'revenue' ? '5' :
       tab === 'demorequest' ? '6' :
-      tab === 'staff' || tab === 'addstaff' || tab === 'staffmanagement/editstaff/' ? '7' :
+      tab === 'staff' || tab === 'addstaff' ? '7' :
       tab === 'subscriptionplan' ? '8' :
       tab === 'subscriptionmanage' ? '9'  :
       tab === 'discount' ? '10'  :
@@ -185,13 +185,14 @@ const Sidebar = () => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/allbusiness" element={<AllBusinessPage />} />
             <Route path="/addbusiness" element={<AddEditBusiness />} />
+            <Route path="/allbusiness/viewbusiness/:id" element={<SingleViewBusiness />} />
             <Route path="/customer" element={<CustomersPage />} />
             <Route path="/booking" element={<BookingPage />} />
             <Route path="/revenue" element={<RevenuePage />} />
             <Route path="/demorequest" element={<DemoRequestPage />} />
             <Route path="/staff" element={<StaffPage />} />
             <Route path="/addstaff" element={<AddEditStaff />} />
-            <Route path="/staffmanagement/editstaff/:id" element={<AddEditStaff />} />
+            <Route path="/staff/staffmanagement/editstaff/:id" element={<AddEditStaff />} />
             <Route path="/subscriptionplan" element={<SubscriptionPlanPage />} />
             <Route path="/subscriptionmanage" element={<SubscriptionManagementPage />} />
             <Route path="/discount" element={<DiscountPage />} />

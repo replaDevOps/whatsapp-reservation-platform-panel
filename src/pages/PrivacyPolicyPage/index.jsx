@@ -1,8 +1,7 @@
-import { Breadcrumb, Button, Card, Divider, Flex, Typography } from 'antd'
-import { EditorDescription, ModuleTopHeading } from '../../components'
+import { Button, Card, Divider, Flex } from 'antd'
+import { BreadCrumbCard, EditorDescription, TitleCard } from '../../components'
 import { useState } from 'react'
 
-const { Text } = Typography
 const PrivacyPolicyPage = () => {
 
     const [ descriptionData, setDescriptionData ] = useState('')
@@ -17,29 +16,16 @@ const PrivacyPolicyPage = () => {
 
     return (
         <Flex vertical gap={10}>
-            <Card className='card-bg card-cs radius-12 border-gray'>
-                <Breadcrumb
-                    separator="/"
-                    items={[
-                        {
-                            title: (
-                                <Text className="fs-13 text-gray">
-                                    Website Pages
-                                </Text>
-                            ),
-                        },
-                        {
-                            title: <Text className="fw-500 fs-14 text-black">Privacy Policy</Text>,
-                        },
-                    ]}
-                />
-            </Card>
-            <Card className='card-bg card-cs radius-12 border-gray'>
-                <Flex vertical>
-                    <ModuleTopHeading level={4} name='Privacy Policy' />
-                    <Text className='text-gray fs-13'>Manage all the platform policy in your system</Text>
-                </Flex>
-            </Card>
+            <BreadCrumbCard 
+                items={[
+                    { title: 'Website Pages', },
+                    { title: 'Privacy Policy' },
+                ]}
+            />
+            <TitleCard 
+                title={'Privacy Policy'}
+                subtitle={'Manage all the platform policy in your system'}
+            />
             <Card className='card-bg card-cs radius-12 border-gray'>    
                 <Flex vertical gap={20}>
                     <EditorDescription

@@ -4,3 +4,7 @@ export * from './CustomPagination'
 export * from './EditorDescription'
 export * from './ConfirmModal'
 export * from './TimeForm'
+
+export * from './BreadCrumbCard'
+export * from './TitleCard'
+export * from './StatisticsCommonCards'

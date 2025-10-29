@@ -1,34 +1,49 @@
-import { Breadcrumb, Card, Flex, Typography } from 'antd'
-import { ModuleTopHeading, SubscriptionManageCard, SubscriptionManageTable } from '../../components'
+import { Flex } from 'antd'
+import { BreadCrumbCard, StatisticsCommonCards, SubscriptionManageTable, TitleCard } from '../../components'
 
-const { Text } = Typography
 const SubscriptionManagementPage = () => {
+
+    const cardsData = [
+        {
+            id: 1,
+            icon:'/assets/icons/plan-business.webp',
+            title: '50',
+            subtitle: 'Basic Plan Business',
+        },
+        {
+            id: 2,
+            icon:'/assets/icons/plan-business.webp',
+            title: '30',
+            subtitle: 'Standard Plan Business',
+        },
+        {
+            id: 3,
+            icon:'/assets/icons/plan-business.webp',
+            title: '16',
+            subtitle: 'Pro Plan Business',
+        },
+        {
+            id: 4,
+            icon:'/assets/icons/plan-business.webp',
+            title: '8',
+            subtitle: 'Enterprise Plan Business',
+        },
+    ];
     return (
         <Flex vertical gap={10}>
-            <Card className='card-bg card-cs radius-12 border-gray'>
-                <Breadcrumb
-                    separator="/"
-                    items={[
-                        {
-                            title: (
-                                <Text className="fs-13 text-gray">
-                                    Subscription Plan
-                                </Text>
-                            ),
-                        },
-                        {
-                            title: <Text className="fw-500 fs-14 text-black">Subscription Management</Text>,
-                        },
-                    ]}
-                />
-            </Card>
-            <Card className='card-bg card-cs radius-12 border-gray'>
-                <Flex vertical>
-                    <ModuleTopHeading level={4} name='Subscription Management' />
-                    <Text className='text-gray fs-13'>Manage all the subscription in your system</Text>
-                </Flex>
-            </Card>
-            <SubscriptionManageCard />
+            <BreadCrumbCard 
+                items={[
+                    { title: 'Subscription Plan', },
+                    { title: 'Subscription Management' },
+                ]}
+            />
+            <TitleCard 
+                title={'Subscription Management'}
+                subtitle={'Manage all the subscription in your system'}
+            />
+            <StatisticsCommonCards 
+                data={cardsData}
+            />
             <SubscriptionManageTable />
         </Flex>
     )

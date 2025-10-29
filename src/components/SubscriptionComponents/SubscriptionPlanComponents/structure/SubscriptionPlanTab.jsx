@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Button, Card, Flex, Typography, Row, Col, Tabs } from 'antd';
 import { SubscriptionPlanCard } from './SubscriptionPlanCard';
-import { subscriptionplanData } from '../../../../data';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { EditSubscription } from './EditSubscription';
+import { subscriptionplanData } from '../../../../data';
 
-const { Title,Text } = Typography;
+const { Title } = Typography;
 const SubscriptionPlanTab = () => {
 
     const [activeKey, setActiveKey] = useState('1');

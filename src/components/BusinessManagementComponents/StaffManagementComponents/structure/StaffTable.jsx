@@ -6,6 +6,7 @@ import { ConfirmModal, CustomPagination, DeleteModal } from '../../../Ui';
 import { stafftableColumn, stafftableData } from '../../../../data';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '../../../Forms';
+import { statusitemsCust } from '../../../../shared';
 
 const { Text } = Typography;
 
@@ -24,11 +25,6 @@ const StaffTable = () => {
         { key: 'superadmin', label: 'Super Admin' },
         { key: 'technicaladmin', label: 'Technical Admin' },
         { key: 'demoadmin', label: 'Demo Admin' },
-    ];
-
-    const statusItems = [
-        { key: 'active', label: 'Active' },
-        { key: 'inactive', label: 'Inactive' },
     ];
 
 
@@ -93,7 +89,7 @@ const StaffTable = () => {
                                     </Dropdown>
                                     <Dropdown
                                         menu={{
-                                            items: statusItems.map((item) => ({
+                                            items: statusitemsCust.map((item) => ({
                                                 key: String(item.key),
                                                 label: item.label
                                             })),
@@ -103,7 +99,7 @@ const StaffTable = () => {
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {statusItems.find((i) => i.key === selectedStatus)?.label || "Status"}
+                                                {statusitemsCust.find((i) => i.key === selectedStatus)?.label || "Status"}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>

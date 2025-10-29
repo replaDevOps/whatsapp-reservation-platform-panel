@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, Row, Typography } from 'antd'
 import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
-import { customertypeOp, periodOp, subscriptionplanOp, typeOp } from '../../../../shared'
+import { customertypeOp, promoType, subscriptionplanOp } from '../../../../shared'
 import moment from 'moment'
 
 const { Title, Text } = Typography
@@ -104,7 +104,7 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
                                 name="discountType" 
                                 required
                                 message='Please choose discount type'
-                                options={customertypeOp}
+                                options={promoType}
                                 placeholder='Choose discount type'
                                 
                             />

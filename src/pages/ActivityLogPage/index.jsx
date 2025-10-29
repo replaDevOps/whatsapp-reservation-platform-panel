@@ -1,5 +1,5 @@
-import { Breadcrumb, Card, Flex, Tabs, Typography } from 'antd'
-import { DiscountActivityLog, ModuleTopHeading, SystemActivityLogTable } from '../../components'
+import { Card, Flex, Tabs, Typography } from 'antd'
+import { BreadCrumbCard, DiscountActivityLog, ModuleTopHeading, SystemActivityLogTable } from '../../components'
 
 const { Text } = Typography
 const ActivityLogPage = () => {
@@ -19,23 +19,12 @@ const ActivityLogPage = () => {
 
     return (
         <Flex vertical gap={10}>
-            <Card className='card-bg card-cs radius-12 border-gray'>
-                <Breadcrumb
-                    separator="/"
-                    items={[
-                        {
-                            title: (
-                                <Text className="fs-13 text-gray">
-                                    Business Management
-                                </Text>
-                            ),
-                        },
-                        {
-                            title: <Text className="fw-500 fs-14 text-black">Activity Log</Text>,
-                        },
-                    ]}
-                />
-            </Card>
+            <BreadCrumbCard 
+                items={[
+                    { title: 'Admin Setting', },
+                    { title: 'Activity Log' },
+                ]}
+            />
             <Card className='radius-12 card-cs border-gray h-100'>
                 <Flex vertical gap={15}>
                     <Flex vertical>

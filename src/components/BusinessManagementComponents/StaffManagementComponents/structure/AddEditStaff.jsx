@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { ArrowLeftOutlined, EditFilled } from '@ant-design/icons'
-import { Breadcrumb, Button, Card, Col, Flex, Form, Row, Select, Typography } from 'antd'
+import { Button, Card, Col, Flex, Form, Row, Select, Typography } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
 import { MyInput, MySelect, SingleFileUpload } from '../../../Forms'
 import { stafftableData } from '../../../../data'
 import { rolestaffopt } from '../../../../shared'
+import { BreadCrumbCard } from '../../../Ui'
 
 const { Text, Title } = Typography
 const AddEditStaff = () => {
@@ -34,23 +35,12 @@ const AddEditStaff = () => {
 
     return (
         <Flex vertical gap={10}>
-            <Card className='card-bg card-cs radius-12 border-gray'>
-                <Breadcrumb
-                    separator="/"
-                    items={[
-                        {
-                            title: (
-                                <Text className="fs-13 text-gray">
-                                    Staff Management
-                                </Text>
-                            ),
-                        },
-                        {
-                            title: <Text className="fw-500 fs-14 text-black">Staffs</Text>,
-                        },
-                    ]}
-                />
-            </Card>
+            <BreadCrumbCard 
+                items={[
+                    { title: 'Staff Management', },
+                    { title: 'Staffs' },
+                ]}
+            />
             <Card className='card-bg card-cs radius-12 border-gray'>
                 <Flex gap={10} vertical>
                     <Flex gap={10} align="center">

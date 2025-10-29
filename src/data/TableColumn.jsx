@@ -102,7 +102,7 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange}) => [
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/staffmanagement/editstaff/'+row?.key)}}>Edit</NavLink>, key: '1' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/staff/staffmanagement/editstaff/'+row?.key)}}>Edit</NavLink>, key: '1' },
                         row?.status === 'Active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>Inactive</NavLink>, key: '2' },
                         row?.status === 'Inactive' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>Active</NavLink>, key: '2a' },
                         { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true) }}>Delete</NavLink>, key: '3' },
@@ -628,7 +628,7 @@ const discountactivityColumn = [
 ]
 
 
-const allbusinessColumns = ({ setDeleteItem,setStatusChange  }) => [
+const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate }) => [
     {
         title: 'Business ID',
         dataIndex: 'businessId',
@@ -698,7 +698,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange  }) => [
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>View</NavLink>, key: '1' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/allbusiness/viewbusiness/'+row?.key) }}>View</NavLink>, key: '1' },
                         row?.status === 'active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>Inactive</NavLink>, key: '2' },
                         row?.status === 'deactive' &&{ label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>Active</NavLink>, key: '3' },
                         { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true) }}>Delete</NavLink>, key: '4' },
@@ -714,6 +714,125 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange  }) => [
     },
 ]
 
+const singleviewColumns = ({ setViewItem }) => [
+    {
+        title: 'Branch Name',
+        dataIndex: 'branchName',
+    },
+    {
+        title: 'Phone Number',
+        dataIndex: 'phoneNo',
+    },
+    {
+        title: 'Location',
+        dataIndex: 'location',
+    },
+    {
+        title: 'Total Bookings',
+        dataIndex: 'totalBooking',
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (status) => {
+            return (
+                status === 'active' ? (
+                    <Text className='btnpill fs-12 success'>Active</Text>
+                ) : (
+                    <Text className='btnpill fs-12 inactive'>Inactive</Text>
+                )
+            );
+        }
+    },
+    {
+        title: 'Action',
+        key: "action",
+        fixed: "right",
+        width: 100,
+        render: (_,row) => (
+            <Dropdown
+                menu={{
+                    items: [
+                        { label: <NavLink onClick={(e) => {e.preventDefault();setViewItem(true)}}>View</NavLink>, key: '1' }
+                    ],
+                }}
+                trigger={['click']}
+            >
+                <Button className="bg-transparent border-0 p-0">
+                    <img src="/assets/icons/dots.png" alt='dots icon' fetchPriority="high" width={16} />
+                </Button>
+            </Dropdown>
+        ),
+    },
+]
+
+const businessserviceColumns = [
+    {
+        title: 'Service Name',
+        dataIndex: 'serviceName',
+    },
+    {
+        title: 'Duration (min)',
+        dataIndex: 'duration',
+    },
+    {
+        title: 'Buffer Time (min)',
+        dataIndex: 'bufferTime',
+    },
+    {
+        title: 'Price',
+        dataIndex: 'price',
+    },
+    {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (status) => {
+            return (
+                status === 'active' ? (
+                    <Text className='btnpill fs-12 success'>Active</Text>
+                ) : (
+                    <Text className='btnpill fs-12 inactive'>Inactive</Text>
+                )
+            );
+        }
+    },
+]
+
+const businessstaffColumns = [
+    {
+        title: 'Image',
+        dataIndex: 'image',
+        render:(image) => <Avatar src={image} size={40} />,
+        width: 100
+    },
+    {
+        title: 'Staff Name',
+        dataIndex: 'staffName',
+    },
+    {
+        title: 'Phone Number',
+        dataIndex: 'phoneNo',
+    },
+    {
+        title: 'Role',
+        dataIndex: 'role',
+    },
+    {
+        title: 'Services',
+        dataIndex: 'services',
+        render: (services) => {
+            return (
+                <Flex gap={5} wrap>
+                    {
+                        services?.map((items,index)=>
+                            <Tag key={index} className="sm-pill radius-20 fs-12">{items}</Tag>
+                        )
+                    }
+                </Flex>
+            );
+        }
+    },
+]
 
 export { 
     BookingDashboardColumn,
@@ -728,4 +847,7 @@ export {
     activitylogColumn,
     discountactivityColumn,
     allbusinessColumns,
+    singleviewColumns,
+    businessserviceColumns,
+    businessstaffColumns
 }

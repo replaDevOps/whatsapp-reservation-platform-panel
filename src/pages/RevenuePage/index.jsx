@@ -1,34 +1,40 @@
-import { Breadcrumb, Card, Flex, Typography } from 'antd'
-import { ModuleTopHeading, RevenueCard, RevenueTable } from '../../components'
+import { Flex } from 'antd'
+import { BreadCrumbCard, RevenueTable, StatisticsCommonCards, TitleCard } from '../../components'
 
-const { Text } = Typography
 const RevenuePage = () => {
+
+    const cardsData = [
+        {
+            id: 1,
+            icon:'/assets/icons/rev-icon.png',
+            title: 'SAR 30,000',
+            subtitle: 'Total Revenue',
+        },
+        {
+            id: 2,
+            icon:'/assets/icons/rev-icon.png',
+            title: 'SAR 10,000',
+            subtitle: 'This Month Revenue',
+        },
+    ];
+
+
     return (
         <Flex vertical gap={10}>
-            <Card className='card-bg card-cs radius-12 border-gray'>
-                <Breadcrumb
-                    separator="/"
-                    items={[
-                        {
-                            title: (
-                                <Text className="fs-13 text-gray">
-                                    Business Management
-                                </Text>
-                            ),
-                        },
-                        {
-                            title: <Text className="fw-500 fs-14 text-black">Revenue</Text>,
-                        },
-                    ]}
-                />
-            </Card>
-            <Card className='card-bg card-cs radius-12 border-gray'>
-                <Flex vertical>
-                    <ModuleTopHeading level={4} name='Revenue' />
-                    <Text className='text-gray fs-13'>Manage all the revenue in your system</Text>
-                </Flex>
-            </Card>
-            <RevenueCard />
+            <BreadCrumbCard 
+                items={[
+                    { title: 'Business Management', },
+                    { title: 'Revenue' },
+                ]}
+            />
+            <TitleCard 
+                title={'Revenue'}
+                subtitle={'Manage all the revenue in your system'}
+            />
+            <StatisticsCommonCards 
+                data={cardsData}
+                lg={12}
+            />
             <RevenueTable />
         </Flex>
     )

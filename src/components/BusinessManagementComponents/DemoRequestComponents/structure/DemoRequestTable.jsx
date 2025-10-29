@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, } from '../../../Ui';
-import { demoreqColumns, demoreqData, revenueColumns, revenueData } from '../../../../data';
+import { demoreqColumns, demoreqData } from '../../../../data';
 import { MyDatepicker } from '../../../Forms';
 import moment from 'moment';
 import { ModuleTopHeading } from '../../../PageComponent';

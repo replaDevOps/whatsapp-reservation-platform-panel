@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Card, Col, Dropdown, Flex, Row, Space, Typography } from 'antd';
+import { Button, Card, Col, Dropdown, Flex, List, Row, Space, Typography } from 'antd';
 import ReactApexChart from 'react-apexcharts';
 import { ModuleTopHeading } from '../../PageComponent';
 import { DownOutlined } from '@ant-design/icons';
@@ -55,6 +55,34 @@ const TotalRegisteredBusiness = () => {
     },
   };
 
+
+  const data = [
+    {
+      id: 1,
+      icon: '/assets/icons/spa-ic.webp',
+      title:'190',
+      subtitle:'Spa'
+    },
+    {
+      id: 2,
+      icon: '/assets/icons/clinic-ic.webp',
+      title:'190',
+      subtitle:'Clinic'
+    },
+    {
+      id: 3,
+      icon: '/assets/icons/barber-ic.webp',
+      title:'78',
+      subtitle:'Barber'
+    },
+    {
+      id: 4,
+      icon: '/assets/icons/general-ic.webp',
+      title:'78',
+      subtitle:'General'
+    },
+  ]
+
   return (
     <Card className="radius-12 border-gray card-cs">
       <Flex vertical gap={10}>
@@ -83,15 +111,31 @@ const TotalRegisteredBusiness = () => {
         </Title>
       </Flex>
 
-      <Row gutter={[24, 24]}>
+      <Row gutter={[12, 12]}>
         <Col span={24}>
-          <ReactApexChart
-            options={chartData.options}
-            series={chartData.series}
-            type="donut"
-            height={300}
-            width={'100%'}
-          />
+          <Flex align='center' wrap gap={15} justify='center'>
+            <ReactApexChart
+              options={chartData.options}
+              series={chartData.series}
+              type="donut"
+              height={300}
+              width={'100%'}
+            />
+            <List
+              itemLayout="horizontal"
+              dataSource={data}
+              size='small'
+              renderItem={(item, _) => (
+              <List.Item>
+                <List.Item.Meta
+                  avatar={<img src={item?.icon} width={30} alt={item?.subtitle} />}
+                  title={<span className='fs-18'>{item?.title}</span>}
+                  description={item?.subtitle}
+                />
+              </List.Item>
+              )}
+            />
+          </Flex>
         </Col>
       </Row>
     </Card>

@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Button, Card, Divider, Dropdown, Flex, List, Space, Typography } from 'antd';
+import { Button, Divider, Dropdown, Flex, List, Space, Typography } from 'antd';
 import { CheckOutlined, DownOutlined } from '@ant-design/icons';
-import { subscriptionplanData } from '../../../../data';
 import { ModuleTopHeading } from '../../../PageComponent';
 
 const { Title,Text } = Typography;

@@ -14,7 +14,7 @@ const allbusinessData = [
     {
         key: 2,
         businessId: 'BIZ-1002',
-        businessLogo: '/assets/images/1.png',
+        businessLogo: '/assets/images/av-1.webp',
         businessName: 'Zenith Fitness Studio',
         type: 'Gym',
         customerName: 'Fayez Ali',
@@ -26,7 +26,7 @@ const allbusinessData = [
     {
         key: 3,
         businessId: 'BIZ-1003',
-        businessLogo: '/assets/images/1.png',
+        businessLogo: '/assets/images/prom-1.png',
         businessName: 'Glow Beauty Lounge',
         type: 'Salon',
         customerName: 'Fayez Ali',
@@ -50,7 +50,7 @@ const allbusinessData = [
     {
         key: 5,
         businessId: 'BIZ-1005',
-        businessLogo: '/assets/images/1.png',
+        businessLogo: '/assets/images/prom-1.png',
         businessName: 'Urban Yoga Studio',
         type: 'Wellness',
         customerName: 'Fayez Ali',
@@ -264,4 +264,110 @@ const subplanData = [
     }
 ]
 
-export { allbusinessData,subplanData }
+
+const singleviewData = [
+    {
+        key: 1,
+        branchName: 'Mirava Spine Clinic',
+        phoneNo: '+966 110 113 087',
+        location: 'Great Falls, Maryland',
+        totalBooking: '5',
+        status: 'active'
+    },
+    {
+        key: 2,
+        branchName: 'Zerwyn Movement Lab',
+        phoneNo: '+966 324 464 232',
+        location: 'Stockton, New Hampshire',
+        totalBooking: '10',
+        status: 'Inactive'
+    },
+    {
+        key: 3,
+        branchName: 'Northrel Therapy Dept',
+        phoneNo: '+966 324 464 232',
+        location: 'Pasadena, Oklahoma',
+        totalBooking: '74',
+        status: 'Active'
+    },
+    {
+        key: 4,
+        branchName: 'Solvane Rehab Dept',
+        phoneNo: '+966 629 267 736',
+        location: 'Syracuse, Connecticut',
+        totalBooking: '24',
+        status: 'Inactive'
+    },
+];
+
+const businessserviceData = [
+    {
+        key: 1,
+        serviceName: 'Perming',
+        duration: 20,
+        bufferTime: 20,
+        price: 200,
+        status: 'active'
+    },
+    {
+        key: 2,
+        serviceName: 'Advanced Moisturising',
+        duration: 30,
+        bufferTime: 30,
+        price: 120,
+        status: 'inactive'
+    },
+    {
+        key: 3,
+        serviceName: 'Clean Ups',
+        duration: 25,
+        bufferTime: 25,
+        price: 230,
+        status: 'active'
+    },
+    {
+        key: 4,
+        serviceName: 'Smoothening',
+        duration: 20,
+        bufferTime: 20,
+        price: 150,
+        status: 'inactive'
+    },
+];
+
+const businessstaffData = [
+    {
+        key: 1,
+        image: '/assets/images/1.png',
+        staffName: 'Fayez Ali',
+        phoneNo: '+966 324 464 232',
+        role: 'Service Provider',
+        services: ['Service Name','Service Name']
+    },
+    {
+        key: 2,
+        image: '/assets/images/av-1.webp',
+        staffName: 'Mohammed Darwish',
+        phoneNo: '+966 324 464 232',
+        role: 'Service Provider',
+        services: null
+    },
+    {
+        key: 3,
+        image: '/assets/images/prom-1.png',
+        staffName: 'Jihad Bakir',
+        phoneNo: '+966 324 464 232',
+        role: 'Staff Manager',
+        services: ['Service Name','Service Name']
+    },
+    {
+        key: 4,
+        image: '/assets/images/1.png',
+        staffName: 'Fahd Bakir',
+        phoneNo: '+966 324 464 232',
+        role: 'Admin',
+        services: ['Service Name','Service Name']
+    },
+];
+
+export { allbusinessData,subplanData,singleviewData,businessserviceData,businessstaffData }

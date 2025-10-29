@@ -25,7 +25,7 @@ const ConfirmModal = ({visible,onClose,title,subtitle,type,onConfirm}) => {
             <Title level={5} className='m-0'>
                 {title}
             </Title>
-            <Text className='fs-14'>
+            <Text className='fs-14 text-center'>
                 {subtitle}
             </Text>
         </Flex>

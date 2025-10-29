@@ -1,6 +1,6 @@
 export const revenueData = [
     {
-        id: 1,
+        key: 1,
         businessId: 'BIZ-1001',
         businessLogo: '/assets/images/1.png',
         businessName: 'Serenity Spa & Wellness',
@@ -12,7 +12,7 @@ export const revenueData = [
         purchasingDate: '02/11/2025',
     },
     {
-        id: 2,
+        key: 2,
         businessId: 'BIZ-1002',
         businessLogo: '/assets/images/1.png',
         businessName: 'Zenith Fitness Studio',
@@ -24,7 +24,7 @@ export const revenueData = [
         purchasingDate: '03/01/2025',
     },
     {
-        id: 3,
+        key: 3,
         businessId: 'BIZ-1003',
         businessLogo: '/assets/images/1.png',
         businessName: 'Glow Beauty Lounge',
@@ -36,7 +36,7 @@ export const revenueData = [
         purchasingDate: '04/10/2025',
     },
     {
-        id: 4,
+        key: 4,
         businessId: 'BIZ-1004',
         businessLogo: '/assets/images/1.png',
         businessName: 'Revive Health Hub',
@@ -48,7 +48,7 @@ export const revenueData = [
         purchasingDate: '01/15/2025',
     },
     {
-        id: 5,
+        key: 5,
         businessId: 'BIZ-1005',
         businessLogo: '/assets/images/1.png',
         businessName: 'Urban Yoga Studio',
@@ -60,7 +60,7 @@ export const revenueData = [
         purchasingDate: '05/05/2025',
     },
     {
-        id: 6,
+        key: 6,
         businessId: 'BIZ-1006',
         businessLogo: '/assets/images/1.png',
         businessName: 'Tranquil Touch Spa',
@@ -72,7 +72,7 @@ export const revenueData = [
         purchasingDate: '06/11/2025',
     },
     {
-        id: 7,
+        key: 7,
         businessId: 'BIZ-1007',
         businessLogo: '/assets/images/1.png',
         businessName: 'FitZone Gym & Training',
@@ -84,7 +84,7 @@ export const revenueData = [
         purchasingDate: '07/03/2025',
     },
     {
-        id: 8,
+        key: 8,
         businessId: 'BIZ-1008',
         businessLogo: '/assets/images/1.png',
         businessName: 'Holistic Care Center',
@@ -96,7 +96,7 @@ export const revenueData = [
         purchasingDate: '08/09/2025',
     },
     {
-        id: 9,
+        key: 9,
         businessId: 'BIZ-1009',
         businessLogo: '/assets/images/1.png',
         businessName: 'Mind & Body Studio',
@@ -108,7 +108,7 @@ export const revenueData = [
         purchasingDate: '09/15/2025',
     },
     {
-        id: 10,
+        key: 10,
         businessId: 'BIZ-1010',
         businessLogo: '/assets/images/1.png',
         businessName: 'Elite Therapy Center',

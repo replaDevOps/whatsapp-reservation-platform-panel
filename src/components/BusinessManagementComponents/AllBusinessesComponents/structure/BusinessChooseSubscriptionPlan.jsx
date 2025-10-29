@@ -1,12 +1,12 @@
 import { Col, Flex, Row, Tabs, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import { SubscriptionPackagesCard } from './SubscriptionPackagesCard';
+import { BusinessSubscriptionPackagesCard } from './BusinessSubscriptionPackagesCard';
 import { PlanCard } from './PlanCard';
 import { subplanData } from '../../../../data';
 
 const { Text } = Typography;
 
-const ChooseSubscriptionPlan = () => {
+const BusinessChooseSubscriptionPlan = () => {
     const [selectedValue, setSelectedValue] = useState('1');
     const [selectedPlanId, setSelectedPlanId] = useState(null);
     const currentPlanGroup = subplanData?.find((item) => item?.id === selectedValue);
@@ -48,7 +48,7 @@ const ChooseSubscriptionPlan = () => {
                         />
                     </Flex>
 
-                    <SubscriptionPackagesCard
+                    <BusinessSubscriptionPackagesCard
                         selectedvalue={selectedValue}
                         data={planDetails}
                         onSelect={handlePlanSelect}
@@ -63,4 +63,4 @@ const ChooseSubscriptionPlan = () => {
     );
 };
 
-export { ChooseSubscriptionPlan };
+export { BusinessChooseSubscriptionPlan };

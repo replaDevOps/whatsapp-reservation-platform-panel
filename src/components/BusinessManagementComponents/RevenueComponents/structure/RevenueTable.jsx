@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col, Form, Image } from 'antd';
+import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, Image } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, } from '../../../Ui';
 import { revenueColumns, revenueData } from '../../../../data';
