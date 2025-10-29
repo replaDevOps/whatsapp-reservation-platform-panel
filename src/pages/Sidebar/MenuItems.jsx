@@ -50,7 +50,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/customer.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="customer gray icon"
                     fetchPriority="high"
                 />
             )
@@ -64,7 +64,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/booking.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="booking gray icon"
                     fetchPriority="high"
                 />
             )
@@ -78,7 +78,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/revenue.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="revenue gray icon"
                     fetchPriority="high"
                 />
             )
@@ -92,7 +92,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/request.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="request gray icon"
                     fetchPriority="high"
                 />
             )
@@ -106,7 +106,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/staff.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="staff gray icon"
                     fetchPriority="high"
                 />
             )
@@ -123,7 +123,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/subplan.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="subscription plan gray icon"
                     fetchPriority="high"
                 />
             )
@@ -137,7 +137,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/submanage.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="subscription management gray icon"
                     fetchPriority="high"
                 />
             )
@@ -151,7 +151,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/discount.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="discount gray icon"
                     fetchPriority="high"
                 />
             )
@@ -168,7 +168,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/terms.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="terms and condition gray icon"
                     fetchPriority="high"
                 />
             )
@@ -182,7 +182,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/faqs.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="faqs gray icon"
                     fetchPriority="high"
                 />
             )
@@ -196,7 +196,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/privacy.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="privacy policy gray icon"
                     fetchPriority="high"
                 />
             )
@@ -213,7 +213,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/setting.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="setting gray icon"
                     fetchPriority="high"
                 />
             )
@@ -227,7 +227,7 @@ const MenuItems = ({ currentTab }) => {
                 <img
                     src="/assets/icons/side-icon/activitylog.webp"
                     width="20px"
-                    alt="dashboard gray icon"
+                    alt="activity gray icon"
                     fetchPriority="high"
                 />
             )
