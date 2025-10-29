@@ -91,7 +91,7 @@ const RevenueBarChart = () => {
           </Flex>
         </Flex>
         <Title level={4} className='fw-500 text-black m-0'>
-          6820 <span className='text-green fs-13 fw-400'>+9% then last year <img src='/assets/icons/up-ar.png' width={12} alt='up arrow icon' fetchPriority="high" /></span>
+          6820 <span className='text-green fs-13 fw-400'>+9% then last year <img src='/assets/icons/up-ar.webp' width={12} alt='up arrow icon' fetchPriority="high" /></span>
         </Title>
       </Flex>
       

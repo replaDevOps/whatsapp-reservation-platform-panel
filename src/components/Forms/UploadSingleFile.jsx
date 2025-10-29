@@ -3,7 +3,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { Upload, Form, Typography, Flex, Avatar, Image } from 'antd';
 const { Dragger } = Upload;
 
-const UploadSingleFile = ({ multiple = false, name, required, message, form, label, title,onUpload, align = "center", className='upload-d', labelimg='/assets/icons/export.png' }) => {
+const UploadSingleFile = ({ multiple = false, name, required, message, form, label, title,onUpload, align = "center", className='upload-d', labelimg='/assets/icons/export.webp' }) => {
   const [fileList, setFileList] = useState([]);
 
   const handleChange = async (info) => {

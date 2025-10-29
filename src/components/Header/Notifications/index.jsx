@@ -64,7 +64,7 @@ export const Notifications = () => {
                 renderItem={(item, index) => (
                 <List.Item key={index}>
                     <List.Item.Meta
-                        avatar={<Avatar src={`/assets/icons/notify-ic.png`} size={30} />}
+                        avatar={<Avatar src={`/assets/icons/notify-ic.webp`} size={30} />}
                         title={<NavLink to={''} className={'fw-500'}>{item.title}</NavLink>}
                         description={<Flex gap={5} align="center">
                             <Text className="fs-12 text-gray">1 hour ago</Text>
@@ -88,7 +88,7 @@ export const Notifications = () => {
                 <Badge count={9} overflowCount={9} className="">
                     <Button shape='circle' size='large' className='bg-transparent p-0' onClick={()=> setVisible(true)}>
                         <Image 
-                            src='/assets/icons/notify.png' 
+                            src='/assets/icons/notify.webp' 
                             width={'20px'} 
                             preview={false}
                             alt="notification icon" 

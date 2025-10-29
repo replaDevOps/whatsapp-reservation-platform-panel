@@ -58,7 +58,7 @@ const SingleBusinessViewTab = ({setViewItem}) => {
                             <Flex justify='end' gap={10}>
                                 <Button className='btncancel'> 
                                     <Flex align='center' gap={10}>
-                                        <Image src='/assets/icons/export.png' width={20} preview={false} alt='export icons' fetchPriority="high" /> Export Data
+                                        <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> Export Data
                                     </Flex>
                                 </Button>
                                 <Button onClick={()=>setStatusChange(true)} className='btnsave border-0 bg-red text-white fs-13'>

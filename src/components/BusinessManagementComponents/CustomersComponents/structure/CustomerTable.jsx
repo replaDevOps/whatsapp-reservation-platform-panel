@@ -46,7 +46,7 @@ const CustomerTable = () => {
                                     // onChange={(e) => {
                                     //     setSearch(e.target.value);
                                     // }}
-                                    prefix={<img src='/assets/icons/search.png' width={14} alt='search icon' fetchPriority="high" />}
+                                    prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                 />
                             </Col>
@@ -54,7 +54,7 @@ const CustomerTable = () => {
                                 <Flex justify='end' gap={10}>         
                                     <Button className='btncancel'> 
                                         <Flex align='center' gap={10}>
-                                            <Image src='/assets/icons/export.png' width={20} preview={false} alt='export icons' fetchPriority="high" /> Export
+                                            <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> Export
                                         </Flex>
                                     </Button>
                                     <MyDatepicker

@@ -152,20 +152,20 @@ const Sidebar = () => {
             <Flex justify='space-between' align='center' gap={5} className='flex-col-mbl'>
               <Space className='mbl-space'>
                 <Button type='button' className='bg-transparent border-0 p-0' onClick={() => setCollapsed(!collapsed)}>
-                  <Image src='/assets/icons/collapse.png' 
+                  <Image src='/assets/icons/collapse.webp' 
                     width={'25px'} preview={false} 
                     style={{transform: collapsed ? 'rotate(180deg)' : 'rotate(0deg)'}}  
                     alt='collapse icon' fetchPriority="high"
                   />
                 </Button>
                 <SearchInput  
-                  prefix={<img src='/assets/icons/search.png' width={20} />}
+                  prefix={<img src='/assets/icons/search.webp' width={20} />}
                   placeholder={'Search'} alt='search icon' fetchPriority="high"
                 />
               </Space>
               <Flex justify='space-between' align='center' className='w-100 flex-end'>
                 <Button type='button' className='bg-transparent border-0 p-0 d-none' onClick={() => setCollapsed(!collapsed)}>
-                  <Image src='/assets/icons/collapse.png' 
+                  <Image src='/assets/icons/collapse.webp' 
                     width={'25px'} preview={false} 
                     style={{transform: collapsed ? 'rotate(180deg)' : 'rotate(0deg)'}} 
                     alt='collapse icon' fetchPriority="high" 

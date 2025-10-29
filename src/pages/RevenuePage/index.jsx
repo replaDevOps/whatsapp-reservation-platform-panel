@@ -6,13 +6,13 @@ const RevenuePage = () => {
     const cardsData = [
         {
             id: 1,
-            icon:'/assets/icons/rev-icon.png',
+            icon:'/assets/icons/rev-icon.webp',
             title: 'SAR 30,000',
             subtitle: 'Total Revenue',
         },
         {
             id: 2,
-            icon:'/assets/icons/rev-icon.png',
+            icon:'/assets/icons/rev-icon.webp',
             title: 'SAR 10,000',
             subtitle: 'This Month Revenue',
         },

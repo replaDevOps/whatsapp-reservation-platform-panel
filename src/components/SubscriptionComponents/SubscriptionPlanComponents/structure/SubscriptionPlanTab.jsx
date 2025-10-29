@@ -79,7 +79,7 @@ const SubscriptionPlanTab = () => {
                                     }
                                 </Title>
                                 <Button className='btncancel' onClick={()=>setEditItem(singledata)}> 
-                                    <img src='/assets/icons/edit-b.png' width={20} alt='edit icon' /> Edit Subscription Plan
+                                    <img src='/assets/icons/edit-b.webp' width={20} alt='edit icon' /> Edit Subscription Plan
                                 </Button>
                             </Flex>
                         }

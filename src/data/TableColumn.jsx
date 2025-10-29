@@ -111,7 +111,7 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange}) => [
                 trigger={['click']}
             >
                 <Button className="bg-transparent border-0 p-0">
-                    <img src="/assets/icons/dots.png" alt='dots icon' fetchPriority="high" width={16} />
+                    <img src="/assets/icons/dots.webp" alt='dots icon' fetchPriority="high" width={16} />
                 </Button>
             </Dropdown>
         ),
@@ -140,7 +140,7 @@ const bookingColumn = [
             return (
                 <Flex align="center" gap={5}>
                     {customer?.name }
-                    <img src="/assets/icons/cr.png" alt="circle" width={4} height={4} />
+                    <img src="/assets/icons/cr.webp" alt="circle" width={4} height={4} />
                     { `+996`+customer?.phone}
                 </Flex>
             )
@@ -434,7 +434,7 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew 
                 trigger={['click']}
             >
                 <Button className="bg-transparent border-0 p-0">
-                    <img src="/assets/icons/dots.png" alt='dots icon' fetchPriority="high" width={16} />
+                    <img src="/assets/icons/dots.webp" alt='dots icon' fetchPriority="high" width={16} />
                 </Button>
             </Dropdown>
         ),
@@ -519,7 +519,7 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem }) => [
                 trigger={['click']}
             >
                 <Button disabled={row?.status === 'Expire' && true} className="bg-transparent border-0 p-0">
-                    <img src={row?.status === 'Expire'? "/assets/icons/disable-dot.webp":"/assets/icons/dots.png"} alt='dots icon' fetchPriority="high" width={16} />
+                    <img src={row?.status === 'Expire'? "/assets/icons/disable-dot.webp":"/assets/icons/dots.webp"} alt='dots icon' fetchPriority="high" width={16} />
                 </Button>
             </Dropdown>
         ),
@@ -572,7 +572,7 @@ const faqColumns = ({ setVisible, setEditItem, setDeleteItem }) => [
                 trigger={['click']}
             >
                 <Button className="bg-transparent border-0 p-0">
-                    <img src={"/assets/icons/dots.png"} alt='dots icon' fetchPriority="high" width={16} />
+                    <img src={"/assets/icons/dots.webp"} alt='dots icon' fetchPriority="high" width={16} />
                 </Button>
             </Dropdown>
         ),
@@ -707,7 +707,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate }) => [
                 trigger={['click']}
             >
                 <Button className="bg-transparent border-0 p-0">
-                    <img src="/assets/icons/dots.png" alt='dots icon' fetchPriority="high" width={16} />
+                    <img src="/assets/icons/dots.webp" alt='dots icon' fetchPriority="high" width={16} />
                 </Button>
             </Dropdown>
         ),
@@ -759,7 +759,7 @@ const singleviewColumns = ({ setViewItem }) => [
                 trigger={['click']}
             >
                 <Button className="bg-transparent border-0 p-0">
-                    <img src="/assets/icons/dots.png" alt='dots icon' fetchPriority="high" width={16} />
+                    <img src="/assets/icons/dots.webp" alt='dots icon' fetchPriority="high" width={16} />
                 </Button>
             </Dropdown>
         ),

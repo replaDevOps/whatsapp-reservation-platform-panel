@@ -1156,19 +1156,6 @@
     outline: none !important;
 }
 
-.bg-whats{
-    background-image: url('../assets/icons/bg-dot.svg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-color: var(--f5);
-}
-
-.bg-sider-whats{
-    /* width: 23%; */
-    padding: 18px;
-    border-radius: 8px;
-    height: 100%;
-}
 
 .drodpown-h{
     opacity: 0;

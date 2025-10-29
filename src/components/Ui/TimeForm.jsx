@@ -90,7 +90,7 @@ const TimeForm = ({ dayKey, title, form, editactive }) => {
                                         :
                                         <Col span={24}>
                                             <Flex className="offday" gap={5} align="center">
-                                                <img src="/assets/icons/off.png" width={20} alt='not allow icon' fetchPriority="high" />
+                                                <img src="/assets/icons/off.webp" width={20} alt='not allow icon' fetchPriority="high" />
                                                 <Text italic className="text-gray">Day Off</Text>
                                             </Flex>
                                         </Col>
