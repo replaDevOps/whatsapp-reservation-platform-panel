@@ -7,11 +7,13 @@ import { MyDatepicker, SearchInput } from '../../../Forms';
 import { subscriptionItems, typeamountItem, typeitemsCust } from '../../../../shared';
 import moment from 'moment';
 import { AddEditDiscount } from '../modal';
+import { useTranslation } from 'react-i18next';
 
 
 const DiscountTable = ({visible,setVisible}) => {
 
     const [form] = Form.useForm();
+    const {t,i18n} = useTranslation();
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
@@ -48,7 +50,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                 <Col span={24} md={24} lg={12}>
                                     <SearchInput
                                         name='name'
-                                        placeholder='Search by Discount code'
+                                        placeholder={t('Search by Discount code')}
                                         // value={search}
                                         // onChange={(e) => {
                                         //     setSearch(e.target.value);
@@ -63,7 +65,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                             menu={{
                                                 items: typeamountItem.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handleTypeClick
                                             }}
@@ -71,7 +73,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {typeamountItem.find((i) => i.key === selectedType)?.label || "Type"}
+                                                    {t(typeamountItem.find((i) => i.key === selectedType)?.label || "Type")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -80,7 +82,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                             menu={{
                                                 items: typeitemsCust.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handleGroupClick
                                             }}
@@ -88,7 +90,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {typeitemsCust.find((i) => i.key === selectedgroup)?.label || "Group"}
+                                                    {t(typeitemsCust.find((i) => i.key === selectedgroup)?.label || "Group")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -97,7 +99,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                             menu={{
                                                 items: subscriptionItems.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handleActionClick
                                             }}
@@ -105,7 +107,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {subscriptionItems.find((i) => i.key === selectedAction)?.label || "Subscription Plan"}
+                                                    {t(subscriptionItems.find((i) => i.key === selectedAction)?.label || "Subscription Plan")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -120,7 +122,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder="Select Year"
+                                    placeholder={[t("Start Year"),t("End Year")]}
                                     value={selectedYear}
                                     onChange={(year) => setSelectedYear(year)}
                                 />
@@ -131,9 +133,9 @@ const DiscountTable = ({visible,setVisible}) => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={discountColumns({setVisible,setEditItem,setExpireItem})}
+                        columns={discountColumns({setVisible,setEditItem,setExpireItem,t,i18n})}
                         dataSource={discountData}
-                        className='pagination table-cs table'
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1600 }}
                         rowHoverable={false}

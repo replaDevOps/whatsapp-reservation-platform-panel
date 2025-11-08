@@ -21,11 +21,14 @@ import { PrivacyPolicyPage } from '../PrivacyPolicyPage';
 import { SettingsPage } from '../SettingsPage';
 import { ActivityLogPage } from '../ActivityLogPage';
 import { AllBusinessPage } from '../AllBusinessPage';
+import { LanguageChange } from './LanguageChange';
+import { useTranslation } from 'react-i18next';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography
 const Sidebar = () => {
   let navigate = useNavigate();
+  const {t} = useTranslation()
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [currentTab, setCurrentTab] = useState('1');
@@ -160,7 +163,7 @@ const Sidebar = () => {
                 </Button>
                 <SearchInput  
                   prefix={<img src='/assets/icons/search.webp' width={20} />}
-                  placeholder={'Search'} alt='search icon' fetchPriority="high"
+                  placeholder={t("Search")} alt='search icon' fetchPriority="high"
                 />
               </Space>
               <Flex justify='space-between' align='center' className='w-100 flex-end'>
@@ -171,10 +174,11 @@ const Sidebar = () => {
                     alt='collapse icon' fetchPriority="high" 
                   />
                 </Button>  
-                <Space size={15} align='center' className='right'> 
+                <Flex gap={15} align='center' justify='end'> 
+                  <LanguageChange />
                   <Notifications />
                   <UserDropdown />
-                </Space>
+                </Flex>
               </Flex>
             </Flex>
           </div>

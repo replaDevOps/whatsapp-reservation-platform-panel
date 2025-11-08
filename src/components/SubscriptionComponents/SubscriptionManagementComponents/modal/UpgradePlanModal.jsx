@@ -4,12 +4,13 @@ import { Button, Col, Divider, Flex, Form, Modal, Row, Typography } from 'antd'
 import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
 import { periodOp, subscriptionplanOp, typeOp } from '../../../../shared'
 import moment from 'moment'
+import { useTranslation } from 'react-i18next'
 
 const { Title, Text } = Typography
 const UpgradePlanModal = ({visible,onClose,edititem}) => {
 
     const [form] = Form.useForm();
-
+    const {t} = useTranslation()
     useEffect(()=>{
         if(visible && edititem){
             form.setFieldsValue({
@@ -36,10 +37,10 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
             footer={
                 <Flex justify='end' gap={5}>
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
-                        Cancel
+                        {t("Cancel")}
                     </Button>
                     <Button type="primary" className='btnsave border0 text-white brand-bg'>
-                        Confirm & Save
+                        {t("Confirm & Save")}
                     </Button>
                 </Flex>
             }
@@ -48,14 +49,14 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
                 <Flex vertical className='mb-2'>
                     <Flex justify='space-between' gap={6}>
                         <Title level={5} className='m-0'>
-                            Change Subscription Plan
+                            {t("Change Subscription Plan")}
                         </Title>
                         <Button type='button' onClick={onClose} className='p-0 border-0 bg-transparent'>
                             <CloseOutlined className='fs-18' />
                         </Button>
                     </Flex> 
                     <Text className='fs-13 text-gray'>
-                        Assign a new Subscription Plan to a business or switch from its current plan.
+                        {t("Assign a new Subscription Plan to a business or switch from its current plan.")}
                     </Text>
                 </Flex>
                 <Form layout="vertical" 
@@ -66,14 +67,14 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
                     <Row gutter={16}>
                         <Col span={24}>
                             <MyInput 
-                                label="Business Name" 
+                                label={t("Business Name")} 
                                 name="businessName" 
                                 disabled={edititem}
                             />
                         </Col>
                         <Col span={24}>
                             <MySelect 
-                                label="Business Type" 
+                                label={t("Business Type")} 
                                 name="type" 
                                 options={typeOp}
                                 disabled={edititem}
@@ -81,45 +82,45 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="Business Email" 
+                                label={t("Business Email")} 
                                 name="email" 
                                 disabled={edititem}
                             />
                         </Col>
                         <Col span={24}>
                             <MySelect 
-                                label="Subscription Plan" 
+                                label={t("Subscription Plan")} 
                                 name="subscriptionPlan" 
                                 required
-                                message='Choose subscription plan'
+                                message={t('Choose subscription plan')}
                                 options={subscriptionplanOp}
                             />
                         </Col>
                         <Col span={24}>
                             <MySelect 
-                                label="Period" 
+                                label={t("Period")} 
                                 name="period" 
                                 required
-                                message='Choose period'
+                                message={t('Choose period')}
                                 options={periodOp}
                             />
                         </Col>
                         <Col span={24}>
                             <MyDatepicker
                                 datePicker
-                                label='Start Date'
+                                label={t('Start Date')}
                                 name='startDate'
                                 required
-                                message={'Please select start date'}
+                                message={t('Please select start date')}
                                 placeholder='Select date'
                             />
                         </Col>
                         <Col span={24}>
                             <MyDatepicker
                                 datePicker
-                                label='Expiry Date'
+                                label={t('Expiry Date')}
                                 name='expDate'
-                                placeholder='Select date'
+                                placeholder={t('Select date')}
                                 disabled={edititem}
                             />
                         </Col>

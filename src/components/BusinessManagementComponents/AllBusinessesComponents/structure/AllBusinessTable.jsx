@@ -8,11 +8,13 @@ import moment from 'moment';
 import { allbusinessData } from '../../../../data';
 import { typeitemsCust } from '../../../../shared';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 
 const AllBusinessTable = () => {
 
     const [form] = Form.useForm();
+    const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
@@ -25,10 +27,10 @@ const AllBusinessTable = () => {
 
     const statusItem = [
         {
-            key: '1', label: 'Active'
+            key: '1', label: t("Active")
         },
         {
-            key: '2', label: 'Deactive'
+            key: '2', label: t("Deactive")
         },
     ]
 
@@ -55,7 +57,7 @@ const AllBusinessTable = () => {
                                 <Col span={24} md={24} lg={12}>
                                     <SearchInput
                                         name='name'
-                                        placeholder='Search by Business Name / Customer Name'
+                                        placeholder={t("Search by Business Name / Customer Name")}
                                         // value={search}
                                         // onChange={(e) => {
                                         //     setSearch(e.target.value);
@@ -70,7 +72,7 @@ const AllBusinessTable = () => {
                                             menu={{
                                                 items: typeitemsCust.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handleActionClick
                                             }}
@@ -78,7 +80,7 @@ const AllBusinessTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {typeitemsCust.find((i) => i.key === selectedAction)?.label || "Type"}
+                                                    {t(typeitemsCust.find((i) => i.key === selectedAction)?.label || "Type")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -87,7 +89,7 @@ const AllBusinessTable = () => {
                                             menu={{
                                                 items: statusItem.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handleStatusClick
                                             }}
@@ -95,7 +97,7 @@ const AllBusinessTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {statusItem.find((i) => i.key === selectedstatus)?.label || "Status"}
+                                                    {t(statusItem.find((i) => i.key === selectedstatus)?.label || "Status")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -110,7 +112,7 @@ const AllBusinessTable = () => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder="Select Year"
+                                    placeholder={[t("Start Year"),t("End Year")]}
                                     value={selectedYear}
                                     onChange={(year) => setSelectedYear(year)}
                                 />
@@ -121,9 +123,9 @@ const AllBusinessTable = () => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={allbusinessColumns({setDeleteItem,setStatusChange,navigate})}
+                        columns={allbusinessColumns({setDeleteItem,setStatusChange,navigate,t,i18n})}
                         dataSource={allbusinessData}
-                        className='pagination table-cs table'
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1300 }}
                         rowHoverable={false}

@@ -6,11 +6,13 @@ import { revenueColumns, revenueData } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
 import { subscriptionItems, typeItems } from '../../../../shared';
+import { useTranslation } from 'react-i18next';
 
 
 const RevenueTable = () => {
 
     const [form] = Form.useForm();
+    const {t,i18n}=useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
@@ -55,7 +57,7 @@ const RevenueTable = () => {
                                             menu={{
                                                 items: typeItems.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handleTypeClick
                                             }}
@@ -63,7 +65,7 @@ const RevenueTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {typeItems.find((i) => i.key === selectedType)?.label || "Type"}
+                                                    {t(typeItems.find((i) => i.key === selectedType)?.label || "Type")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -72,7 +74,7 @@ const RevenueTable = () => {
                                             menu={{
                                                 items: subscriptionItems.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handleActionClick
                                             }}
@@ -80,7 +82,7 @@ const RevenueTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {subscriptionItems.find((i) => i.key === selectedAction)?.label || "Subscription Plan"}
+                                                    {t(subscriptionItems.find((i) => i.key === selectedAction)?.label || "Subscription Plan")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -93,14 +95,14 @@ const RevenueTable = () => {
                             <Flex justify='end' gap={10}>
                                 <Button className='btncancel'> 
                                     <Flex align='center' gap={10}>
-                                        <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> Export
+                                        <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export")}
                                     </Flex>
                                 </Button>
                                 <MyDatepicker
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder="Select Year"
+                                    placeholder={[t("Start Year"),t("End Year")]}
                                     value={selectedYear}
                                     onChange={(year) => setSelectedYear(year)}
                                 />
@@ -111,9 +113,9 @@ const RevenueTable = () => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={revenueColumns}
+                        columns={revenueColumns({t,i18n})}
                         dataSource={revenueData}
-                        className='pagination table-cs table'
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1300 }}
                         rowHoverable={false}

@@ -5,10 +5,12 @@ import { CustomPagination } from '../../../Ui';
 import { discountactivityColumn, discountactivityData } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 const DiscountActivityLog = () => {
 
     const [form] = Form.useForm();
+    const {t,i18n} = useTranslation();
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
@@ -51,7 +53,7 @@ const DiscountActivityLog = () => {
                                 <Col span={24} md={24} lg={12}>
                                     <SearchInput
                                         name='name'
-                                        placeholder='Search by Customer Name'
+                                        placeholder={t('Search by Customer Name')}
                                         // value={search}
                                         // onChange={(e) => {
                                         //     setSearch(e.target.value);
@@ -74,7 +76,7 @@ const DiscountActivityLog = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {discountItem.find((i) => i.key === selecteddiscount)?.label || "Discount Code"}
+                                                    {t(discountItem.find((i) => i.key === selecteddiscount)?.label || "Discount Code")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -83,7 +85,7 @@ const DiscountActivityLog = () => {
                                             menu={{
                                                 items: groupItem.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handleActionClick
                                             }}
@@ -91,7 +93,7 @@ const DiscountActivityLog = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {groupItem.find((i) => i.key === selectedAction)?.label || "Group"}
+                                                    {t(groupItem.find((i) => i.key === selectedAction)?.label || "Group")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -104,14 +106,14 @@ const DiscountActivityLog = () => {
                             <Flex justify='end' gap={10}>
                                 <Button className='btncancel'> 
                                     <Flex align='center' gap={10}>
-                                        <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> Export Data
+                                        <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export Data")}
                                     </Flex>
                                 </Button>
                                 <MyDatepicker
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder="Select Year"
+                                    placeholder={[t("Start Year"),t("End Year")]}
                                     value={selectedYear}
                                     onChange={(year) => setSelectedYear(year)}
                                 />
@@ -123,9 +125,9 @@ const DiscountActivityLog = () => {
             <Flex vertical gap={20}>
                 <Table
                     size='large'
-                    columns={discountactivityColumn}
+                    columns={discountactivityColumn({t,i18n})}
                     dataSource={discountactivityData}
-                    className='pagination table-cs table'
+                    className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                     showSorterTooltip={false}
                     scroll={{ x: 1200 }}
                     rowHoverable={false}

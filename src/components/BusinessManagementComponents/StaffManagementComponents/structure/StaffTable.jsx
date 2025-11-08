@@ -7,12 +7,14 @@ import { stafftableColumn, stafftableData } from '../../../../data';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '../../../Forms';
 import { statusitemsCust } from '../../../../shared';
+import { useTranslation } from 'react-i18next';
 
 const { Text } = Typography;
 
 const StaffTable = () => {
 
     const [form] = Form.useForm();
+    const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [selectedRole, setselectedRole] = useState('');
@@ -22,9 +24,9 @@ const StaffTable = () => {
     const [ deleteitem, setDeleteItem ] = useState(false)
 
     const roleItems = [
-        { key: 'superadmin', label: 'Super Admin' },
-        { key: 'technicaladmin', label: 'Technical Admin' },
-        { key: 'demoadmin', label: 'Demo Admin' },
+        { key: 'superadmin', label: t("Super Admin") },
+        { key: 'technicaladmin', label: t("Technical Admin") },
+        { key: 'demoadmin', label: t("Demo Admin") },
     ];
 
 
@@ -47,11 +49,11 @@ const StaffTable = () => {
                 <Flex vertical gap={10} className='mb-2'>
                     <Flex align='center' justify='space-between' gap={10}>
                         <Flex vertical>
-                            <ModuleTopHeading level={4} name='Staffs' />
-                            <Text className='text-gray fs-13'>Manage all the staffs in your system</Text>
+                            <ModuleTopHeading level={4} name={t("Staffs")} />
+                            <Text className='text-gray fs-13'>{t("Manage all the staffs in your system")}</Text>
                         </Flex>
                         <Button className='btncancel' onClick={()=>navigate('/addstaff')}> 
-                          <PlusOutlined /> Add Staff
+                          <PlusOutlined /> {t("Add Staff")}
                         </Button>
                     </Flex>
                     <Form layout="vertical" form={form}>
@@ -59,7 +61,7 @@ const StaffTable = () => {
                             <Col span={24} md={24} lg={7}>
                                 <SearchInput
                                     name='name'
-                                    placeholder='Search by Staff Name'
+                                    placeholder={t("Search by Staff Name")}
                                     // value={search}
                                     // onChange={(e) => {
                                     //     setSearch(e.target.value);
@@ -74,7 +76,7 @@ const StaffTable = () => {
                                         menu={{
                                             items: roleItems.map((item) => ({
                                                 key: String(item.key),
-                                                label: item.label
+                                                label: t(item.label)
                                             })),
                                             onClick: handleRoleClick
                                         }}
@@ -82,7 +84,7 @@ const StaffTable = () => {
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {roleItems.find((i) => i.key === selectedRole)?.label || "Role"}
+                                                {t(roleItems.find((i) => i.key === selectedRole)?.label || "Role")}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>
@@ -91,7 +93,7 @@ const StaffTable = () => {
                                         menu={{
                                             items: statusitemsCust.map((item) => ({
                                                 key: String(item.key),
-                                                label: item.label
+                                                label: t(item.label)
                                             })),
                                             onClick: handleStatusClick
                                         }}
@@ -99,7 +101,7 @@ const StaffTable = () => {
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {statusitemsCust.find((i) => i.key === selectedStatus)?.label || "Status"}
+                                                {t(statusitemsCust.find((i) => i.key === selectedStatus)?.label || "Status")}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>
@@ -112,9 +114,9 @@ const StaffTable = () => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={stafftableColumn({navigate,setStatusChange, setDeleteItem})}
+                        columns={stafftableColumn({navigate,setStatusChange, setDeleteItem,t,i18n})}
                         dataSource={stafftableData}
-                        className='pagination table-cs table'
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1200 }}
                         rowHoverable={false}

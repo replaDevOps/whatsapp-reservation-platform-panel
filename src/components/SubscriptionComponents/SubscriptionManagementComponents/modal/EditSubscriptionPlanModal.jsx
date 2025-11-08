@@ -2,9 +2,12 @@ import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Modal, Row, Typography } from 'antd'
 import { IncludeFeatureField } from '../../SubscriptionPlanComponents'
+import { useTranslation } from 'react-i18next'
 
 const { Title, Text } = Typography
 const EditSubscriptionPlanModal = ({visible,onClose,edititem}) => {
+
+    const {t} = useTranslation()
     useEffect(()=>{
         if(visible && edititem){
             console.log(edititem)
@@ -23,10 +26,10 @@ const EditSubscriptionPlanModal = ({visible,onClose,edititem}) => {
             footer={
                 <Flex justify='end' gap={5}>
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
-                        Cancel
+                        {t("Cancel")}
                     </Button>
                     <Button type="primary" className='btnsave border0 text-white brand-bg'>
-                        Update
+                        {t("Update")}
                     </Button>
                 </Flex>
             }
@@ -35,14 +38,14 @@ const EditSubscriptionPlanModal = ({visible,onClose,edititem}) => {
                 <Flex vertical className='mb-2'>
                     <Flex justify='space-between' gap={6}>
                         <Title level={5} className='m-0'>
-                            Edit Subscription Plan
+                            {t("Edit Subscription Plan")}
                         </Title>
                         <Button type='button' onClick={onClose} className='p-0 border-0 bg-transparent'>
                             <CloseOutlined className='fs-18' />
                         </Button>
                     </Flex> 
                     <Text className='fs-13 text-gray'>
-                        Edit client Subscription Plan.
+                        {t("Edit client Subscription Plan.")}
                     </Text>
                 </Flex>
                 <Row gutter={16}>

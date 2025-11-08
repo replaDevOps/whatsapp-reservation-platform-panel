@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { Button, Card, Col, Flex, Form, Row, Typography } from 'antd'
 import { EditGeneralSettings, MyInput } from '../../../../components'
+import { useTranslation } from 'react-i18next'
+import { toArabicDigits } from '../../../../shared'
 
 const { Title } = Typography
 const GeneralSetting = () => {
 
     const [form] = Form.useForm();
+    const {t,i18n} = useTranslation()
+    const isArabic = i18n?.language === 'ar'
     const [ visible, setVisible ] = useState(false)
     const [ edititem, setEditItem ] = useState(null)
 
@@ -14,9 +18,9 @@ const GeneralSetting = () => {
             <Card className='card-bg card-cs radius-12 border-gray'>
                 <Flex gap={10} vertical>
                     <Flex gap={10} justify='space-between' align='center'>
-                        <Title level={5} className="fw-500 m-0">General Settings</Title>
+                        <Title level={5} className="fw-500 m-0">{t("General Settings")}</Title>
                         <Button className='btncancel' onClick={()=>{setVisible(true);setEditItem(1)}}> 
-                            Edit
+                            {t("Edit")}
                         </Button>
                     </Flex>
                     <Form layout="vertical" 
@@ -27,70 +31,70 @@ const GeneralSetting = () => {
                         <Row gutter={16}>
                             <Col span={24} md={12}>
                                 <MyInput 
-                                    label="First Name" 
+                                    label={t("First Name")} 
                                     name="firstName" 
-                                    placeholder="Enter first name"
+                                    placeholder={t("Enter first name")}
                                     disabled 
                                 />
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput 
-                                    label="Last Name" 
+                                    label={t("Last Name")} 
                                     name="lastName" 
-                                    placeholder="Enter last name" 
+                                    placeholder={t("Enter last name")} 
                                     disabled
                                 />
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput
                                     type='number' 
-                                    label="Phone Number" 
+                                    label={t("Phone Number")} 
                                     name="phoneNo" 
-                                    placeholder="Enter phone number" 
-                                    addonBefore='+966 '
+                                    placeholder={t("Enter phone number")} 
+                                    addonBefore={ isArabic ? `${toArabicDigits(966)}+`: `+${966}`}
                                     disabled
                                 />
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput 
-                                    label="Email Address" 
+                                    label={t("Email Address")} 
                                     name="email" 
-                                    placeholder="Enter email address" 
+                                    placeholder={t("Enter email address")} 
                                     disabled
                                 />
                             </Col>
                             <Col span={24}>
-                                <Title level={5} className="fw-500 my-3">Social Links</Title>
+                                <Title level={5} className="fw-500 my-3">{t("Social Links")}</Title>
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput 
-                                    label="Facebook" 
+                                    label={t("Facebook")} 
                                     name="facebook" 
-                                    placeholder="Enter facebook link" 
+                                    placeholder={t("Enter facebook link")} 
                                     disabled
                                 />
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput 
-                                    label="Instagram" 
+                                    label={t("Instagram")} 
                                     name="instagram" 
-                                    placeholder="Enter instagram link" 
+                                    placeholder={t("Enter instagram link")} 
                                     disabled
                                 />
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput 
-                                    label="X (twitter)" 
+                                    label={t("X (twitter)")} 
                                     name="twitter" 
-                                    placeholder="Enter X (twitter) link" 
+                                    placeholder={t("Enter X (twitter) link")} 
                                     disabled
                                 />
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput 
-                                    label="WhatsApp" 
+                                    label={t("WhatsApp")} 
                                     name="whatsapp" 
-                                    placeholder="Enter whatsapp link" 
+                                    placeholder={t("Enter whatsapp link")} 
                                     disabled
                                 />
                             </Col>

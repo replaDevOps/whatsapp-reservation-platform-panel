@@ -1,8 +1,12 @@
 import { Flex } from 'antd'
 import { BreadCrumbCard, StatisticsCommonCards, SubscriptionManageTable, TitleCard } from '../../components'
+import { useTranslation } from 'react-i18next'
+import { subscriptionTitle } from '../../shared'
 
 const SubscriptionManagementPage = () => {
 
+    const {t} = useTranslation()
+    const title = subscriptionTitle({t})
     const cardsData = [
         {
             id: 1,
@@ -33,13 +37,13 @@ const SubscriptionManagementPage = () => {
         <Flex vertical gap={10}>
             <BreadCrumbCard 
                 items={[
-                    { title: 'Subscription Plan', },
-                    { title: 'Subscription Management' },
+                    { title: title },
+                    { title: t("Subscription Management") },
                 ]}
             />
             <TitleCard 
-                title={'Subscription Management'}
-                subtitle={'Manage all the subscription in your system'}
+                title={t('Subscription Management')}
+                subtitle={t('Manage all the subscription in your system')}
             />
             <StatisticsCommonCards 
                 data={cardsData}

@@ -7,12 +7,14 @@ import { customerColumn, customertableData } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import { AddCustomerModal } from '../modal';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 const { Text } = Typography;
 
 const CustomerTable = () => {
 
     const [form] = Form.useForm();
+    const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [ visible, setVisible ] = useState(false)
@@ -29,11 +31,11 @@ const CustomerTable = () => {
                 <Flex vertical gap={10} className='mb-2'>
                     <Flex justify='space-between' align='center' gap={10}>
                         <Flex vertical>
-                            <ModuleTopHeading level={4} name='Customers' />
-                            <Text className='text-gray fs-13'>Manage all the Customers in your system</Text>
+                            <ModuleTopHeading level={4} name={t("Customers")} />
+                            <Text className='text-gray fs-13'>{t("Manage all the Customers in your system")}</Text>
                         </Flex>
                         <Button className='btncancel' onClick={()=>{setVisible(true)}}> 
-                          <PlusOutlined /> Add Customer
+                          <PlusOutlined /> {t("Add Customer")}
                         </Button>
                     </Flex>
                     <Form layout="vertical" form={form}>
@@ -41,7 +43,7 @@ const CustomerTable = () => {
                             <Col span={24} md={24} lg={7}>
                                 <SearchInput
                                     name='name'
-                                    placeholder='Search by Customer Name'
+                                    placeholder={t("Search by Customer Name")}
                                     // value={search}
                                     // onChange={(e) => {
                                     //     setSearch(e.target.value);
@@ -54,14 +56,14 @@ const CustomerTable = () => {
                                 <Flex justify='end' gap={10}>         
                                     <Button className='btncancel'> 
                                         <Flex align='center' gap={10}>
-                                            <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> Export
+                                            <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export")}
                                         </Flex>
                                     </Button>
                                     <MyDatepicker
                                         withoutForm
                                         rangePicker
                                         className="datepicker-cs"
-                                        placeholder="Select Year"
+                                        placeholder={[t("Start Year"),t("End Year")]}
                                         value={selectedYear}
                                         onChange={(year) => setSelectedYear(year)}
                                     />
@@ -73,9 +75,9 @@ const CustomerTable = () => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={customerColumn}
+                        columns={customerColumn({t,i18n})}
                         dataSource={customertableData}
-                        className='pagination table-cs table'
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1000 }}
                         rowHoverable={false}

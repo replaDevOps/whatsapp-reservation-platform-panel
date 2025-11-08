@@ -1,12 +1,14 @@
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Divider, Flex, Modal, Switch, Typography } from 'antd'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 
 const { Title, Text } = Typography
 const MaintenanceModal = ({visible,onClose,initialChecked}) => {
 
     const [localChecked, setLocalChecked] = useState(initialChecked)
+    const {t} = useTranslation()
     const handleOk = () => {
         onClose(localChecked)
     }
@@ -24,10 +26,10 @@ const MaintenanceModal = ({visible,onClose,initialChecked}) => {
             footer={
                 <Flex justify='end' gap={5}>
                     <Button type='button' className='btncancel text-black border-gray' onClick={handleCancel}>
-                        Cancel
+                        {t("Cancel")}
                     </Button>
                     <Button type="primary" className='btnsave border0 text-white brand-bg' onClick={handleOk}>
-                        Save
+                        {t("Save")}
                     </Button>
                 </Flex>
             }
@@ -35,7 +37,7 @@ const MaintenanceModal = ({visible,onClose,initialChecked}) => {
             <Flex vertical gap={10}>
                 <Flex justify='space-between' gap={6}>
                     <Title level={5} className='m-0'>
-                        Language
+                        {t("Language")}
                     </Title>
                     <Button type='button' onClick={onClose} className='p-0 border-0 bg-transparent'>
                         <CloseOutlined className='fs-18' />
@@ -43,9 +45,9 @@ const MaintenanceModal = ({visible,onClose,initialChecked}) => {
                 </Flex> 
                 <Flex justify='space-between' align='flex-start'>
                     <Flex vertical>
-                        <Text strong>Maintenance Mode</Text>
+                        <Text strong>{t("Maintenance Mode")}</Text>
                         <Text className='fs-13 text-gray'>
-                            Enable or disable maintenance mode for your application.
+                            {t("Enable or disable maintenance mode for your application.")}
                         </Text>
                     </Flex>
                     <Switch

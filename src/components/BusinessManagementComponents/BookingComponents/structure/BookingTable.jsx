@@ -7,11 +7,13 @@ import { bookingColumn, bookingData } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
 import { statusItem } from '../../../../shared';
+import { useTranslation } from 'react-i18next';
 
 const { Text } = Typography;
 const BookingTable = () => {
 
     const [form] = Form.useForm();
+    const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [selectedstatus, setselectedStatus] = useState('');
@@ -55,15 +57,15 @@ const BookingTable = () => {
                 <Flex vertical gap={15} className='mb-2'>
                     <Flex wrap justify='space-between' align='center' gap={10}>
                         <Flex vertical>
-                            <ModuleTopHeading level={4} name='Bookings' />
-                            <Text className='text-gray fs-13'>See all the Bookings in your system</Text>
+                            <ModuleTopHeading level={4} name={t("Bookings")} />
+                            <Text className='text-gray fs-13'>{t("See all the Bookings in your system")}</Text>
                         </Flex>
                         <Flex justify='end' gap={10}>
                             <MyDatepicker
                                 withoutForm
                                 rangePicker
                                 className="datepicker-cs"
-                                placeholder="Select Year"
+                                placeholder={[t("Start Year"),t("End Year")]}
                                 value={selectedYear}
                                 onChange={(year) => setSelectedYear(year)}
                             />
@@ -74,7 +76,7 @@ const BookingTable = () => {
                             <Col span={24} md={24} lg={8} xl={8}>
                                 <SearchInput
                                     name='name'
-                                    placeholder='Search by Booking ID'
+                                    placeholder={t("Search by Booking ID")}
                                     // value={search}
                                     // onChange={(e) => {
                                     //     setSearch(e.target.value);
@@ -97,7 +99,7 @@ const BookingTable = () => {
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {businessItems.find((i) => i.key === selectedBusiness)?.label || "Business Name"}
+                                                {t(businessItems.find((i) => i.key === selectedBusiness)?.label || "Business Name")}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>
@@ -114,7 +116,7 @@ const BookingTable = () => {
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {branchItems.find((i) => i.key === selectedbrnach)?.label || "Branch Name"}
+                                                {t(branchItems.find((i) => i.key === selectedbrnach)?.label || "Branch Name")}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>
@@ -123,7 +125,7 @@ const BookingTable = () => {
                                         menu={{
                                             items: statusItem.map((item) => ({
                                                 key: String(item.key),
-                                                label: item.label
+                                                label: t(item.label)
                                             })),
                                             onClick: handleStatusClick
                                         }}
@@ -131,7 +133,7 @@ const BookingTable = () => {
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {statusItem.find((i) => i.key === selectedstatus)?.label || "Status"}
+                                                {t(statusItem.find((i) => i.key === selectedstatus)?.label || "Status")}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>
@@ -145,9 +147,9 @@ const BookingTable = () => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={bookingColumn}
+                        columns={bookingColumn({t,i18n})}
                         dataSource={bookingData}
-                        className='pagination table-cs table'
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1400 }}
                         rowHoverable={false}

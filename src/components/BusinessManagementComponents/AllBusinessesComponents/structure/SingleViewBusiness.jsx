@@ -1,14 +1,18 @@
-import { ArrowLeftOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
 import { Avatar, Button, Card, Col, Flex, Image, Row, Tag, Typography } from 'antd'
 import { BreadCrumbCard, ModuleTopHeading, SingleBusinessViewTable, StatisticsCommonCards, SingleBusinessViewTab } from '../../../../components'
 import { useNavigate, useParams } from 'react-router-dom'
 import { allbusinessData } from '../../../../data'
 import { useState } from 'react'
+import { BusinessTitle } from '../../../../shared'
+import { useTranslation } from 'react-i18next'
 
 const { Text, Title } = Typography
 const SingleViewBusiness = () => {
 
     const navigate = useNavigate()
+    const {t,i18n} = useTranslation()
+    const title = BusinessTitle({t})
     const {id} = useParams()
     const [ viewitem, setViewItem ] = useState(false)
     const singleview = allbusinessData?.find((items)=>items?.key === Number(id))
@@ -68,8 +72,8 @@ const SingleViewBusiness = () => {
             <Flex vertical gap={10}>
                 <BreadCrumbCard 
                     items={[
-                        { title: 'Business Management', },
-                        { title: 'All Businesses' },
+                        { title: title },
+                        { title: t("All Businesses") },
                     ]}
                 />
                 <Card className='card-bg card-cs radius-12 border-gray'>
@@ -78,12 +82,12 @@ const SingleViewBusiness = () => {
                             <Col span={24} lg={{span: 12}}>
                                 <Flex gap={10} align="center" className='mb-2'>
                                     <Button className="border-0 p-0 bg-transparent" onClick={() => navigate("/allbusiness")}>
-                                        <ArrowLeftOutlined />
+                                        {i18n?.language === 'ar' ? <ArrowRightOutlined />:<ArrowLeftOutlined />}
                                     </Button>
                                     <Avatar src={singleview?.businessLogo} size={40}  />
                                     <Flex gap={10} align="center">
                                         <ModuleTopHeading level={4} name={singleview?.businessName} />
-                                        <Tag className='px-3 py-1 radius-20'>{singleview?.type}</Tag>
+                                        <Tag className='px-3 py-1 radius-20'>{t(singleview?.type)}</Tag>
                                     </Flex>
                                 </Flex>
                                 <Flex gap={15} align='center' wrap className='ml-20'>
@@ -103,16 +107,16 @@ const SingleViewBusiness = () => {
                                         <Flex align='center' gap={2}>
                                             <Title level={5} className='m-0'>
                                                 {
-                                                    singleview?.subscriptionPlan
+                                                    t(singleview?.subscriptionPlan
                                                     ?.replace(/([a-z])([A-Z])/g, '$1 $2')
                                                     ?.replace(/([a-z]+)(plan)$/i, '$1 Plan')
-                                                    ?.replace(/^./, (str) => str.toUpperCase())
+                                                    ?.replace(/^./, (str) => str.toUpperCase()))
                                                 } 
                                              </Title>
-                                            <Tag color='#34C759'>Active</Tag>
+                                            <Tag color='#34C759'>{t("Active")}</Tag>
                                         </Flex>
                                         <Text className='fs-13 text-gray'>
-                                            Expire on {singleview?.date}
+                                            {t("Expire on")} {singleview?.date}
                                         </Text>
                                     </Flex>
                                 </Flex>

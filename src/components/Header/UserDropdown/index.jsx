@@ -4,6 +4,7 @@ import { Avatar, Button, Card, Dropdown, Flex, Image, Space, Typography,message 
 // import { SwitchAccount } from './SwitchAccount';
 import { useNavigate } from 'react-router-dom';
 import { DownOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 // import { useMutation,useQuery } from '@apollo/client';
 // import { LOGOUT } from '../../../graphql/mutation/login';
 // import {ME} from '../../../graphql/query'
@@ -13,6 +14,7 @@ import { DownOutlined } from '@ant-design/icons';
 const UserDropdown = ()=> {
   // const userId = localStorage.getItem("userId"); 
   const [messageApi, contextHolder] = message.useMessage();
+  const {t} = useTranslation()
   const [user, setUser] = useState(null)
   const navigate = useNavigate()
   const [ loading, setLoaing ] = useState(false)
@@ -63,7 +65,7 @@ const UserDropdown = ()=> {
           <Avatar size={44} src='/assets/images/av-1.webp' />
           <Flex vertical gap={1}>
             <Typography.Text strong className='fs-13'>Business Name</Typography.Text>
-            <Typography.Text className='text-gray fs-13'>Admin</Typography.Text>
+            <Typography.Text className='text-gray fs-13'>{t("Admin")}</Typography.Text>
           </Flex>
         </Flex>
         <Button className='btnsave w-100'
@@ -71,7 +73,7 @@ const UserDropdown = ()=> {
           loading={loading}
           onClick={handleLogout}
           >
-            Logout
+            {t("Logout")}
         </Button>
       </Space>
     </Card>
@@ -90,7 +92,7 @@ const UserDropdown = ()=> {
           <Flex align='flex-start' gap={5}>
             <Flex vertical gap={0} align='end'>
               <Typography.Text strong className='fs-12'>Business Name</Typography.Text>
-              <Typography.Text className='text-gray fs-12'>Admin</Typography.Text>
+              <Typography.Text className='text-gray fs-12'>{t("Admin")}</Typography.Text>
             </Flex>
             <DownOutlined className='fs-12 py-1' />
           </Flex>

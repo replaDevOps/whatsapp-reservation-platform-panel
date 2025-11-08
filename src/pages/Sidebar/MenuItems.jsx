@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 const getItem = (label, key, icon) => ({
     key,
@@ -7,11 +8,13 @@ const getItem = (label, key, icon) => ({
 });
 
 const MenuItems = ({ currentTab }) => {
+    
+    const {t} = useTranslation()
     const menuItems = useMemo(
     () => [
-        { type: "group", label: "DASHBOARD", key: "header", className: "heading-menu" },
+        { type: "group", label: t("DASHBOARD"), key: "header", className: "heading-menu" },
         getItem(
-            "Dashboard Overview",
+            t("Dashboard Overview"),
             "1",
             currentTab === "1" ? (
                 <img src="/assets/icons/side-icon/dashboard-a.webp" width="20px" alt="dashboard icon" fetchPriority="high" />
@@ -26,9 +29,9 @@ const MenuItems = ({ currentTab }) => {
         ),
 
         { type: "divider", key: "divider-1", className: "bg-divider my-3" },
-        { type: "group", label: "BUSINESS MANAGEMENT", key: "header-1", className: "heading-menu" },
+        { type: "group", label: t("BUSINESS MANAGEMENT"), key: "header-1", className: "heading-menu" },
         getItem(
-            "All Businesses",
+            t("All Businesses"),
             "2",
             currentTab === "2" ? (
                 <img src="/assets/icons/side-icon/business-a.webp" width="20px" alt="business icon" fetchPriority="high" />
@@ -42,7 +45,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
         getItem(
-            "Customers",
+            t("Customers"),
             "3",
             currentTab === "3" ? (
                 <img src="/assets/icons/side-icon/customer-a.webp" width="20px" alt="customer icon" fetchPriority="high" />
@@ -56,7 +59,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
         getItem(
-            "Bookings",
+            t("Bookings"),
             "4",
             currentTab === "4" ? (
                 <img src="/assets/icons/side-icon/booking-a.webp" width="20px" alt="booking icon" fetchPriority="high" />
@@ -70,7 +73,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
         getItem(
-            "Revenue",
+            t("Revenue"),
             "5",
             currentTab === "5" ? (
                 <img src="/assets/icons/side-icon/revenue-a.webp" width="20px" alt="revenue icon" fetchPriority="high" />
@@ -84,7 +87,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
         getItem(
-            "Demo Requests",
+            t("Demo Requests"),
             "6",
             currentTab === "6" ? (
                 <img src="/assets/icons/side-icon/request-a.webp" width="20px" alt="request icon" fetchPriority="high" />
@@ -98,7 +101,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
         getItem(
-            "Staffs",
+            t("Staffs"),
             "7",
             currentTab === "7" ? (
                 <img src="/assets/icons/side-icon/staff-a.webp" width="20px" alt="staff icon" fetchPriority="high" />
@@ -113,9 +116,9 @@ const MenuItems = ({ currentTab }) => {
         ),
 
         { type: "divider", key: "divider-2", className: "bg-divider my-3" },
-        { type: "group", label: "SUBSCRIPTION", key: "header-2", className: "heading-menu" },
+        { type: "group", label: t("SUBSCRIPTION"), key: "header-2", className: "heading-menu" },
         getItem(
-            "Subscription Plan",
+            t("Subscription Plan"),
             "8",
             currentTab === "8" ? (
                 <img src="/assets/icons/side-icon/subplan-a.webp" width="20px" alt="subscription plan icon" fetchPriority="high" />
@@ -129,7 +132,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
         getItem(
-            "Subscription Management",
+            t("Subscription Management"),
             "9",
             currentTab === "9" ? (
                 <img src="/assets/icons/side-icon/submanage-a.webp" width="20px" alt="subscription management icon" fetchPriority="high" />
@@ -143,7 +146,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
         getItem(
-            "Discounts",
+            t("Discounts"),
             "10",
             currentTab === "10" ? (
                 <img src="/assets/icons/side-icon/discount-a.webp" width="20px" alt="discount icon" fetchPriority="high" />
@@ -158,9 +161,9 @@ const MenuItems = ({ currentTab }) => {
         ),
 
         { type: "divider", key: "divider-3", className: "bg-divider my-3" },
-        { type: "group", label: "WEBSITE PAGES", key: "header-3", className: "heading-menu" },
+        { type: "group", label: t("WEBSITE PAGES"), key: "header-3", className: "heading-menu" },
         getItem(
-            "Terms & Condition",
+            t("Terms & Condition"),
             "11",
             currentTab === "11" ? (
                 <img src="/assets/icons/side-icon/terms-a.webp" width="20px" alt="terms and condition icon" fetchPriority="high" />
@@ -174,7 +177,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
         getItem(
-            "FAQs",
+            t("FAQs"),
             "12",
             currentTab === "12" ? (
                 <img src="/assets/icons/side-icon/faqs-a.webp" width="20px" alt="faqs icon" fetchPriority="high" />
@@ -188,7 +191,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
         getItem(
-            "Privacy Policy",
+            t("Privacy Policy"),
             "13",
             currentTab === "13" ? (
                 <img src="/assets/icons/side-icon/privacy-a.webp" width="20px" alt="privacy policy icon" fetchPriority="high" />
@@ -203,9 +206,9 @@ const MenuItems = ({ currentTab }) => {
         ),
 
         { type: "divider", key: "divider-4", className: "bg-divider my-3" },
-        { type: "group", label: "ADMIN SETTING", key: "header-4", className: "heading-menu" },
+        { type: "group", label: t("ADMIN SETTING"), key: "header-4", className: "heading-menu" },
         getItem(
-            "Setting",
+            t("Setting"),
             "14",
             currentTab === "14" ? (
                 <img src="/assets/icons/side-icon/setting-a.webp" width="20px" alt="setting icon" fetchPriority="high" />
@@ -219,7 +222,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
         getItem(
-            "Activity Log",
+            t("Activity Log"),
             "15",
             currentTab === "15" ? (
                 <img src="/assets/icons/side-icon/activitylog-a.webp" width="20px" alt="activity icon" fetchPriority="high" />
@@ -233,7 +236,7 @@ const MenuItems = ({ currentTab }) => {
             )
         ),
     ],
-    [currentTab]
+    [currentTab,t]
   );
     return menuItems;
 };

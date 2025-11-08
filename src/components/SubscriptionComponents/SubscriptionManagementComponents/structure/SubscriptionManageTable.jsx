@@ -7,11 +7,13 @@ import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
 import { subscriptionItems, typeItems } from '../../../../shared';
 import { EditSubscriptionPlanModal, RenewPlanModal, UpgradePlanModal } from '../modal';
+import { useTranslation } from 'react-i18next';
 
 
 const SubscriptionManageTable = () => {
 
     const [form] = Form.useForm();
+    const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
@@ -56,7 +58,7 @@ const SubscriptionManageTable = () => {
                                 <Col span={24} md={24} lg={12}>
                                     <SearchInput
                                         name='name'
-                                        placeholder='Search by Business ID'
+                                        placeholder={t('Search by Business ID')}
                                         // value={search}
                                         // onChange={(e) => {
                                         //     setSearch(e.target.value);
@@ -71,7 +73,7 @@ const SubscriptionManageTable = () => {
                                             menu={{
                                                 items: typeItems.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handleTypeClick
                                             }}
@@ -79,7 +81,7 @@ const SubscriptionManageTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {typeItems.find((i) => i.key === selectedType)?.label || "Type"}
+                                                    {t(typeItems.find((i) => i.key === selectedType)?.label || "Type")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -88,7 +90,7 @@ const SubscriptionManageTable = () => {
                                             menu={{
                                                 items: periodItems.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handlePeriodClick
                                             }}
@@ -96,7 +98,7 @@ const SubscriptionManageTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {periodItems.find((i) => i.key === selectedperiod)?.label || "Period"}
+                                                    {t(periodItems.find((i) => i.key === selectedperiod)?.label || "Period")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -105,7 +107,7 @@ const SubscriptionManageTable = () => {
                                             menu={{
                                                 items: subscriptionItems.map((item) => ({
                                                     key: String(item.key),
-                                                    label: item.label
+                                                    label: t(item.label)
                                                 })),
                                                 onClick: handleActionClick
                                             }}
@@ -113,7 +115,7 @@ const SubscriptionManageTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {subscriptionItems.find((i) => i.key === selectedAction)?.label || "Subscription Plan"}
+                                                    {t(subscriptionItems.find((i) => i.key === selectedAction)?.label || "Subscription Plan")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -128,7 +130,7 @@ const SubscriptionManageTable = () => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder="Select Year"
+                                    placeholder={[t("Start Year"),t("End Year")]}
                                     value={selectedYear}
                                     onChange={(year) => setSelectedYear(year)}
                                 />
@@ -139,9 +141,9 @@ const SubscriptionManageTable = () => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={submanageColumns({setVisible,setEditItem,setUpgradePlan,setIsRenew})}
+                        columns={submanageColumns({setVisible,setEditItem,setUpgradePlan,setIsRenew,t,i18n})}
                         dataSource={submanageData}
-                        className='pagination table-cs table'
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1600 }}
                         rowHoverable={false}

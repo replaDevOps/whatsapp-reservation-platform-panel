@@ -5,11 +5,13 @@ import { ConfirmModal, CustomPagination } from '../../../Ui';
 import { singleviewColumns, singleviewData } from '../../../../data';
 import { SearchInput } from '../../../Forms';
 import { statusitemsCust } from '../../../../shared';
+import { useTranslation } from 'react-i18next';
 
 
 const SingleBusinessViewTable = ({setViewItem}) => {
 
     const [form] = Form.useForm();
+    const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [selectedstatus, setselectedStatus] = useState('');
@@ -33,7 +35,7 @@ const SingleBusinessViewTable = ({setViewItem}) => {
                             <Flex gap={10}>
                                 <SearchInput
                                     name='name'
-                                    placeholder='Search by Branch Name'
+                                    placeholder={t("Search by Branch Name")}
                                     // value={search}
                                     // onChange={(e) => {
                                     //     setSearch(e.target.value);
@@ -45,7 +47,7 @@ const SingleBusinessViewTable = ({setViewItem}) => {
                                     menu={{
                                         items: statusitemsCust.map((item) => ({
                                             key: String(item.key),
-                                            label: item.label
+                                            label: t(item.label)
                                         })),
                                         onClick: handleStatusClick
                                     }}
@@ -53,7 +55,7 @@ const SingleBusinessViewTable = ({setViewItem}) => {
                                 >
                                     <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                         <Flex justify="space-between" align="center" gap={30}>
-                                            {statusitemsCust.find((i) => i.key === selectedstatus)?.label || "Status"}
+                                            {t(statusitemsCust.find((i) => i.key === selectedstatus)?.label || "Status")}
                                             <DownOutlined />
                                         </Flex>
                                     </Button>
@@ -63,7 +65,7 @@ const SingleBusinessViewTable = ({setViewItem}) => {
                         <Col span={24} md={24} xl={8}>
                             <Flex justify='end' gap={10}>
                                 <Button onClick={()=>setStatusChange(true)} className='btnsave border-0 bg-red text-white fs-13'>
-                                    Deactivate business
+                                    {t("Deactivate business")}
                                 </Button>
                             </Flex>
                         </Col>
@@ -72,9 +74,9 @@ const SingleBusinessViewTable = ({setViewItem}) => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={singleviewColumns({setViewItem})}
+                        columns={singleviewColumns({setViewItem,t,i18n})}
                         dataSource={singleviewData}
-                        className='pagination table-cs table'
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1000 }}
                         rowHoverable={false}

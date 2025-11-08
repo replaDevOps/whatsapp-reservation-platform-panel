@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { Button, Col, Divider, Flex, Form, Row, Select } from 'antd'
 import { MyInput } from '../../../Forms'
 import { IncludeFeatureField } from './IncludeFeatureField';
+import { useTranslation } from 'react-i18next';
 
 const EditSubscription = ({setEditItem,edititem}) => {
 
     const [form] = Form.useForm();
+    const {t} = useTranslation()
     const [featureValues, setFeatureValues] = useState({})
 
     useEffect(()=>{
@@ -36,35 +38,35 @@ const EditSubscription = ({setEditItem,edititem}) => {
             <Row gutter={16}>
                 <Col span={24}>
                     <MyInput 
-                        label="Subscription Title" 
+                        label={t("Subscription Title")} 
                         name="name" 
                         required 
-                        message="Please enter subscription title" 
+                        message={t("Please enter subscription title")} 
                     />
                 </Col>
                 <Col span={24}>
                     <MyInput 
-                        label="Description" 
+                        label={t("Description")} 
                         name="description" 
                         required 
-                        message="Please enter description" 
+                        message={t("Please enter description")} 
                     />
                 </Col>
                 <Col span={24}>
                     <MyInput
-                        label="Price"
+                        label={t("Price")}
                         name="price"
                         required
-                        message="Please enter price"
+                        message={t("Please enter price")}
                         addonBefore='SAR'
                         addonAfter={
                             <Select
-                                defaultValue="Monthly"
+                                defaultValue="monthly"
                                 className='w-100px'
                                 onChange={(value) => form.setFieldsValue({ type: value })}
                             >
-                                <Select.Option value="monthly">Monthly</Select.Option>
-                                <Select.Option value="yearly">Yearly</Select.Option>
+                                <Select.Option value="monthly">{t("Monthly")}</Select.Option>
+                                <Select.Option value="yearly">{t("Yearly")}</Select.Option>
                             </Select>
                         }
                         value={form.getFieldValue("price") || ""}
@@ -182,10 +184,10 @@ const EditSubscription = ({setEditItem,edititem}) => {
                 <Col span={24}>
                     <Flex justify='end' gap={5} >
                         <Button type='button' onClick={()=>setEditItem(null)} className='btncancel text-black border-gray' >
-                            Cancel
+                            {t("Cancel")}
                         </Button>
                         <Button htmlType='submit'  className={`btnsave border-0 text-white brand-bg`}>
-                            Update
+                            {t("Update")}
                         </Button>
                     </Flex>
                 </Col>

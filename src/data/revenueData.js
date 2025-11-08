@@ -8,7 +8,7 @@ export const revenueData = [
         subscriptionPlan: 'bp',
         period: 'Yearly',
         discount: 'SAV50',
-        price: { current: 'SAR 2500', original: '2800' },
+        price: { current: '2500', original: '2800' },
         purchasingDate: '02/11/2025',
     },
     {
@@ -20,7 +20,7 @@ export const revenueData = [
         subscriptionPlan: 'PP',
         period: 'Monthly',
         discount: 'SAR 100 Free',
-        price: { current: 'SAR 800', original: '900' },
+        price: { current: '800', original: '900' },
         purchasingDate: '03/01/2025',
     },
     {
@@ -32,7 +32,7 @@ export const revenueData = [
         subscriptionPlan: 'sp',
         period: 'Yearly',
         discount: 'SAV50',
-        price: { current: 'SAR 2700', original: '3000' },
+        price: { current: '2700', original: '3000' },
         purchasingDate: '04/10/2025',
     },
     {
@@ -44,7 +44,7 @@ export const revenueData = [
         subscriptionPlan: 'EP',
         period: 'Monthly',
         discount: 'SAR 100 Free',
-        price: { current: 'SAR 1200', original: '1350' },
+        price: { current: '1200', original: '1350' },
         purchasingDate: '01/15/2025',
     },
     {
@@ -56,7 +56,7 @@ export const revenueData = [
         subscriptionPlan: 'bp',
         period: 'Yearly',
         discount: 'SAV50',
-        price: { current: 'SAR 2300', original: '2600' },
+        price: { current: '2300', original: '2600' },
         purchasingDate: '05/05/2025',
     },
     {
@@ -68,7 +68,7 @@ export const revenueData = [
         subscriptionPlan: 'PP',
         period: 'Monthly',
         discount: 'SAR 100 Free',
-        price: { current: 'SAR 950', original: '1100' },
+        price: { current: '950', original: '1100' },
         purchasingDate: '06/11/2025',
     },
     {
@@ -80,7 +80,7 @@ export const revenueData = [
         subscriptionPlan: 'sp',
         period: 'Yearly',
         discount: 'SAV50',
-        price: { current: 'SAR 2800', original: '3200' },
+        price: { current: '2800', original: '3200' },
         purchasingDate: '07/03/2025',
     },
     {
@@ -92,7 +92,7 @@ export const revenueData = [
         subscriptionPlan: 'EP',
         period: 'Monthly',
         discount: 'SAR 100 Free',
-        price: { current: 'SAR 1100', original: '1250' },
+        price: { current: '1100', original: '1250' },
         purchasingDate: '08/09/2025',
     },
     {
@@ -104,7 +104,7 @@ export const revenueData = [
         subscriptionPlan: 'PP',
         period: 'Yearly',
         discount: 'SAV50',
-        price: { current: 'SAR 2600', original: '2900' },
+        price: { current: '2600', original: '2900' },
         purchasingDate: '09/15/2025',
     },
     {
@@ -116,7 +116,7 @@ export const revenueData = [
         subscriptionPlan: 'sp',
         period: 'Monthly',
         discount: 'SAR 100 Free',
-        price: { current: 'SAR 900', original: '1000' },
+        price: { current: '900', original: '1000' },
         purchasingDate: '10/01/2025',
     },
 ];

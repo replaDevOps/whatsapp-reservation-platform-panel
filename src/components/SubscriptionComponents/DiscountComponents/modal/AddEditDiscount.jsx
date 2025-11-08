@@ -4,12 +4,13 @@ import { Button, Col, Divider, Flex, Form, Modal, Row, Typography } from 'antd'
 import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
 import { customertypeOp, promoType, subscriptionplanOp } from '../../../../shared'
 import moment from 'moment'
+import { useTranslation } from 'react-i18next'
 
 const { Title, Text } = Typography
 const AddEditDiscount = ({visible,onClose,edititem}) => {
 
     const [form] = Form.useForm();
-
+    const {t} = useTranslation()
     useEffect(()=>{
         if(visible && edititem){
             form.setFieldsValue({
@@ -37,10 +38,10 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
             footer={
                 <Flex justify='end' gap={5}>
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
-                        Cancel
+                        {t("Cancel")}
                     </Button>
-                    <Button type="primary" className='btnsave border0 text-white brand-bg'>
-                        {edititem?'Update':'Confirm & Save'}
+                    <Button type="primary" onClick={()=>form.submit()} className='btnsave border0 text-white brand-bg'>
+                        {t(edititem?'Update':'Confirm & Save')}
                     </Button>
                 </Flex>
             }
@@ -49,7 +50,7 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
                 <Flex vertical className='mb-2'>
                     <Flex justify='space-between' gap={6}>
                         <Title level={5} className='m-0'>
-                            {edititem? edititem?.discountCode : 'Add Discount'}
+                            {t(edititem? edititem?.discountCode : 'Add Discount')}
                         </Title>
                         <Button type='button' onClick={onClose} className='p-0 border-0 bg-transparent'>
                             <CloseOutlined className='fs-18' />
@@ -57,7 +58,7 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
                     </Flex> 
                     <Text className='fs-13 text-gray'>
                         {
-                            edititem ? 'Edit discount details in your system.' : 'Add a new discount in your system.'
+                            t(edititem ? 'Edit discount details in your system.' : 'Add a new discount in your system.')
                         }
                     </Text>
                 </Flex>
@@ -69,82 +70,82 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
                     <Row gutter={16}>
                         <Col span={24}>
                             <MyInput 
-                                label="Discount Code" 
+                                label={t("Discount Code")} 
                                 name="discountCode" 
                                 required
-                                message='Please enter discount code'
-                                placeholder='Enter discount code'
+                                message={t('Please enter discount code')}
+                                placeholder={t('Enter discount code')}
                             />
                         </Col>
                         <Col span={24}>
                             <MySelect 
-                                label="Group" 
+                                label={t("Group")} 
                                 name="group" 
                                 required
-                                message='Please choose group'
+                                message={t('Please choose group')}
                                 options={customertypeOp}
-                                placeholder='Choose group'
+                                placeholder={t('Choose group')}
                                 
                             />
                         </Col>
                         <Col span={24}>
                             <MySelect 
                                 mode={'multiple'}
-                                label="Subscription Plan Type" 
+                                label={t("Subscription Plan Type")} 
                                 name="subscriptionType" 
                                 required
-                                message='Choose subscription plan type'
+                                message={t('Choose subscription plan type')}
                                 options={subscriptionplanOp}
-                                placeholder='Choose plan type'
+                                placeholder={t('Choose plan type')}
                             />
                         </Col>
                         <Col span={24}>
                             <MySelect 
-                                label="Discount Type" 
+                                label={t("Discount Type")} 
                                 name="discountType" 
                                 required
-                                message='Please choose discount type'
+                                message={t('Please choose discount type')}
                                 options={promoType}
-                                placeholder='Choose discount type'
+                                placeholder={t('Choose discount type')}
                                 
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="Value" 
+                                label={t("Value")} 
                                 name="value" 
                                 required
-                                message='Please enter value'
-                                placeholder='Enter value'
+                                message={t('Please enter value')}
+                                placeholder={t('Enter value')}
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="Limit" 
+                                label={t("Limit")} 
                                 name="limit" 
                                 required
-                                message='Please enter limit'
-                                placeholder='Enter limit'
+                                message={t('Please enter limit')}
+                                placeholder={t('Enter limit')}
                             />
                         </Col>
                         <Col span={24}>
                             <MyDatepicker
                                 datePicker
-                                label='Start Date'
+                                label={t('Start Date')}
                                 name='startDate'
                                 required
-                                message={'Please select start date'}
-                                placeholder='Select date'
+                                message={t('Please select start date')}
+                                placeholder={t('Select date')}
                             />
                         </Col>
                         <Col span={24}>
                             <MyDatepicker
                                 datePicker
-                                label='Expiry Date'
+                                label={t('Expiry Date')}
                                 name='endDate'
-                                placeholder='Select date'
+                                placeholder={t('Select date')}
                                 required
-                                message={'Please select expiry date'}
+                                message={t('Please select expiry date')}
                             />
                         </Col>
                     </Row>

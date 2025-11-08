@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { Button, Card, Flex, Row, Col, Tooltip, Image, Tabs } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { ConfirmModal } from '../../../Ui';
 import { BusinessServiceTable } from './BusinessServiceTable';
 import { BusinessStaffTable } from './BusinessStaffTable';
+import { useTranslation } from 'react-i18next';
 
 
 const SingleBusinessViewTab = ({setViewItem}) => {
 
 
     const [ statuschange, setStatusChange ] = useState(false)
+    const {t,i18n} = useTranslation()
     const [activeKey, setActiveKey] = useState('1');
     const onChange = (key) => {
         setActiveKey(key);
@@ -18,12 +20,12 @@ const SingleBusinessViewTab = ({setViewItem}) => {
     const items = [
         {
             key: '1',
-            label: 'Services',
+            label: t("Services"),
             children: <BusinessServiceTable />,
         },
         {
             key: '2',
-            label: 'Staffs',
+            label: t("Staffs"),
             children: <BusinessStaffTable />,
         },
     ];
@@ -36,10 +38,10 @@ const SingleBusinessViewTab = ({setViewItem}) => {
                 <Flex vertical gap={15}>
                     <Flex gap={10} align="center">
                         <Button className="border-0 p-0 bg-transparent" onClick={() => setViewItem(false)}>
-                            <ArrowLeftOutlined />
+                            {i18n?.language === 'ar' ? <ArrowRightOutlined />:<ArrowLeftOutlined />}
                         </Button>
                         <ModuleTopHeading level={5} name={'Branch 1'} />
-                        <Tooltip title='This branch has self booking tablet access'>
+                        <Tooltip title={t("This branch has self booking tablet access")}>
                             <Image src='/assets/icons/mobile.webp' alt='mobile icon' width={15} preview={false} />
                         </Tooltip>
                     </Flex>
@@ -58,11 +60,11 @@ const SingleBusinessViewTab = ({setViewItem}) => {
                             <Flex justify='end' gap={10}>
                                 <Button className='btncancel'> 
                                     <Flex align='center' gap={10}>
-                                        <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> Export Data
+                                        <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export Data")}
                                     </Flex>
                                 </Button>
                                 <Button onClick={()=>setStatusChange(true)} className='btnsave border-0 bg-red text-white fs-13'>
-                                    Deactivate business
+                                    {t("Deactivate business")}
                                 </Button>
                             </Flex>
                         </Col>

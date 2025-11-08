@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { Button, Card, Flex, Typography, Row, Col, Tabs } from 'antd';
 import { SubscriptionPlanCard } from './SubscriptionPlanCard';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { EditSubscription } from './EditSubscription';
 import { subscriptionplanData } from '../../../../data';
+import { useTranslation } from 'react-i18next';
 
 const { Title } = Typography;
 const SubscriptionPlanTab = () => {
 
+    const {t,i18n} = useTranslation()
     const [activeKey, setActiveKey] = useState('1');
     const [ edititem, setEditItem ] = useState(null)
     const singledata = subscriptionplanData?.find((items)=>items?.id === Number(activeKey))
@@ -18,22 +20,22 @@ const SubscriptionPlanTab = () => {
     const items = [
         {
             key: '1',
-            label: 'Basic Subscription Plan',
+            label: t('Basic Subscription Plan'),
             children: <SubscriptionPlanCard singledata={singledata}/>,
         },
         {
             key: '2',
-            label: 'Standard Subscription Plan',
+            label: t('Standard Subscription Plan'),
             children: <SubscriptionPlanCard singledata={singledata} />,
         },
         {
             key: '3',
-            label: 'Pro Subscription Plan',
+            label: t('Pro Subscription Plan'),
             children: <SubscriptionPlanCard singledata={singledata} />,
         },
         {
             key: '4',
-            label: 'Enterprise Subscription Plan',
+            label: t('Enterprise Subscription Plan'),
             children: <SubscriptionPlanCard singledata={singledata} />,
         },
     ];
@@ -62,12 +64,12 @@ const SubscriptionPlanTab = () => {
                             edititem ?
                             <Flex gap={10} align="center">
                                 <Button className="border-0 p-0 bg-transparent" onClick={() => setEditItem(null)}>
-                                    <ArrowLeftOutlined />
+                                    {i18n?.language === 'ar' ? <ArrowRightOutlined />:<ArrowLeftOutlined />}
                                 </Button>
                                 {
                                     edititem &&
                                     <Title level={5} className='m-0'>
-                                        Edit Subscription Plan
+                                        {t("Edit Subscription Plan")}
                                     </Title>
                                 }
                             </Flex>
@@ -79,7 +81,7 @@ const SubscriptionPlanTab = () => {
                                     }
                                 </Title>
                                 <Button className='btncancel' onClick={()=>setEditItem(singledata)}> 
-                                    <img src='/assets/icons/edit-b.webp' width={20} alt='edit icon' /> Edit Subscription Plan
+                                    <img src='/assets/icons/edit-b.webp' width={20} alt='edit icon' /> {t("Edit Subscription Plan")}
                                 </Button>
                             </Flex>
                         }

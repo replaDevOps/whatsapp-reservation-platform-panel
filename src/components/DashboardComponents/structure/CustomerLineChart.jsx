@@ -4,14 +4,18 @@ import ReactApexChart from 'react-apexcharts';
 import { ModuleTopHeading } from '../../PageComponent';
 import { MyDatepicker } from '../../Forms';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
+import { toArabicDigits } from '../../../shared';
 
 const { Title, Text } = Typography
 const CustomerLineChart = () => {
 
+    const {t,i18n} = useTranslation()
+    const isArabic = i18n?.language === 'ar'
     const [selectedYear, setSelectedYear] = useState(moment());
     const chartData = {
         series: [
-            { name: 'Customers', data: [0, 13, 17, 10, 15, 16, 25, 14, 17, 15, 12, 20] },
+            { name: t("Customers"), data: [0, 13, 17, 10, 15, 16, 25, 14, 17, 15, 12, 20] },
         ],
         options: {
         chart: {
@@ -75,11 +79,11 @@ const CustomerLineChart = () => {
         <Flex justify='space-between' align='flex-start' wrap gap={10}>
             <Flex vertical gap={10}>
                 <Flex vertical>
-                    <ModuleTopHeading level={4} name='Customers' />
-                    <Text className='text-gray fs-13'>Total registered customers in system</Text>
+                    <ModuleTopHeading level={4} name={t("Customers")} />
+                    <Text className='text-gray fs-13'>{t("Total registered customers in system")}</Text>
                 </Flex>
                 <Title level={4} className='fw-500 text-black m-0'>
-                    6820 <span className='text-bright-red fs-13 fw-400'>-9% then last month <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" /></span>
+                    {isArabic ? toArabicDigits(6820):6820} <span className='text-bright-red fs-13 fw-400'>{i18n?.language === 'ar' ? '9%-':'-9%'} {t("then last month")} <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" /></span>
                 </Title>
             </Flex>
             <Flex justify='end' gap={10}>
@@ -87,7 +91,7 @@ const CustomerLineChart = () => {
                     withoutForm
                     rangePicker
                     className="datepicker-cs"
-                    placeholder="Select Year"
+                    placeholder={t("Select Year")}
                     value={selectedYear}
                     onChange={(year) => setSelectedYear(year)}
                 />

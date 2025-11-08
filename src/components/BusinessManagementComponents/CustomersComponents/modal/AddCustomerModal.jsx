@@ -1,12 +1,15 @@
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, Row, Select, Typography } from 'antd'
 import { MyInput } from '../../../Forms'
+import { useTranslation } from 'react-i18next'
+import { toArabicDigits } from '../../../../shared'
 
 const { Title } = Typography
 const AddCustomerModal = ({visible,onClose}) => {
 
     const [form] = Form.useForm();
-
+    const {t,i18n} = useTranslation()
+    const isArabic = i18n?.language === 'ar'
     return (
         <Modal
             title={null}
@@ -18,10 +21,10 @@ const AddCustomerModal = ({visible,onClose}) => {
             footer={
                 <Flex justify='end' gap={5}>
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
-                        Cancel
+                        {t("Cancel")}
                     </Button>
                     <Button type="primary" className='btnsave border0 text-white brand-bg' onClick={()=>form.submit()}>
-                        Save
+                        {t("Save")}
                     </Button>
                 </Flex>
             }
@@ -29,7 +32,7 @@ const AddCustomerModal = ({visible,onClose}) => {
             <Flex vertical gap={10}>
                 <Flex justify='space-between' gap={6}>
                     <Title level={5} className='m-0'>
-                        Add Customer
+                        {t("Add Customer")}
                     </Title>
                     <Button type='button' onClick={onClose} className='p-0 border-0 bg-transparent'>
                         <CloseOutlined className='fs-18' />
@@ -43,58 +46,67 @@ const AddCustomerModal = ({visible,onClose}) => {
                     <Row gutter={16}>
                         <Col span={24}>
                             <MyInput 
-                                label="First Name" 
+                                label={t("First Name")} 
                                 name="firstName" 
                                 required 
-                                message="Please enter first name" 
-                                placeholder="Enter first name" 
+                                message={t("Please enter first name")} 
+                                placeholder={t("Enter first name")} 
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="Last Name" 
+                                label={t("Last Name")} 
                                 name="lastName" 
                                 required 
-                                message="Please enter last name" 
-                                placeholder="Enter last name" 
+                                message={t("Please enter last name")} 
+                                placeholder={t("Enter last name")} 
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="Phone Number" 
+                                label={t("Phone Number")} 
                                 name="phoneNo" 
                                 required 
-                                message="Please enter phone number" 
-                                placeholder="Enter phone number" 
+                                message={t("Please enter phone number")} 
+                                placeholder={t("Enter phone number")} 
                                 addonBefore={
                                     <Select
-                                        defaultValue="+966"
-                                        className='w-80'
-                                        onChange={(value) => form.setFieldsValue({ countryCode: value })}
-                                    >
-                                        <Select.Option value="sa">+966</Select.Option>
-                                        <Select.Option value="ae">+955</Select.Option>
+                                        defaultValue="sa"
+                                        className="w-80"
+                                        onChange={(value) =>
+                                            form.setFieldsValue({
+                                            countryCode: value,
+                                            })
+                                        }
+                                        >
+                                        <Select.Option value="sa">
+                                            +{isArabic ? toArabicDigits(966) : 966}
+                                        </Select.Option>
+
+                                        <Select.Option value="ae">
+                                            +{isArabic ? toArabicDigits(971) : 971}
+                                        </Select.Option>
                                     </Select>
                                 }
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="Email Address" 
+                                label={t("Email Address")} 
                                 name="email" 
                                 required 
-                                message="Please enter email" 
-                                placeholder="Enter email" 
+                                message={t("Please enter email")} 
+                                placeholder={t("Enter email")} 
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
                                 type={'password'}
-                                label="Password" 
+                                label={t("Password")} 
                                 name="password" 
                                 required 
-                                message="Please enter password" 
-                                placeholder="Enter password" 
+                                message={t("Please enter password")} 
+                                placeholder={t("Enter password")} 
                             />
                         </Col>
                     </Row>

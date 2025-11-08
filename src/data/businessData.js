@@ -69,7 +69,7 @@ const subplanData = [
                 id: 1,
                 title:'Basic',
                 subtitle:'Simple start for small setups',
-                amount: '200',
+                amount: 200,
                 features:[
                     {
                         title:'1 Branch'
@@ -86,7 +86,7 @@ const subplanData = [
                 id: 2,
                 title:'Standard',
                 subtitle:'For growing & scaling clinics',
-                amount: '300',
+                amount: 300,
                 features:[
                     {
                         title:'1 Branch'
@@ -106,7 +106,7 @@ const subplanData = [
                 id: 3,
                 title:'Pro',
                 subtitle:'Advanced tools for large teams',
-                amount: '500',
+                amount: 500,
                 features:[
                     {
                         title:'1 Branch'
@@ -129,7 +129,7 @@ const subplanData = [
                 id: 4,
                 title:'Enterprise',
                 subtitle:'Custom workflow for full control',
-                amount: 'Custom Price',
+                amount: 500,
                 features:[
                     {
                         title:'1 Branch'
@@ -160,7 +160,7 @@ const subplanData = [
                 id: 1,
                 title:'Basic',
                 subtitle:'Simple start for small setups',
-                amount: '1200',
+                amount: 1200,
                 features:[
                     {
                         title:'1 Branch'
@@ -186,7 +186,7 @@ const subplanData = [
                 id: 2,
                 title:'Standard',
                 subtitle:'For growing & scaling clinics',
-                amount: '1500',
+                amount: 1500,
                 features:[
                     {
                         title:'1 Branch'
@@ -212,7 +212,7 @@ const subplanData = [
                 id: 3,
                 title:'Pro',
                 subtitle:'Advanced tools for large teams',
-                amount: '2000',
+                amount: 2000,
                 features:[
                     {
                         title:'1 Branch'
@@ -238,7 +238,7 @@ const subplanData = [
                 id: 4,
                 title:'Enterprise',
                 subtitle:'Custom workflow for full control',
-                amount: 'Custom Price',
+                amount: 500,
                 features:[
                     {
                         title:'1 Branch'

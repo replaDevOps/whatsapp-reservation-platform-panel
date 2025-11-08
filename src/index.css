@@ -384,10 +384,6 @@
     border-radius: 0px !important;
 }
 
-.table-cs .ant-table-container table>thead>tr:first-child >*:last-child{
-    border-top-right-radius: 8px !important;
-}
-
 .table-dark .ant-table-thead{
     background: transparent !important;
 }
@@ -1403,6 +1399,22 @@
 
 .ml-20{
     margin-left: 20px;
+}
+
+.mx-8{
+    margin-inline: 8px !important;
+}
+
+.left-to-right .ant-table-container table>thead>tr:first-child >*:last-child{
+    border-top-right-radius: 8px !important;
+}
+
+.right-to-left .ant-table-container table>thead>tr:first-child >*:last-child{
+    border-top-left-radius: 8px !important;
+}
+
+.right-to-left  .ant-table-ping-right:not(.ant-table-has-fix-right) .ant-table-container::after {
+    box-shadow: none !important;
 }
 
 /* =================================================== media querry =============================================== */

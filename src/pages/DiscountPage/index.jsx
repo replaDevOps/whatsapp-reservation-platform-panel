@@ -1,21 +1,25 @@
 import { Flex } from 'antd'
 import { BreadCrumbCard, DiscountTable, TitleCard } from '../../components'
 import { useState } from 'react'
+import { subscriptionTitle } from '../../shared'
+import { useTranslation } from 'react-i18next'
 
 const DiscountPage = () => {
+    const {t} = useTranslation()
+    const title = subscriptionTitle({t})
     const [ visible, setVisible ] = useState(false)
     return (
         <Flex vertical gap={10}>
             <BreadCrumbCard 
                 items={[
-                    { title: 'Subscription Plan', },
-                    { title: 'Discounts' },
+                    { title: title },
+                    { title: t('Discounts') },
                 ]}
             />
             <TitleCard 
-                title={'Discounts'}
-                subtitle={'Manage all the discounts in your system'}
-                btntext={'Add Discount'}
+                title={t('Discounts')}
+                subtitle={t('Manage all the discounts in your system')}
+                btntext={t('Add Discount')}
                 onClick={()=>{setVisible(true)}}
             />
             <DiscountTable 

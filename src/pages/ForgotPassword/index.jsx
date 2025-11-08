@@ -3,13 +3,15 @@ import { MyInput } from "../../components";
 import { NavLink } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { LanguageChange } from "../Sidebar/LanguageChange";
 
 const { Title, Paragraph } = Typography;
 
 const ForgotPassword = () => {
     const [form] = Form.useForm();
     const [ requestState, setRequestState ] = useState('request')
-
+    const {t} = useTranslation()
      const forgotpass = () => {
         if (requestState === "request") {
             // dispatcher(actionsApi?.forgotPassword(form.getFieldsValue(['email'])));
@@ -36,7 +38,7 @@ const ForgotPassword = () => {
                 <div className="form-inner">
                     <NavLink to={'/'}>
                       <div className="logo">
-                        <img src="/assets/images/login-l.webp" className="h-70" alt='logo image' fetchPriority="high" />
+                        <img src="/assets/images/logo.webp" className="h-70" alt='logo image' fetchPriority="high" />
                       </div>
                     </NavLink>
                     <div>
@@ -50,14 +52,14 @@ const ForgotPassword = () => {
                         }
                     </div>
                     <Title level={3}>
-                        {requestState === 'request' && 'Forget Password'}
-                        {requestState === 'otp' && 'OTP'}
-                        {requestState === 'reset' && 'Set a New Password'}
+                        {requestState === 'request' && t('Forget Password')}
+                        {requestState === 'otp' && t('OTP')}
+                        {requestState === 'reset' && t('Set a New Password')}
                     </Title>
                     <Paragraph>
-                        {requestState === 'request' && 'Enter the email address to send you the OTP code.'}
-                        {requestState === 'otp' && 'Enter the 5 digit OTP code sent to your email abc****4@gmail.com'}
-                        {requestState === 'reset' && 'Your OTP has been verified. Please create a strong new password to secure your account.'}
+                        {requestState === 'request' && t('Enter the email address to send you the OTP code.')}
+                        {requestState === 'otp' && t('Enter the 5 digit OTP code sent to your email abc****4@gmail.com')}
+                        {requestState === 'reset' && t('Your OTP has been verified. Please create a strong new password to secure your account.')}
                     </Paragraph>
                     <Form 
                         layout="vertical" 
@@ -68,11 +70,11 @@ const ForgotPassword = () => {
                         {requestState === 'request' && (
                             <Col span={24}>
                                 <MyInput
-                                    label='Email Address'
+                                    label={t('Email Address')}
                                     name='email'
                                     required
-                                    message="Please enter Email Address"
-                                    placeholder='Enter Email Address'
+                                    message={t("Please enter Email Address")}
+                                    placeholder={t('Enter Email Address')}
                                 />
                             </Col>
                         )}
@@ -81,11 +83,11 @@ const ForgotPassword = () => {
                                 <MyInput
                                     oTp
                                     length={5}
-                                    label={'OTP'}
+                                    label={t('OTP')}
                                     name='otp'
                                     type='number'
                                     required
-                                    message="Please enter the OTP sent to your email"
+                                    message={t("Please enter the OTP sent to your email")}
                                     onKeyPress={(e) => {
                                         if (!/[0-9]/.test(e.key)) {
                                         e.preventDefault();
@@ -99,18 +101,18 @@ const ForgotPassword = () => {
                             <>
                                 <Col span={24}>
                                     <MyInput
-                                        label="New Password"
+                                        label={t("New Password")}
                                         type="password"
                                         name="password"
                                         size='large'
                                         required
                                         message={()=>{}}
-                                        placeholder={'Enter new password'}
+                                        placeholder={t('Enter new password')}
                                         validator={({ getFieldValue }) => ({
                                             validator: (_, value) => {
                                                 const reg = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,}$/;
                                                 if (!reg.test(value)) {
-                                                    return Promise.reject(new Error('Password should contain at least 8 characters, one uppercase letter, one number, one special character'));
+                                                    return Promise.reject(new Error(t('Password should contain at least 8 characters, one uppercase letter, one number, one special character')));
                                                 } else {
                                                     return Promise.resolve();
                                                 }
@@ -120,21 +122,21 @@ const ForgotPassword = () => {
                                 </Col>
                                 <Col span={24}>
                                     <MyInput
-                                        label="Confirm Password"
+                                        label={t("Confirm Password")}
                                         type="password"
                                         name="confirmationPassword"
                                         size='large'
                                         dependencies={['password']}
                                         required
-                                        message='Please enter confirm password'
-                                        placeholder={'Re-enter new password'}
+                                        message={t('Please enter confirm password')}
+                                        placeholder={t('Re-enter new password')}
                                         rules={[
                                             ({ getFieldValue }) => ({
                                                 validator(_, value) {
                                                     if (!value || getFieldValue('password') === value) {
                                                         return Promise.resolve();
                                                     }
-                                                    return Promise.reject(new Error('The password that you entered do not match!'));
+                                                    return Promise.reject(new Error(t('The password that you entered do not match!')));
                                                 },
                                             }),
                                         ]}
@@ -143,7 +145,7 @@ const ForgotPassword = () => {
                                                 if (!value || getFieldValue('password') === value) {
                                                     return Promise.resolve();
                                                 }
-                                                return Promise.reject(new Error('The password that you entered do not match!'));
+                                                return Promise.reject(new Error(t('The password that you entered do not match!')));
                                             },
                                         })}
                                     />
@@ -152,15 +154,15 @@ const ForgotPassword = () => {
                             )}
                         <Col span={24}>
                             <Button htmlType="submit" className="btnsave bg-dark-blue text-white fs-16" block onClick={forgotpass}>
-                                {requestState === 'request' && 'Next'}
-                                {requestState === 'otp' && 'Confirm'}
-                                {requestState === 'reset' && 'Update Password'}
+                                {requestState === 'request' && t('Next')}
+                                {requestState === 'otp' && t('Confirm')}
+                                {requestState === 'reset' && t('Update Password')}
                             </Button>
                         </Col>
                         <Col span={24}>
                             <Paragraph className="text-center mt-2">
-                                {requestState === 'request' && <>Remember Password? <NavLink to={'/login'}>Sign in</NavLink></>}
-                                {requestState === 'otp' && <>Didn’t receive code? <NavLink to={''}>Resend</NavLink></>}
+                                {requestState === 'request' && <>{t("Remember Password?")} <NavLink to={'/login'}>{t("Sign In")}</NavLink></>}
+                                {requestState === 'otp' && <>{t("Didn’t receive code?")} <NavLink to={''}>{t("Resend")}</NavLink></>}
                                 {requestState === 'reset' && null}
                             </Paragraph>
                         </Col>
@@ -170,16 +172,19 @@ const ForgotPassword = () => {
             </Col>
 
             <Col xs={0} md={12} lg={10} className="signup-visual-container">
+                <Flex justify="end">
+                    <LanguageChange />
+                </Flex>
                 <Flex vertical justify="space-between" align="center" gap={40} className="logo-sp">
                     <Flex vertical align="center" gap={20}>
                         <Title level={2} className="m-0">
-                            Simplify Your Bookings,
+                            {t("Simplify Your Bookings,")}
                         </Title>
                         <Title level={2} className="m-0 text-dark-brand">
-                            Streamline <span className="px-2 radius-12 py-2 bg-white">Your Day.</span>
+                            {t("Streamline")} <span className="px-2 radius-12 py-2 bg-white">{t("Your Day.")}</span>
                         </Title>
                     </Flex>
-                    <Image src="/assets/images/login-frame.png" alt='dashboard image' fetchPriority="high" preview={false} />
+                    <Image src="/assets/images/login-frame.svg" alt='dashboard image' fetchPriority="high" preview={false} />
                 </Flex>
             </Col>
         </Row>

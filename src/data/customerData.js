@@ -4,7 +4,7 @@ const customertableData = [
         firstName: 'Fayez Ali',
         lastName: 'Jihad Bakir',
         email: 'Fahd_b@gmail.com',
-        phoneNo: '+966 324 464 232',
+        phoneNo: '966 324 464 232',
         joinedAt: '11/02/2025',
     },
     {
@@ -12,7 +12,7 @@ const customertableData = [
         firstName: 'Aisha',
         lastName: 'Khalid',
         email: 'aisha.khalid@example.com',
-        phoneNo: '+966 512 334 221',
+        phoneNo: '966 512 334 221',
         joinedAt: '12/02/2025',
     },
     {
@@ -20,7 +20,7 @@ const customertableData = [
         firstName: 'Omar',
         lastName: 'Hassan',
         email: 'omar.hassan@example.com',
-        phoneNo: '+966 544 223 789',
+        phoneNo: '966 544 223 789',
         joinedAt: '13/02/2025',
     },
     {
@@ -28,7 +28,7 @@ const customertableData = [
         firstName: 'Sara',
         lastName: 'Yousuf',
         email: 'sara.yousuf@example.com',
-        phoneNo: '+966 501 778 910',
+        phoneNo: '966 501 778 910',
         joinedAt: '14/02/2025',
     },
     {
@@ -36,7 +36,7 @@ const customertableData = [
         firstName: 'Ahmad',
         lastName: 'Rashid',
         email: 'ahmad.rashid@example.com',
-        phoneNo: '+966 534 229 443',
+        phoneNo: '966 534 229 443',
         joinedAt: '15/02/2025',
     },
     {
@@ -44,7 +44,7 @@ const customertableData = [
         firstName: 'Layla',
         lastName: 'Imran',
         email: 'layla.imran@example.com',
-        phoneNo: '+966 550 987 654',
+        phoneNo: '966 550 987 654',
         joinedAt: '16/02/2025',
     },
     {
@@ -52,7 +52,7 @@ const customertableData = [
         firstName: 'Hassan',
         lastName: 'Tariq',
         email: 'hassan.tariq@example.com',
-        phoneNo: '+966 532 001 221',
+        phoneNo: '966 532 001 221',
         joinedAt: '17/02/2025',
     },
     {
@@ -60,7 +60,7 @@ const customertableData = [
         firstName: 'Nora',
         lastName: 'Ali',
         email: 'nora.ali@example.com',
-        phoneNo: '+966 523 110 909',
+        phoneNo: '966 523 110 909',
         joinedAt: '18/02/2025',
     },
     {
@@ -68,7 +68,7 @@ const customertableData = [
         firstName: 'Bilal',
         lastName: 'Fahad',
         email: 'bilal.fahad@example.com',
-        phoneNo: '+966 511 322 678',
+        phoneNo: '966 511 322 678',
         joinedAt: '19/02/2025',
     },
     {
@@ -76,7 +76,7 @@ const customertableData = [
         firstName: 'Reem',
         lastName: 'Zahid',
         email: 'reem.zahid@example.com',
-        phoneNo: '+966 566 445 332',
+        phoneNo: '966 566 445 332',
         joinedAt: '20/02/2025',
     },
     {
@@ -84,7 +84,7 @@ const customertableData = [
         firstName: 'Yasir',
         lastName: 'Noman',
         email: 'yasir.noman@example.com',
-        phoneNo: '+966 577 667 990',
+        phoneNo: '966 577 667 990',
         joinedAt: '21/02/2025',
     },
 ];

@@ -13,7 +13,7 @@ export const MyDatepicker = ({withoutForm, name, label, disabled, required, mess
                     format={'YYYY-MM-DD-'}
                     {...props}
                     className={'fs-14 without-timeinput w-100'}
-
+                    placeholder={placeholder}
                 />
                 :
                 rangePicker ?
@@ -22,6 +22,7 @@ export const MyDatepicker = ({withoutForm, name, label, disabled, required, mess
                         value={value}
                         {...props}
                         className='fs-14 without-timeinput w-100'
+                        placeholder={placeholder}
                     /> 
                 :
                 <TimePicker
@@ -52,7 +53,7 @@ export const MyDatepicker = ({withoutForm, name, label, disabled, required, mess
                     value={value ? moment(value, 'YYYY-MM-DD') : ''}
                     {...props}
                     className='w-100'
-
+                    placeholder={placeholder}
                 />
                 :
                 rangePicker ?
@@ -61,6 +62,7 @@ export const MyDatepicker = ({withoutForm, name, label, disabled, required, mess
                     value={value ? moment(value, 'YYYY-MM-DD') : ''}
                     {...props}
                     className='w-100'
+                    placeholder={placeholder}
                 /> :
                 <TimePicker
                     disabled={disabled || false}

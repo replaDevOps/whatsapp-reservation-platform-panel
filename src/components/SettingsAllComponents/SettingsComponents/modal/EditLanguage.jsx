@@ -3,12 +3,14 @@ import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, Row, Typography } from 'antd'
 import { MySelect } from '../../../Forms'
 import { languageopt } from '../../../../shared'
+import { useTranslation } from 'react-i18next'
 
 
 const { Title } = Typography
 const EditLanguage = ({visible,onClose,edititem}) => {
 
     const [form] = Form.useForm();
+    const {t} = useTranslation()
     useEffect(()=>{
         if(visible && edititem){
             form.setFieldsValue({
@@ -26,10 +28,10 @@ const EditLanguage = ({visible,onClose,edititem}) => {
             footer={
                 <Flex justify='end' gap={5}>
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
-                        Cancel
+                        {t("Cancel")}
                     </Button>
                     <Button type="primary" className='btnsave border0 text-white brand-bg' onClick={()=>form.submit()}>
-                        Save
+                        {t("Save")}
                     </Button>
                 </Flex>
             }
@@ -37,7 +39,7 @@ const EditLanguage = ({visible,onClose,edititem}) => {
             <Flex vertical gap={10}>
                 <Flex justify='space-between' gap={6}>
                     <Title level={5} className='m-0'>
-                        Language
+                        {t("Language")}
                     </Title>
                     <Button type='button' onClick={onClose} className='p-0 border-0 bg-transparent'>
                         <CloseOutlined className='fs-18' />
@@ -51,11 +53,11 @@ const EditLanguage = ({visible,onClose,edititem}) => {
                     <Row gutter={16}>
                         <Col span={24}>
                             <MySelect 
-                                label="Language" 
-                                name="language" 
-                                placeholder="Select Language"
+                                label={t("Language")} 
+                                name={"language"} 
+                                placeholder={t("Select Language")}
                                 required
-                                message='Please select language'
+                                message={t('Please select language')}
                                 options={languageopt}
                             />
                         </Col>

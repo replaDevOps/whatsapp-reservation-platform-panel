@@ -2,11 +2,15 @@ import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, Row, Typography } from 'antd'
 import { MyInput } from '../../../Forms'
+import { useTranslation } from 'react-i18next'
+import { toArabicDigits } from '../../../../shared'
 
 const { Title } = Typography
 const EditGeneralSettings = ({visible,onClose,edititem}) => {
 
     const [form] = Form.useForm();
+    const {t,i18n} = useTranslation()
+    const isArabic = i18n?.language === 'ar';
     useEffect(()=>{
         if(visible && edititem){
             form.setFieldsValue({
@@ -24,10 +28,10 @@ const EditGeneralSettings = ({visible,onClose,edititem}) => {
             footer={
                 <Flex justify='end' gap={5}>
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
-                        Cancel
+                        {t("Cancel")}
                     </Button>
                     <Button type="primary" className='btnsave border0 text-white brand-bg' onClick={()=>form.submit()}>
-                        Save
+                        {t("Save")}
                     </Button>
                 </Flex>
             }
@@ -35,7 +39,7 @@ const EditGeneralSettings = ({visible,onClose,edititem}) => {
             <Flex vertical gap={10}>
                 <Flex justify='space-between' gap={6}>
                     <Title level={5} className='m-0'>
-                        General Settings
+                        {t("General Settings")}
                     </Title>
                     <Button type='button' onClick={onClose} className='p-0 border-0 bg-transparent'>
                         <CloseOutlined className='fs-18' />
@@ -49,76 +53,76 @@ const EditGeneralSettings = ({visible,onClose,edititem}) => {
                     <Row gutter={16}>
                         <Col span={24}>
                             <MyInput 
-                                label="First Name" 
+                                label={t("First Name")} 
                                 name="firstName" 
                                 required
-                                message='Please enter your first name'
-                                placeholder='Enter first name'
+                                message={t('Please enter your first name')}
+                                placeholder={t('Enter first name')}
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="Last Name" 
+                                label={t("Last Name")} 
                                 name="lastName" 
                                 required
-                                message='Please enter your last name'
-                                placeholder='Enter last name'
+                                message={t('Please enter your last name')}
+                                placeholder={t('Enter last name')}
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput
                                 type='number' 
-                                label="Phone Number" 
+                                label={t("Phone Number")} 
                                 name="phoneNo" 
                                 required 
-                                message="Please enter phone number" 
-                                placeholder="Enter phone number" 
-                                addonBefore='+966 '
+                                message={t("Please enter phone number")} 
+                                placeholder={t("Enter phone number")} 
+                                addonBefore={ isArabic ? `${toArabicDigits(966)}+`: `+${966}`}
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="Email Address" 
+                                label={t("Email Address")} 
                                 name="email" 
                                 required 
-                                message="Please enter email address" 
-                                placeholder="Enter email address" 
+                                message={t("Please enter email address")} 
+                                placeholder={t("Enter email address")} 
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="Facebook" 
+                                label={t("Facebook")} 
                                 name="facebook" 
                                 required 
-                                message="Please enter facebook link" 
-                                placeholder="Enter facebook link" 
+                                message={t("Please enter facebook link")} 
+                                placeholder={t("Enter facebook link")} 
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="Instagram" 
+                                label={t("Instagram")} 
                                 name="instagram" 
                                 required 
-                                message="Please enter instagram link" 
-                                placeholder="Enter instagram link" 
+                                message={t("Please enter instagram link")} 
+                                placeholder={t("Enter instagram link")} 
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="X (twitter)" 
+                                label={t("X (twitter)")} 
                                 name="twitter"
                                 required 
-                                message="Please enter X (twitter) link" 
-                                placeholder="Enter X (twitter) link" 
+                                message={t("Please enter X (twitter) link")} 
+                                placeholder={t("Enter X (twitter) link")} 
                             />
                         </Col>
                         <Col span={24}>
                             <MyInput 
-                                label="WhatsApp" 
+                                label={t("WhatsApp")} 
                                 name="whatsapp" 
                                 required 
-                                message="Please enter whatsapp link" 
-                                placeholder="Enter whatsapp link" 
+                                message={t("Please enter whatsapp link")} 
+                                placeholder={t("Enter whatsapp link")} 
                             />
                         </Col>
                     </Row>

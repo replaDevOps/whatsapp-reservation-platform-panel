@@ -1,11 +1,14 @@
 import { Flex } from 'antd'
 import { AllBusinessTable, BreadCrumbCard, StatisticsCommonCards, TitleCard } from '../../components'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { BusinessTitle } from '../../shared'
 
 const AllBusinessPage = () => {
 
     const navigate = useNavigate()
-
+    const {t} = useTranslation()
+    const title = BusinessTitle({t})
     const cardsData = [
         {
             id: 1,
@@ -37,14 +40,14 @@ const AllBusinessPage = () => {
         <Flex vertical gap={10}>
             <BreadCrumbCard 
                 items={[
-                    { title: 'Business Management', },
-                    { title: 'All Businesses' },
+                    { title: title, },
+                    { title: t("All Businesses") },
                 ]}
             />
             <TitleCard 
-                title={'All Businesses'}
-                subtitle={'Manage all the businesses in your system'}
-                btntext={'Add Business'}
+                title={t("All Businesses")}
+                subtitle={t("Manage all the businesses in your system")}
+                btntext={t("Add Business")}
                 onClick={()=>navigate('/addbusiness')}
             />
             <StatisticsCommonCards 

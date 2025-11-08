@@ -7,11 +7,13 @@ import { MyDatepicker } from '../../../Forms';
 import moment from 'moment';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { MeetingNoteModal } from '../modal';
+import { useTranslation } from 'react-i18next';
 
 const { Text } = Typography;
 const DemoRequestTable = () => {
 
     const [pageSize, setPageSize] = useState(10);
+    const {t,i18n} = useTranslation()
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
@@ -59,8 +61,8 @@ const DemoRequestTable = () => {
             <Card className='radius-12 card-cs border-gray h-100'>
                 <Flex vertical gap={10} className='mb-2'>
                     <Flex vertical>
-                        <ModuleTopHeading level={4} name='Demo Requests' />
-                        <Text className='text-gray fs-13'>Manage all the Customers who contacted you via Book a Demo</Text>
+                        <ModuleTopHeading level={4} name={t("Demo Requests")} />
+                        <Text className='text-gray fs-13'>{t("Manage all the Customers who contacted you via Book a Demo")}</Text>
                     </Flex>
                     <Row gutter={[16, 16]} justify="space-between" align="middle">
                         <Col span={24} lg={12}>
@@ -69,7 +71,7 @@ const DemoRequestTable = () => {
                                     menu={{
                                         items: typeItems.map((item) => ({
                                             key: String(item.key),
-                                            label: item.label
+                                            label: t(item.label)
                                         })),
                                         onClick: handleTypeClick
                                     }}
@@ -77,7 +79,7 @@ const DemoRequestTable = () => {
                                 >
                                     <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                         <Flex justify="space-between" align="center" gap={30}>
-                                            {typeItems.find((i) => i.key === selectedType)?.label || "Type"}
+                                            {t(typeItems.find((i) => i.key === selectedType)?.label || "Type")}
                                             <DownOutlined />
                                         </Flex>
                                     </Button>
@@ -86,7 +88,7 @@ const DemoRequestTable = () => {
                                     menu={{
                                         items: statusItems.map((item) => ({
                                             key: String(item.key),
-                                            label: item.label
+                                            label: t(item.label)
                                         })),
                                         onClick: handleActionClick
                                     }}
@@ -94,7 +96,7 @@ const DemoRequestTable = () => {
                                 >
                                     <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                         <Flex justify="space-between" align="center" gap={30}>
-                                            {statusItems.find((i) => i.key === selectedAction)?.label || "Status"}
+                                            {t(statusItems.find((i) => i.key === selectedAction)?.label || "Status")}
                                             <DownOutlined />
                                         </Flex>
                                     </Button>
@@ -107,7 +109,7 @@ const DemoRequestTable = () => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder="Select Year"
+                                    placeholder={[t("Start Year"),t("Start Year")]}
                                     value={selectedYear}
                                     onChange={(year) => setSelectedYear(year)}
                                 />
@@ -118,9 +120,9 @@ const DemoRequestTable = () => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={demoreqColumns({handleStatusChange,setVisible})}
+                        columns={demoreqColumns({handleStatusChange,setVisible,t,i18n})}
                         dataSource={demoreqData}
-                        className='pagination table-cs table'
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1500 }}
                         rowHoverable={false}

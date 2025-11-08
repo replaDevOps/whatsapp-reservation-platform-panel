@@ -4,13 +4,17 @@ import ReactApexChart from 'react-apexcharts';
 import { ModuleTopHeading } from '../../PageComponent';
 import { DownOutlined } from '@ant-design/icons';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { toArabicDigits } from '../../../shared';
 
 const { Title, Text } = Typography;
 
 const TotalRegisteredBusiness = () => {
+  const {t,i18n} = useTranslation()
+  const isArabic = i18n?.language === 'ar'
   const [order, setOrder] = useState(0);
   const items = [
-    { label: <NavLink to={''}>This Month</NavLink>, key: 0 },
+    { label: <NavLink to={''}>{t("This Month")}</NavLink>, key: 0 },
   ];
 
   const onClick = ({ key }) => {
@@ -24,7 +28,7 @@ const TotalRegisteredBusiness = () => {
         type: 'donut',
         toolbar: { show: false },
       },
-      labels: ['Spa', 'Clinic', 'Barber', 'General'],
+      labels: [t("Spa"), t("Clinic"), t("Barber"), t("General")],
       colors: ['#007272', '#00BEBE', '#2CD9C5', '#7EF6F6'],
       stroke: {
         show: false,
@@ -60,25 +64,25 @@ const TotalRegisteredBusiness = () => {
     {
       id: 1,
       icon: '/assets/icons/spa-ic.webp',
-      title:'190',
+      title:190,
       subtitle:'Spa'
     },
     {
       id: 2,
       icon: '/assets/icons/clinic-ic.webp',
-      title:'190',
+      title:190,
       subtitle:'Clinic'
     },
     {
       id: 3,
       icon: '/assets/icons/barber-ic.webp',
-      title:'78',
+      title:78,
       subtitle:'Barber'
     },
     {
       id: 4,
       icon: '/assets/icons/general-ic.webp',
-      title:'78',
+      title: 78,
       subtitle:'General'
     },
   ]
@@ -88,8 +92,8 @@ const TotalRegisteredBusiness = () => {
       <Flex vertical gap={10}>
         <Flex justify="space-between" align="flex-start" wrap gap={10}>
           <Flex vertical>
-            <ModuleTopHeading level={4} name="Registered Business" />
-            <Text className="text-gray fs-13">Total Registered</Text>
+            <ModuleTopHeading level={4} name={t("Registered Business")} />
+            <Text className="text-gray fs-13">{t("Total Registered")}</Text>
           </Flex>
           <Flex justify="end" gap={10}>
             <Dropdown
@@ -99,7 +103,7 @@ const TotalRegisteredBusiness = () => {
             >
               <Button className="btncancel pad-x fs-13">
                 <Space size={10}>
-                  {order == 0 ? 'This Month' : ''}
+                  {order == 0 ? t("This Month") : ''}
                   <DownOutlined className="fs-12" />
                 </Space>
               </Button>
@@ -107,7 +111,7 @@ const TotalRegisteredBusiness = () => {
           </Flex>
         </Flex>
         <Title level={4} className="fw-500 text-black m-0">
-          2,000
+          {isArabic? toArabicDigits("2,000"):'2,000'}
         </Title>
       </Flex>
 
@@ -129,8 +133,8 @@ const TotalRegisteredBusiness = () => {
               <List.Item>
                 <List.Item.Meta
                   avatar={<img src={item?.icon} width={30} alt={item?.subtitle} />}
-                  title={<span className='fs-18'>{item?.title}</span>}
-                  description={item?.subtitle}
+                  title={<span className='fs-18'>{isArabic?toArabicDigits(item?.title):item?.title}</span>}
+                  description={t(item?.subtitle)}
                 />
               </List.Item>
               )}

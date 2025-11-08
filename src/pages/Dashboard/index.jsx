@@ -1,12 +1,15 @@
 import { Col, Flex, Row, Typography } from 'antd'
 import { BookingLineChart, CustomerLineChart, DashboardCards, MostBookTable, RevenueBarChart, TotalRegisteredBusiness } from '../../components';
+import { useTranslation } from 'react-i18next';
 
 const { Title } = Typography
 const Dashboard = () => {
+  const {t} = useTranslation()
+  
   return (
     <div>
       <Flex vertical gap={24}>
-        <Title level={4} className='m-0'>Welcome Back!</Title>
+        <Title level={4} className='m-0'>{t("Welcome Back!")}</Title>
         <DashboardCards />
         <BookingLineChart />
         <CustomerLineChart />

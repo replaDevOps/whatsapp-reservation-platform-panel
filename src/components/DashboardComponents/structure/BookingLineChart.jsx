@@ -4,17 +4,21 @@ import ReactApexChart from 'react-apexcharts';
 import { ModuleTopHeading } from '../../PageComponent';
 import { MyDatepicker } from '../../Forms';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
+import { toArabicDigits } from '../../../shared';
 
 const { Title, Text } = Typography
 const BookingLineChart = () => {
 
+    const {t,i18n} = useTranslation()
+    const isArabic = i18n?.language === 'ar'
     const [selectedYear, setSelectedYear] = useState(moment());
     const chartData = {
         series: [
-            { name: 'Spa', data: [0, 13, 17, 10, 15, 16, 25, 14, 17, 15, 12, 20] },
-            { name: 'Barber', data: [0, 25, 5, 20, 24, 22, 18, 25, 22, 10, 17, 21] },
-            { name: 'Clinic', data: [0, 5, 13, 8, 32, 35, 12, 28, 17, 20, 6, 14] },
-            { name: 'General', data: [0, 15, 21, 16, 12, 18,25, 17, 10, 25, 13, 3] },
+            { name: t("Spa"), data: [0, 13, 17, 10, 15, 16, 25, 14, 17, 15, 12, 20] },
+            { name: t("Barber"), data: [0, 25, 5, 20, 24, 22, 18, 25, 22, 10, 17, 21] },
+            { name: t("Clinic"), data: [0, 5, 13, 8, 32, 35, 12, 28, 17, 20, 6, 14] },
+            { name: t("General"), data: [0, 15, 21, 16, 12, 18,25, 17, 10, 25, 13, 3] },
         ],
         options: {
         chart: {
@@ -82,11 +86,11 @@ const BookingLineChart = () => {
         <Flex justify='space-between' align='flex-start' wrap gap={10}>
             <Flex vertical gap={10}>
                 <Flex vertical>
-                    <ModuleTopHeading level={4} name='Bookings' />
-                    <Text className='text-gray fs-13'>Spa VS Barber VS Clinic VS General</Text>
+                    <ModuleTopHeading level={4} name={t("Bookings")} />
+                    <Text className='text-gray fs-13'>{t("Spa VS Barber VS Clinic VS General")}</Text>
                 </Flex>
                 <Title level={4} className='fw-500 text-black m-0'>
-                    6820 <span className='text-bright-red fs-13 fw-400'>-9% then last month <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" /></span>
+                    {isArabic ? toArabicDigits(6820):6820} <span className='text-bright-red fs-13 fw-400'>{i18n?.language === 'ar' ? '9%-':'-9%'} {t("then last month")} <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" /></span>
                 </Title>
             </Flex>
             <Flex justify='end' gap={10}>
@@ -94,8 +98,8 @@ const BookingLineChart = () => {
                     withoutForm
                     rangePicker
                     className="datepicker-cs"
-                    placeholder="Select Year"
-                    value={selectedYear}
+                    placeholder={[t("Start Year"),t("End Year")]}
+                    value={(selectedYear)}
                     onChange={(year) => setSelectedYear(year)}
                 />
             </Flex>

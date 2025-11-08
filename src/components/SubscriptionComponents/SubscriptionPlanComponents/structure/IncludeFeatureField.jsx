@@ -1,6 +1,7 @@
 import { Row, Col, Space, Flex, Typography, Switch, Select } from "antd";
 import { useState, useEffect } from "react";
 import { MyInput } from "../../../Forms";
+import { useTranslation } from "react-i18next";
 
 const { Title } = Typography;
 export const IncludeFeatureField = ({
@@ -19,6 +20,7 @@ export const IncludeFeatureField = ({
     }) => {
         
     const [localValues, setLocalValues] = useState({});
+    const {t} = useTranslation()
 
     useEffect(() => {
         if (Object.keys(localValues).length === 0 && fields.length > 0) {
@@ -73,7 +75,7 @@ export const IncludeFeatureField = ({
                 {
                     title &&
                     <Col span={24}>
-                        <Title level={5} className="fw-500 m-0">{title}</Title>
+                        <Title level={5} className="fw-500 m-0">{t(title)}</Title>
                     </Col>
                 }
 
@@ -96,9 +98,9 @@ export const IncludeFeatureField = ({
                                     <MyInput
                                         withoutForm={!form}
                                         name={form ? [dayKey, name, "name"] : undefined}
-                                        placeholder={placeholder}
+                                        placeholder={t(placeholder)}
                                         required
-                                        message="Please enter value"
+                                        message={t("Please enter value")}
                                         disabled={!editable || !isActive || isRowDisabled}
                                         value={form ? undefined : current.value}
                                         onChange={(e) =>
@@ -114,7 +116,7 @@ export const IncludeFeatureField = ({
                                             >
                                                 {options.map((opt) => (
                                                     <Select.Option key={opt.value} value={opt.value}>
-                                                        {opt.label}
+                                                        {t(opt.label)}
                                                     </Select.Option>
                                                 ))}
                                             </Select>

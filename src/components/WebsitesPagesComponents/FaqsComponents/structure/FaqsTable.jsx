@@ -17,6 +17,7 @@ import {
 } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { CSS } from '@dnd-kit/utilities';
+import { useTranslation } from 'react-i18next';
 
 const DraggableRow = (props) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -49,6 +50,7 @@ const DraggableRow = (props) => {
 const FaqsTable = ({ visible, setVisible }) => {
 
     const [dataSource, setDataSource] = useState(faqsData);
+    const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [editItem, setEditItem] = useState(null);
@@ -91,7 +93,7 @@ const FaqsTable = ({ visible, setVisible }) => {
                     >
                         <Table
                             size="large"
-                            columns={faqColumns({ setVisible, setEditItem, setDeleteItem })}
+                            columns={faqColumns({ setVisible, setEditItem, setDeleteItem,t })}
                             dataSource={dataSource}
                             pagination={false}
                             rowHoverable={false}
@@ -101,7 +103,7 @@ const FaqsTable = ({ visible, setVisible }) => {
                                 row: DraggableRow,
                             },
                             }}
-                            className="pagination table-cs table"
+                            className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         />
                     </SortableContext>
                 </DndContext>
@@ -117,8 +119,8 @@ const FaqsTable = ({ visible, setVisible }) => {
             visible={visible}
             edititem={editItem}
             onClose={() => {
-            setVisible(false);
-            setEditItem(null);
+                setVisible(false);
+                setEditItem(null);
             }}
         />
         <DeleteModal

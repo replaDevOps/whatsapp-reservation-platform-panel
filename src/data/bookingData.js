@@ -4,7 +4,7 @@ export const bookingData = [
         bookingId: 405812,
         businessName: 'Mirava Spine Clinic',
         branchName: 'Branch Name 06',
-        customer: { name: 'Nadeem Abbas', phone: '+966 110 113 087' },
+        customer: { name: 'Nadeem Abbas', phone: '110 113 087' },
         services: 'Physiotherapy Session',
         serviceProvider: 'Nadeem Abbas',
         dateTime: '05/21/21 9:00am',

@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeftOutlined, EditFilled } from '@ant-design/icons'
+import { ArrowLeftOutlined, ArrowRightOutlined, EditFilled } from '@ant-design/icons'
 import { Button, Card, Col, Flex, Form, Row, Select, Typography } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
 import { MyInput, MySelect, SingleFileUpload } from '../../../Forms'
 import { stafftableData } from '../../../../data'
-import { rolestaffopt } from '../../../../shared'
+import { BusinessTitle, rolestaffopt, toArabicDigits } from '../../../../shared'
 import { BreadCrumbCard } from '../../../Ui'
+import { useTranslation } from 'react-i18next'
 
-const { Text, Title } = Typography
+const { Title } = Typography
 const AddEditStaff = () => {
 
     const navigate = useNavigate()
+    const {t,i18n} = useTranslation()
+    const isArabic = i18n?.language === 'ar';
+    const title = BusinessTitle({t})
     const [form] = Form.useForm();
     const { id } = useParams()
     const editdetail = stafftableData?.find((list)=>list?.key === Number(id))
@@ -37,17 +41,17 @@ const AddEditStaff = () => {
         <Flex vertical gap={10}>
             <BreadCrumbCard 
                 items={[
-                    { title: 'Staff Management', },
-                    { title: 'Staffs' },
+                    { title: title },
+                    { title: t('Staffs') },
                 ]}
             />
             <Card className='card-bg card-cs radius-12 border-gray'>
                 <Flex gap={10} vertical>
                     <Flex gap={10} align="center">
                         <Button className="border-0 p-0 bg-transparent" onClick={() => navigate("/staff")}>
-                            <ArrowLeftOutlined />
+                            {i18n?.language === 'ar' ? <ArrowRightOutlined />:<ArrowLeftOutlined />}
                         </Button>
-                        <Title level={4} className="fw-500 m-0">{ editdetail ? editdetail?.staffName : 'Add Staff' }</Title>
+                        <Title level={4} className="fw-500 m-0">{ editdetail ? editdetail?.staffName : t('Add Staff') }</Title>
                     </Flex>
                     <Form layout="vertical" 
                         form={form} 
@@ -60,7 +64,7 @@ const AddEditStaff = () => {
                                     !previewimage ?
                                     <SingleFileUpload
                                         name="document"
-                                        title="Upload Image"
+                                        title={t("Upload Image")}
                                         form={form}
                                         onUpload={(file) => console.log("uploading:", file)}
                                         align="center"
@@ -75,7 +79,7 @@ const AddEditStaff = () => {
                                         />
                                         <div>
                                             <Button type="link" className='fs-13 text-brand' onClick={handleChangeImage}>
-                                                <EditFilled /> Edit
+                                                <EditFilled /> {t("Edit")}
                                             </Button>
                                         </div>
                                     </Flex>
@@ -84,27 +88,36 @@ const AddEditStaff = () => {
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput 
-                                    label="Name" 
+                                    label={t("Name")} 
                                     name="name" 
                                     required 
-                                    message="Please enter name" 
-                                    placeholder="Enter name" 
+                                    message={t("Please enter name")} 
+                                    placeholder={t("Enter name")} 
                                 />
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput
-                                    label="Phone Number"
+                                    label={t("Phone Number")}
                                     name="phoneNo"
                                     required
-                                    message="Please enter a valid phone number"
+                                    message={t("Please enter a valid phone number")}
                                     addonBefore={
                                         <Select
-                                            defaultValue="+966"
-                                            className='w-80'
-                                            onChange={(value) => form.setFieldsValue({ countryCode: value })}
-                                        >
-                                            <Select.Option value="sa">+966</Select.Option>
-                                            <Select.Option value="ae">+955</Select.Option>
+                                            defaultValue="sa"
+                                            className="w-80"
+                                            onChange={(value) =>
+                                                form.setFieldsValue({
+                                                countryCode: value,
+                                                })
+                                            }
+                                            >
+                                            <Select.Option value="sa">
+                                                +{isArabic ? toArabicDigits(966) : 966}
+                                            </Select.Option>
+
+                                            <Select.Option value="ae">
+                                                +{isArabic ? toArabicDigits(971) : 971}
+                                            </Select.Option>
                                         </Select>
                                     }
                                     placeholder="3445592382"
@@ -114,39 +127,39 @@ const AddEditStaff = () => {
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput 
-                                    label="Email Address" 
+                                    label={t("Email Address")} 
                                     name="email" 
                                     required 
-                                    message="Please enter email address" 
-                                    placeholder="Enter email address" 
+                                    message={t("Please enter email address")} 
+                                    placeholder={t("Enter email address")} 
                                 />
                             </Col>
                             <Col span={24} md={12}>
                                 <MyInput 
                                     type='password'
-                                    label="Password" 
+                                    label={"Password"} 
                                     name="password" 
                                     required 
-                                    message="Please enter password" 
-                                    placeholder="Enter password" 
+                                    message={t("Please enter password")} 
+                                    placeholder={t("Enter password")} 
                                 />
                             </Col>
                             <Col span={24}>
                                 <MySelect 
-                                    label={'Role'}
+                                    label={t('Role')}
                                     name={'role'}
                                     required
-                                    message='Please choose role'
+                                    message={t('Please choose role')}
                                     options={rolestaffopt}
                                 />
                             </Col>
                             <Col span={24}>
                                 <Flex justify='end' gap={5} >
                                     <Button type='button' className='btncancel text-black border-gray' >
-                                        Cancel
+                                        {t("Cancel")}
                                     </Button>
                                     <Button htmlType='submit' className={`btnsave border-0 text-white brand-bg`}>
-                                        {editdetail ? 'Update':'Save'}
+                                        {t(editdetail ? 'Update':'Save')}
                                     </Button>
                                 </Flex>
                             </Col>

@@ -1,11 +1,12 @@
 import { DownOutlined, HolderOutlined } from "@ant-design/icons";
-import { Avatar, Button, Dropdown, Flex, Rate, Tag, Tooltip, Typography } from "antd";
+import { Avatar, Button, Dropdown, Flex, Tag, Tooltip, Typography } from "antd";
 import { NavLink } from "react-router-dom";
+import { toArabicDigits } from "../shared";
 
 const { Text } = Typography
-const BookingDashboardColumn = [
+const BookingDashboardColumn = ({t,i18n})=> [
     {
-        title: 'Business Name',
+        title: t("Business Name"),
         dataIndex: 'businessName',
         render: (businessName) => {
             const words = businessName?.split(' ') || [];
@@ -25,76 +26,96 @@ const BookingDashboardColumn = [
         }
     },
     {
-        title: 'Type',
+        title: t("Type"),
         dataIndex: 'type',
+        render: (totalBooking) => t(totalBooking)
     },
     {
-      title: "Total Bookings",
-      dataIndex: "totalBooking",
+        title: t("Total Bookings"),
+        dataIndex: "totalBooking",
+        render: (totalBooking) =>
+            i18n.language === "ar" ? toArabicDigits(totalBooking) : totalBooking
     },
 ];
 
-const customerColumn = [
+const customerColumn = ({t,i18n})=> [
     {
-        title: 'First Name',
+        title: t("First Name"),
         dataIndex: 'firstName',
     },
     {
-        title: 'Last Name',
+        title: t("Last Name"),
         dataIndex: 'lastName',
     },
     {
-        title: 'Email Address',
+        title: t("Email Address"),
         dataIndex: 'email', 
     },
     {
-        title: 'Phone Number',
+        title: t("Phone Number"),
         dataIndex: 'phoneNo',
+        render: (phoneNo) => {
+        if (!phoneNo) return '';
+        
+        const prefix = '+';
+        return i18n.language === "ar" 
+            ? `${prefix}${toArabicDigits(phoneNo)}`
+            : `${prefix}${phoneNo}`;
+        }
     },
     {
-        title: 'Joined At',
+        title: t("Joined At"),
         dataIndex: 'joinedAt',
+        render: (joinedAt) => i18n.language === "ar" ? toArabicDigits(joinedAt) : joinedAt
     },
 ];
 
-const stafftableColumn = ({navigate, setDeleteItem, setStatusChange}) => [
+const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => [
     {
-        title: 'Image',
+        title: t("Image"),
         dataIndex: 'img',
         render:(img) => <Avatar src={img} size={40} />,
         width: 100
     },
     {
-        title: 'Staff Name',
+        title: t("Staff Name"),
         dataIndex: 'staffName',
     },
     {
-        title: 'Phone Number',
+        title: t("Phone Number"),
         dataIndex: 'phoneNo',
+        render: (phoneNo) => {
+        if (!phoneNo) return '';
+        
+        const prefix = '+';
+        return i18n.language === "ar" 
+            ? `${prefix}${toArabicDigits(phoneNo)}`
+            : `${prefix}${phoneNo}`;
+        }
     },
     {
-        title: 'Email Address',
+        title: t("Email Address"),
         dataIndex: 'email',
     },
     {
-        title: 'Role',
+        title: t("Role"),
         dataIndex: 'role',
     },
     {
-        title: 'Status',
+        title: t("Status"),
         dataIndex: 'status',
         render: (status) => {
             return (
                 status === 'Active' ? (
-                    <Text className='btnpill fs-12 success'>Active</Text>
+                    <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
-                    <Text className='btnpill fs-12 inactive'>Inactive</Text>
+                    <Text className='btnpill fs-12 inactive'>{t("Inactive")}</Text>
                 )
             );
         }
     },
     {
-        title: 'Action',
+        title: t("Action"),
         key: "action",
         fixed: "right",
         width: 100,
@@ -102,10 +123,10 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange}) => [
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/staff/staffmanagement/editstaff/'+row?.key)}}>Edit</NavLink>, key: '1' },
-                        row?.status === 'Active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>Inactive</NavLink>, key: '2' },
-                        row?.status === 'Inactive' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>Active</NavLink>, key: '2a' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true) }}>Delete</NavLink>, key: '3' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/staff/staffmanagement/editstaff/'+row?.key)}}>{t("Edit")}</NavLink>, key: '1' },
+                        row?.status === 'Active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Inactive")}</NavLink>, key: '2' },
+                        row?.status === 'Inactive' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Active")}</NavLink>, key: '2a' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true) }}>{t("Delete")}</NavLink>, key: '3' },
                     ],
                 }}
                 trigger={['click']}
@@ -120,34 +141,38 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange}) => [
 
 
 
-const bookingColumn = [
+const bookingColumn = ({t,i18n})=> [
     {
-        title: 'Bookings ID',
+        title: t("Bookings ID"),
         dataIndex: 'bookingId',
     },
     {
-        title: 'Business Name',
+        title: t("Business Name"),
         dataIndex: 'businessName',
     },
     {
-        title: 'Branch Name',
+        title: t("Branch Name"),
         dataIndex: 'branchName',
     },
     {
-        title: 'Customer Name',
+        title: t("Customer Name"),
         dataIndex: 'customer',
         render: (customer) => {
+            const phone = customer?.phone || "";
+
             return (
                 <Flex align="center" gap={5}>
-                    {customer?.name }
-                    <img src="/assets/icons/cr.webp" alt="circle" width={4} height={4} />
-                    { `+996`+customer?.phone}
+                {customer?.name}
+                <img src="/assets/icons/cr.webp" alt="circle" width={4} height={4} />
+                {i18n.language === "ar"
+                    ?toArabicDigits(`+966 ${phone}`)
+                    :`+966 ${phone}`}
                 </Flex>
-            )
+            );
         }
     },
     {
-        title: 'Services',
+        title: t("Services"),
         dataIndex: 'services',
         render: (services) => {
             return(
@@ -156,41 +181,54 @@ const bookingColumn = [
         } 
     },
     {
-        title: 'Service Provider',
+        title: t("Service Provider"),
         dataIndex: 'serviceProvider',
     },
     {
-        title: 'Date & Time',
-        dataIndex: 'dateTime'
+        title: t("Date & Time"),
+        dataIndex: 'dateTime',
+        render: (dateTime) => {
+            if (!dateTime) return '';
+
+            if (i18n?.language === 'ar') {
+            let arabicDate = toArabicDigits(dateTime)
+                .replace('AM', 'ص')
+                .replace('PM', 'م')
+                .replace('am', 'ص')
+                .replace('pm', 'م');
+                return arabicDate;
+            }
+            return dateTime;
+        }
     },
     {
-        title: 'Status',
+        title: t("Status"),
         dataIndex: 'status',
         render: (status) => {
             return (
                 status === 'completed' ? (
-                    <Text className='btnpill fs-12 success'>Completed</Text>
+                    <Text className='btnpill fs-12 success'>{t("Completed")}</Text>
                 ) : status === 'cancelled' ? (
-                    <Text className='btnpill fs-12 inactive'>Cancelled</Text>
+                    <Text className='btnpill fs-12 inactive'>{t("Cancelled")}</Text>
                 ) : status === 'pending' ? (
-                    <Text className='btnpill fs-12 pending-brown'>Pending</Text>
+                    <Text className='btnpill fs-12 pending-brown'>{t("Pending")}</Text>
                 ) : status === 'in-progress' ? (
-                    <Text className='btnpill fs-12 dsasellerpending'>In-Progress</Text>
+                    <Text className='btnpill fs-12 dsasellerpending'>{t("In-Progress")}</Text>
                 ) : (
-                    <Text className='btnpill fs-12 branded'>No Show</Text>
+                    <Text className='btnpill fs-12 branded'>{t("No Show")}</Text>
                 )
             );
         }
     },
 ]
 
-const revenueColumns = [
+const revenueColumns = ({t,i18n})=> [
     {
-        title: 'Business ID',
+        title: t("Business ID"),
         dataIndex: 'businessId',
     },
     {
-        title: 'Business Logo',
+        title: t("Business Logo"),
         dataIndex: 'businessLogo',
         render: (businessLogo) => {
             return (
@@ -199,75 +237,86 @@ const revenueColumns = [
         }
     },
     {
-        title: 'Business Name',
+        title: t("Business Name"),
         dataIndex: 'businessName',
     },
     {
-        title: 'Type',
+        title: t("Type"),
         dataIndex: 'type',
     },
     {
-        title: 'Subscription Plan',
+        title: t("Subscription Plan"),
         dataIndex: 'subscriptionPlan',
         render: (subscriptionPlan) => {
             return (
                 subscriptionPlan === 'bp' ? (
-                    <Text className='sm-pill text-white fs-12 bg-basic-color'>BP</Text>
+                    <Text className='sm-pill text-white fs-12 bg-basic-color'>{t("BP")}</Text>
                 ) : subscriptionPlan === 'PP' ? (
-                    <Text className='sm-pill text-white fs-12 bg-red'>PP</Text>
+                    <Text className='sm-pill text-white fs-12 bg-red'>{t("PP")}</Text>
                 ) : subscriptionPlan === 'sp' ? (
-                    <Text className='sm-pill text-white fs-12 bg-violet'>SP</Text>
+                    <Text className='sm-pill text-white fs-12 bg-violet'>{t("SP")}</Text>
                 ) : (
-                    <Text className='sm-pill text-white fs-12 bg-apple-green'>EP</Text>
+                    <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("EP")}</Text>
                 )
             );
         }
     },
     {
-        title: 'Period',
+        title: t("Period"),
         dataIndex: 'period',
+        render:(period)=> t(period)
     },
     {
-        title: 'Discount',
+        title: t("Discount"),
         dataIndex: 'discount',
         render: (discount) => discount === null ? '--' : discount
     },
     {
-        title: 'Price',
+        title: t("Price"),
         dataIndex: 'price',
         render: (price) => {
+            const isArabic = i18n.language === "ar"
             return (
                 <Flex align="flex-end" gap={5}>
-                    {price?.current} <sup><Text className="fs-12" delete>{price?.original}</Text></sup>
+                    {t("SAR")} {isArabic ? toArabicDigits(price?.current): price?.current} <sup><Text className="fs-12" delete>{isArabic ? toArabicDigits(price?.original): price?.original}</Text></sup>
                 </Flex>
             )
         }
     },
     {
-        title: 'Purchasing Date',
-        dataIndex: 'purchasingDate'
+        title: t("Purchasing Date"),
+        dataIndex: 'purchasingDate',
+        render: (purchasingDate) => i18n.language === "ar" ? toArabicDigits(purchasingDate) : purchasingDate
     },
 ]
 
-const demoreqColumns = ({setVisible,handleStatusChange}) => [
+const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
     {
-        title: 'Customer Name',
+        title: t("Customer Name"),
         dataIndex: 'customerName',
     },
     {
-        title: 'Email Address',
+        title: t("Email Address"),
         dataIndex: 'email',
     },
     {
-        title: 'Phone Number',
+        title: t("Phone Number"),
         dataIndex: 'phoneNo',
+        render: (phoneNo) => {
+        if (!phoneNo) return '';
+        
+        const prefix = '+';
+        return i18n.language === "ar" 
+            ? `${prefix}${toArabicDigits(phoneNo)}`
+            : `${prefix}${phoneNo}`;
+        }
     },
     {
-        title: 'Business Type',
+        title: t("Business Type"),
         dataIndex: 'type',
     },
     {
-        title: 'Message',
+        title: t("Message"),
         dataIndex: 'message',
         render: (message) => {
             const words = message?.split(' ') || [];
@@ -285,11 +334,12 @@ const demoreqColumns = ({setVisible,handleStatusChange}) => [
         }
     },
     {
-        title: 'Date',
+        title: t("Date"),
         dataIndex: 'date',
+        render: (date) => i18n.language === "ar" ? toArabicDigits(date) : date
     },
     {
-        title: 'Note',
+        title: t("Note"),
         dataIndex: 'note',
         render: (note) => {
             const words = note.split(' ') || [];
@@ -306,7 +356,7 @@ const demoreqColumns = ({setVisible,handleStatusChange}) => [
         }
     },
     {
-    title: 'Status',
+    title: t("Status"),
     dataIndex: 'status',
     render: (status, row) => {
         const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
@@ -326,7 +376,7 @@ const demoreqColumns = ({setVisible,handleStatusChange}) => [
                                             setVisible(true)
                                         }}
                                     >
-                                        Contacted
+                                        {t("Contacted")}
                                     </NavLink>
                                 ),
                                 key: 'contacted',
@@ -336,12 +386,12 @@ const demoreqColumns = ({setVisible,handleStatusChange}) => [
                     trigger={['click']}
                 >
                     <Flex gap={5} justify="space-between" className="btnpill fs-12 dsasellerpending cursor">
-                        {formattedStatus}
+                        {t(formattedStatus)}
                         <DownOutlined />
                     </Flex>
                 </Dropdown>
             ) : (
-                <Text className="btnpill fs-12 success">{formattedStatus}</Text>
+                <Text className="btnpill fs-12 success">{t(formattedStatus)}</Text>
             )
         );
     },
@@ -350,13 +400,13 @@ const demoreqColumns = ({setVisible,handleStatusChange}) => [
 ]
 
 
-const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew  }) => [
+const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew, t, i18n  }) => [
     {
-        title: 'Business ID',
+        title: t('Business ID'),
         dataIndex: 'businessId',
     },
     {
-        title: 'Business Logo',
+        title: t('Business Logo'),
         dataIndex: 'businessLogo',
         render: (businessLogo) => {
             return (
@@ -365,58 +415,62 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew 
         }
     },
     {
-        title: 'Business Name',
+        title: t('Business Name'),
         dataIndex: 'businessName',
         width: 200
     },
     {
-        title: 'Type',
+        title: t('Type'),
         dataIndex: 'type',
+        render:(type)=> t(type)
     },
     {
-        title: 'Subscription Plan',
+        title: t('Subscription Plan'),
         dataIndex: 'subscriptionPlan',
         render: (subscriptionPlan) => {
             return (
                 subscriptionPlan === 'bp' ? (
-                    <Text className='sm-pill text-white fs-12 bg-basic-color'>BP</Text>
+                    <Text className='sm-pill text-white fs-12 bg-basic-color'>{t("BP")}</Text>
                 ) : subscriptionPlan === 'PP' ? (
-                    <Text className='sm-pill text-white fs-12 bg-red'>PP</Text>
+                    <Text className='sm-pill text-white fs-12 bg-red'>{t("PP")}</Text>
                 ) : subscriptionPlan === 'sp' ? (
-                    <Text className='sm-pill text-white fs-12 bg-violet'>SP</Text>
+                    <Text className='sm-pill text-white fs-12 bg-violet'>{t("SP")}</Text>
                 ) : (
-                    <Text className='sm-pill text-white fs-12 bg-apple-green'>EP</Text>
+                    <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("EP")}</Text>
                 )
             );
         }
     },
     {
-        title: 'Period',
+        title: t('Period'),
         dataIndex: 'period',
+        render:(period)=> t(period)
     },
     {
-        title: 'Start Date',
+        title: t('Start Date'),
         dataIndex: 'startDate',
+        render: (startDate) => i18n.language === "ar" ? toArabicDigits(startDate) : startDate
     },
     {
-        title: 'Expiry Date',
+        title: t('Expiry Date'),
         dataIndex: 'expiryDate',
+        render: (expiryDate) => i18n.language === "ar" ? toArabicDigits(expiryDate) : expiryDate
     },
     {
-        title: 'Status',
+        title: t('Status'),
         dataIndex: 'status',
         render: (status) => {
             return (
                 status === 'Active' ? (
-                    <Text className='btnpill fs-12 success'>Active</Text>
+                    <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
-                    <Text className='btnpill fs-12 inactive'>Expires</Text>
+                    <Text className='btnpill fs-12 inactive'>{t("Expires")}</Text>
                 )
             );
         }
     },
     {
-        title: 'Action',
+        title: t('Action'),
         key: "action",
         fixed: "right",
         width: 100,
@@ -424,11 +478,11 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew 
             <Dropdown
                 menu={{
                     items: [
-                        row?.status === 'Active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>Edit Package</NavLink>, key: '1' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setIsRenew(true); setEditItem(row)}}>Renew Package</NavLink>, key: '2' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setUpgradePlan(true); setEditItem(row) }}>Upgrade Package</NavLink>, key: '3' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault();  }}>Download Invoice</NavLink>, key: '4' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); }}>Send Reminder</NavLink>, key: '5' },
+                        row?.status === 'Active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>{t("Edit Package")}</NavLink>, key: '1' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setIsRenew(true); setEditItem(row)}}>{t("Renew Package")}</NavLink>, key: '2' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setUpgradePlan(true); setEditItem(row) }}>{t("Upgrade Package")}</NavLink>, key: '3' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault();  }}>{t("Download Invoice")}</NavLink>, key: '4' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); }}>{t("Send Reminder")}</NavLink>, key: '5' },
                     ],
                 }}
                 trigger={['click']}
@@ -441,37 +495,39 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew 
     },
 ]
 
-const discountColumns = ({ setVisible, setEditItem, setExpireItem }) => [
+const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
     {
-        title: 'Discount Code',
+        title: t('Discount Code'),
         dataIndex: 'discountCode',
     },
     {
-        title: 'Group',
+        title: t('Group'),
         dataIndex: 'group',
         render: (group) => {
             return (
-                <Tag className="sm-pill radius-20 fs-12">{group}</Tag>
+                <Tag className="sm-pill radius-20 fs-12">{t(group)}</Tag>
             )
         }
     },
     {
-        title: 'Type',
+        title: t('Type'),
         dataIndex: 'type',
+        render: (type) => t(type)
     },
     {
-        title: 'Value',
+        title: t('Value'),
         dataIndex: 'value',
+        render: (value) => i18n.language === "ar" ? toArabicDigits(value) : value
     },
     {
-        title: 'Subscription Plan',
+        title: t('Subscription Plan'),
         dataIndex: 'subscriptionPlan',
         render: (subscriptionPlan) => {
             return (
                 <Flex gap={5} wrap>
                     {
                         subscriptionPlan?.map((items,index)=>
-                            <Tag key={index} className="sm-pill radius-20 fs-12">{items}</Tag>
+                            <Tag key={index} className="sm-pill radius-20 fs-12">{t(items)}</Tag>
                         )
                     }
                 </Flex>
@@ -479,32 +535,35 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem }) => [
         }
     },
     {
-        title: 'Used / Limit',
+        title: t('Used / Limit'),
         dataIndex: 'usedLimit',
+        render: (usedLimit) => i18n.language === "ar" ? toArabicDigits(usedLimit) : usedLimit
     },
     {
-        title: 'Start Date',
+        title: t('Start Date'),
         dataIndex: 'startDate',
+        render: (startDate) => i18n.language === "ar" ? toArabicDigits(startDate) : startDate
     },
     {
-        title: 'End Date',
+        title: t('End Date'),
         dataIndex: 'endDate',
+        render: (endDate) => i18n.language === "ar" ? toArabicDigits(endDate) : endDate
     },
     {
-        title: 'Status',
+        title: t('Status'),
         dataIndex: 'status',
         render: (status) => {
             return (
                 status === 'Active' ? (
-                    <Text className='btnpill fs-12 success'>Active</Text>
+                    <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
-                    <Text className='btnpill fs-12 inactive'>Expire</Text>
+                    <Text className='btnpill fs-12 inactive'>{t("Expire")}</Text>
                 )
             );
         }
     },
     {
-        title: 'Action',
+        title: t('Action'),
         key: "action",
         fixed: "right",
         width: 100,
@@ -512,8 +571,8 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem }) => [
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>Edit</NavLink>, key: '1' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setExpireItem(true)}}>Expire</NavLink>, key: '2' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>{t("Edit")}</NavLink>, key: '1' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setExpireItem(true)}}>{t("Expire")}</NavLink>, key: '2' },
                     ]
                 }}
                 trigger={['click']}
@@ -526,9 +585,9 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem }) => [
     },
 ]
 
-const faqColumns = ({ setVisible, setEditItem, setDeleteItem }) => [
+const faqColumns = ({ setVisible, setEditItem, setDeleteItem,t }) => [
     {
-        title: 'Question',
+        title: t('Question'),
         dataIndex: 'question',
         width: 300,
         render: (question) => {
@@ -540,7 +599,7 @@ const faqColumns = ({ setVisible, setEditItem, setDeleteItem }) => [
         }
     },
     {
-        title: 'Answer',
+        title: t('Answer'),
         dataIndex: 'answer',
         render: (answer) => {
             const words = answer?.split(' ') || [];
@@ -557,7 +616,7 @@ const faqColumns = ({ setVisible, setEditItem, setDeleteItem }) => [
         }
     },
     {
-        title: 'Action',
+        title: t('Action'),
         key: "action",
         fixed: "right",
         width: 100,
@@ -565,8 +624,8 @@ const faqColumns = ({ setVisible, setEditItem, setDeleteItem }) => [
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>Edit</NavLink>, key: '1' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true)}}>Delete</NavLink>, key: '2' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>{t("Edit")}</NavLink>, key: '1' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true)}}>{t("Delete")}</NavLink>, key: '2' },
                     ]
                 }}
                 trigger={['click']}
@@ -580,61 +639,90 @@ const faqColumns = ({ setVisible, setEditItem, setDeleteItem }) => [
 ]
 
 
-const activitylogColumn = [
+const activitylogColumn = ({t,i18n})=> [
     {
-        title: 'Name',
+        title: t('Name'),
         dataIndex: 'name',
     },
     {
-        title: 'Role',
+        title: t('Role'),
         dataIndex: 'role',
+        render:(role) => t(role)
     },
     {
-        title: 'Action',
+        title: t('Action'),
         dataIndex: 'action',
+        render:(action) => t(action)
     },
     {
-        title: 'Activity',
+        title: t('Activity'),
         dataIndex: 'activity',
     },
     {
-        title: 'Date & Time',
+        title: t('Date & Time'),
         dataIndex: 'dateTime',
-    },
+        render: (dateTime) => {
+            if (!dateTime) return '';
+
+            if (i18n?.language === 'ar') {
+            let arabicDate = toArabicDigits(dateTime)
+                .replace('AM', 'ص')
+                .replace('PM', 'م')
+                .replace('am', 'ص')
+                .replace('pm', 'م');
+                return arabicDate;
+            }
+            return dateTime;
+        }
+    }
 ]
 
 
-const discountactivityColumn = [
+const discountactivityColumn = ({t,i18n})=> [
     {
-        title: 'Discount Code',
+        title: t('Discount Code'),
         dataIndex: 'discountCode',
     },
     {
-        title: 'Customer Name',
+        title: t('Customer Name'),
         dataIndex: 'customerName',
     },
     {
-        title: 'Business Name',
+        title: t('Business Name'),
         dataIndex: 'businessName',
     },
     {
-        title: 'Group',
+        title: t('Group'),
         dataIndex: 'group',
+        render:(group) => t(group)
     },
     {
         title: 'Date & Time',
         dataIndex: 'dateTime',
+        render: (dateTime) => {
+            if (!dateTime) return '';
+
+            if (i18n?.language === 'ar') {
+            let arabicDate = toArabicDigits(dateTime)
+                .replace('AM', 'ص')
+                .replace('PM', 'م')
+                .replace('am', 'ص')
+                .replace('pm', 'م');
+                return arabicDate;
+            }
+            return dateTime;
+        }
     },
 ]
 
 
-const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate }) => [
+const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) => [
     {
-        title: 'Business ID',
+        title: t("Business ID"),
         dataIndex: 'businessId',
     },
     {
-        title: 'Business Logo',
+        title: t("Business Logo"),
         dataIndex: 'businessLogo',
         render: (businessLogo) => {
             return (
@@ -643,54 +731,55 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate }) => [
         }
     },
     {
-        title: 'Business Name',
+        title: t("Business Name"),
         dataIndex: 'businessName',
         width: 200
     },
     {
-        title: 'Type',
+        title: t("Type"),
         dataIndex: 'type',
     },
     {
-        title: 'Customer Name',
+        title: t("Customer Name"),
         dataIndex: 'customerName',
     },
     {
-        title: 'Subscription Plan',
+        title: t("Subscription Plan"),
         dataIndex: 'subscriptionPlan',
         render: (subscriptionPlan) => {
             return (
                 subscriptionPlan === 'basicplan' ? (
-                    <Text className='sm-pill text-white fs-12 bg-basic-color'>Basic Plan</Text>
+                    <Text className='sm-pill text-white fs-12 bg-basic-color'>{t("Basic Plan")}</Text>
                 ) : subscriptionPlan === 'proplan' ? (
-                    <Text className='sm-pill text-white fs-12 bg-red'>Pro Plan</Text>
+                    <Text className='sm-pill text-white fs-12 bg-red'>{t("Pro Plan")}</Text>
                 ) : subscriptionPlan === 'standardplan' ? (
-                    <Text className='sm-pill text-white fs-12 bg-violet'>Standard Plan</Text>
+                    <Text className='sm-pill text-white fs-12 bg-violet'>{t("Standard Plan")}</Text>
                 ) : (
-                    <Text className='sm-pill text-white fs-12 bg-apple-green'>Enterprise Plan</Text>
+                    <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("Enterprise Plan")}</Text>
                 )
             );
         }
     },
     {
-        title: 'Status',
+        title: t("Status"),
         dataIndex: 'status',
         render: (status) => {
             return (
                 status === 'active' ? (
-                    <Text className='btnpill fs-12 success'>Active</Text>
+                    <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
-                    <Text className='btnpill fs-12 inactive'>Deactive</Text>
+                    <Text className='btnpill fs-12 inactive'>{t("Deactive")}</Text>
                 )
             );
         }
     },
     {
-        title: 'Date',
+        title: t("Date"),
         dataIndex: 'date',
+        render: (date) => i18n.language === "ar" ? toArabicDigits(date) : date
     },
     {
-        title: 'Action',
+        title: t("Action"),
         key: "action",
         fixed: "right",
         width: 100,
@@ -698,10 +787,10 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate }) => [
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/allbusiness/viewbusiness/'+row?.key) }}>View</NavLink>, key: '1' },
-                        row?.status === 'active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>Inactive</NavLink>, key: '2' },
-                        row?.status === 'deactive' &&{ label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>Active</NavLink>, key: '3' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true) }}>Delete</NavLink>, key: '4' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/allbusiness/viewbusiness/'+row?.key) }}>{t("View")}</NavLink>, key: '1' },
+                        row?.status === 'active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Inactive")}</NavLink>, key: '2' },
+                        row?.status === 'deactive' &&{ label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Active")}</NavLink>, key: '3' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true) }}>{t("Delete")}</NavLink>, key: '4' },
                     ],
                 }}
                 trigger={['click']}
@@ -714,38 +803,40 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate }) => [
     },
 ]
 
-const singleviewColumns = ({ setViewItem }) => [
+const singleviewColumns = ({ setViewItem,t,i18n }) => [
     {
-        title: 'Branch Name',
+        title: t("Branch Name"),
         dataIndex: 'branchName',
     },
     {
-        title: 'Phone Number',
+        title: t("Phone Number"),
         dataIndex: 'phoneNo',
     },
     {
-        title: 'Location',
+        title: t("Location"),
         dataIndex: 'location',
     },
     {
-        title: 'Total Bookings',
+        title: t("Total Bookings"),
         dataIndex: 'totalBooking',
+        render: (totalBooking) =>
+            i18n.language === "ar" ? toArabicDigits(totalBooking) : totalBooking
     },
     {
-        title: 'Status',
+        title: t("Status"),
         dataIndex: 'status',
         render: (status) => {
             return (
                 status === 'active' ? (
-                    <Text className='btnpill fs-12 success'>Active</Text>
+                    <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
-                    <Text className='btnpill fs-12 inactive'>Inactive</Text>
+                    <Text className='btnpill fs-12 inactive'>{t("Inactive")}</Text>
                 )
             );
         }
     },
     {
-        title: 'Action',
+        title: t("Action"),
         key: "action",
         fixed: "right",
         width: 100,
@@ -753,7 +844,7 @@ const singleviewColumns = ({ setViewItem }) => [
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault();setViewItem(true)}}>View</NavLink>, key: '1' }
+                        { label: <NavLink onClick={(e) => {e.preventDefault();setViewItem(true)}}>{t("View")}</NavLink>, key: '1' }
                     ],
                 }}
                 trigger={['click']}
@@ -766,59 +857,65 @@ const singleviewColumns = ({ setViewItem }) => [
     },
 ]
 
-const businessserviceColumns = [
+const businessserviceColumns = ({t,i18n}) => [
     {
-        title: 'Service Name',
+        title: t("Service Name"),
         dataIndex: 'serviceName',
     },
     {
-        title: 'Duration (min)',
+        title: t("Duration (min)"),
         dataIndex: 'duration',
+        render: (duration) =>
+            i18n.language === "ar" ? toArabicDigits(duration) : duration
     },
     {
-        title: 'Buffer Time (min)',
+        title: t("Buffer Time (min)"),
         dataIndex: 'bufferTime',
+        render: (bufferTime) =>
+            i18n.language === "ar" ? toArabicDigits(bufferTime) : bufferTime
     },
     {
-        title: 'Price',
+        title: t("Price"),
         dataIndex: 'price',
+        render: (price) =>
+            i18n.language === "ar" ? toArabicDigits(price) : price
     },
     {
-        title: 'Status',
+        title: t("Status"),
         dataIndex: 'status',
         render: (status) => {
             return (
                 status === 'active' ? (
-                    <Text className='btnpill fs-12 success'>Active</Text>
+                    <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
-                    <Text className='btnpill fs-12 inactive'>Inactive</Text>
+                    <Text className='btnpill fs-12 inactive'>{t("Inactive")}</Text>
                 )
             );
         }
     },
 ]
 
-const businessstaffColumns = [
+const businessstaffColumns = ({t})=> [
     {
-        title: 'Image',
+        title: t("Image"),
         dataIndex: 'image',
         render:(image) => <Avatar src={image} size={40} />,
         width: 100
     },
     {
-        title: 'Staff Name',
+        title: t("Staff Name"),
         dataIndex: 'staffName',
     },
     {
-        title: 'Phone Number',
+        title: t("Phone Number"),
         dataIndex: 'phoneNo',
     },
     {
-        title: 'Role',
+        title: t("Role"),
         dataIndex: 'role',
     },
     {
-        title: 'Services',
+        title: t("Services"),
         dataIndex: 'services',
         render: (services) => {
             return (

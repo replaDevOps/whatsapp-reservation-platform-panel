@@ -5,10 +5,13 @@ import { message } from "antd";
 // import { LOGIN } from "../../graphql/mutation/login";
 import { useNavigate } from "react-router-dom";
 import { MyInput } from "../../components";
+import { LanguageChange } from "../Sidebar/LanguageChange";
+import { useTranslation } from "react-i18next";
 
 const { Title, Paragraph } = Typography;
 const LoginPage = () => {
     const navigate = useNavigate()
+    const {t} = useTranslation()
     const [messageApi, contextHolder] = message.useMessage();
     // const [loginUser, { loading, error }] = useMutation(LOGIN);
     const [form] = Form.useForm();
@@ -56,9 +59,9 @@ const LoginPage = () => {
                             </div>
                         </NavLink>
 
-                        <Title level={3} className="mb-1">Welcome Admin.</Title>
+                        <Title level={3} className="mb-1">{t("Welcome Admin.")}</Title>
                         <Paragraph className="fs-16">
-                            Please sign in to access your system and manage platform activities.
+                            {t("Please sign in to access your system and manage platform activities.")}
                         </Paragraph>
 
                         <Form layout="vertical" form={form} onFinish={handleFinish} requiredMark={false}
@@ -68,45 +71,48 @@ const LoginPage = () => {
                             }}
                         >
                             <MyInput 
-                                label="Email Address" 
+                                label={t("Email Address" )}
                                 name="email" 
                                 required 
-                                message="Please enter email address" 
-                                placeholder="Enter Email Address" 
+                                message={t("Please enter email address")} 
+                                placeholder={t("Enter Email Address")} 
                             />
                             <MyInput 
-                                label="Password" 
-                                type="password" 
+                                label={t("Password")} 
+                                type={"password"} 
                                 name="password" 
                                 required 
-                                message="Please enter password" 
-                                placeholder="Enter Password" 
+                                message={t("Please enter password")} 
+                                placeholder={t("Enter Password")} 
                             />
                             <Flex justify="space-between" className="mb-3">
-                                <Checkbox>Remember Me</Checkbox>
+                                <Checkbox>{t("Remember Me")}</Checkbox>
                                 <NavLink to={"/forgotpassword"} className="fs-13 text-brand">
-                                    Forget Password?
+                                    {t("Forget Password?")}
                                 </NavLink>
                             </Flex>
                             <Button htmlType="submit" type="primary" className="btnsave bg-dark-blue fs-16" block 
                                 // loading={loading}
                             >
-                                Signin
+                                {t("Sign In")}
                             </Button>
                             <Paragraph className="text-center mt-3">
-                                For tablet based self-booking? <NavLink className={'text-brand'} to={'/signintablet'}>Sign In</NavLink>
+                                {t("For tablet based self-booking?")} <NavLink className={'text-brand'} to={'/signintablet'}>{t("Sign In")}</NavLink>
                             </Paragraph>
                         </Form>
                     </div>
                 </Col>
                 <Col xs={0} md={12} lg={14} className="signup-visual-container">
+                    <Flex justify="end">
+                        <LanguageChange />
+                    </Flex>
                     <Flex vertical justify="space-between" align="center" gap={40} className="logo-sp">
                         <Flex vertical align="center" gap={20}>
                             <Title level={2} className="m-0">
-                                Simplify Your Bookings,
+                                {t("Simplify Your Bookings,")}
                             </Title>
                             <Title level={2} className="m-0 text-dark-brand">
-                                Streamline <span className="px-2 radius-12 py-2 bg-white">Your Day.</span>
+                                {t("Streamline")} <span className="px-2 radius-12 py-2 bg-white">{t("Your Day.")}</span>
                             </Title>
                         </Flex>
                         <Image src="/assets/images/login-frame.svg" alt='dashboard image' fetchPriority="high" preview={false} />

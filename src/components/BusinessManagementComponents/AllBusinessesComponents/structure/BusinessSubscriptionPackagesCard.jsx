@@ -1,19 +1,22 @@
 import { useState } from 'react';
 import { Card, Col, Flex, Radio, Row, Space, Typography } from 'antd';
 import { MyInput } from '../../../Forms';
+import { useTranslation } from 'react-i18next';
+import { toArabicDigits } from '../../../../shared';
 
 const { Text, Title } = Typography;
 
 const BusinessSubscriptionPackagesCard = ({ data, selectedvalue, onSelect }) => {
     const [selectedId, setSelectedId] = useState(1);
-
+    const {t,i18n} = useTranslation()
+    const isArabic = i18n?.language === 'ar'
     const handleSelect = (id) => {
         setSelectedId(id);
         onSelect?.(id);
         console.log('Selected Package ID:', id);
     };
 
-    const period = selectedvalue === '1' ? 'mon' : selectedvalue === '2' ? 'yr' : 'monthly';
+    const period = selectedvalue === '1' ? "mon" : selectedvalue === '2' ? 'yr' : "year";
 
     return (
         <Row gutter={[12, 12]}>
@@ -38,17 +41,17 @@ const BusinessSubscriptionPackagesCard = ({ data, selectedvalue, onSelect }) => 
                                                         item?.id === selectedId ? 'text-brand' : ''
                                                     }`}
                                                 >
-                                                    {item.title}
+                                                    {t(item.title)}
                                                 </Text>
-                                                <Text type="secondary">{item.subtitle}</Text>
+                                                <Text type="secondary">{t(item.subtitle)}</Text>
                                             </Flex>
                                         </Flex>
 
                                         <Title level={5} className="m-0">
                                             <Space size={8}>
-                                                <sup className="fs-14 fw-600 text-grey">SAR</sup>
-                                                {item.amount}
-                                                <span className="fs-14 fw-500 text-gray">/{period}</span>
+                                                <sup className="fs-14 fw-600 text-grey">{t("SAR")}</sup>
+                                                {isArabic ? toArabicDigits(item.amount):item.amount}
+                                                <span className="fs-14 fw-500 text-gray">/{t(period)}</span>
                                             </Space>
                                         </Title>
                                     </Flex>
@@ -63,20 +66,20 @@ const BusinessSubscriptionPackagesCard = ({ data, selectedvalue, onSelect }) => 
                 <>
                     <Col span={24}>
                         <MyInput
-                            label="Custom Price"
+                            label={t("Custom Price")}
                             name="customPrice"
                             required
-                            message="Please enter a price"
-                            addonBefore="SAR"
-                            placeholder="Enter price"
+                            message={t("Please enter a price")}
+                            addonBefore={t("SAR")}
+                            placeholder={t("Enter price")}
                             className="w-100"
                         />
                     </Col>
                     <Col span={24}>
                         <MyInput
-                            label="Discount Code"
+                            label={t("Discount Code")}
                             name="discountCode"
-                            placeholder="Enter discount code (if any)"
+                            placeholder={t("Enter discount code (if any)")}
                             className="w-100"
                         />
                     </Col>
