@@ -5,7 +5,7 @@ import { BreadCrumbCard, BusinessChooseSubscriptionPlan, ConfirmModal, MyInput, 
 import { MySelect } from '../../../Forms'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BusinessTitle } from '../../../../shared'
+import { BusinessTitle, toArabicDigits } from '../../../../shared'
 
 const { Title } = Typography
 const AddEditBusiness = () => {

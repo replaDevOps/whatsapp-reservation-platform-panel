@@ -1,4 +1,5 @@
 const toArabicDigits = (number) => {
+  return number
   const arabicNumbers = {
     0: "٠",
     1: "١",
