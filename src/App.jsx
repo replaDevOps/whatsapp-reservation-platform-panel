@@ -4,6 +4,9 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from "react-redux";
 import { store } from "./shared";
 import { useTranslation } from 'react-i18next';
+import { client } from './config'; 
+import { ApolloProvider } from '@apollo/client/react';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
 
@@ -12,24 +15,28 @@ function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#0ABAB5',
-              colorError: '#BC302F',
-              fontFamily: isArabic
-              ? "IBM Plex Sans Arabic, sans-serif"
-              : "ProductSans, sans-serif",
-              },
-            components:{
-              Timeline: {
-                dotBg: 'transparent',
-              },
-            }
-          }}
-        >
-          <RouteF />
-        </ConfigProvider>
+        <AuthProvider>
+          <ApolloProvider client={client}>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: '#0ABAB5',
+                  colorError: '#BC302F',
+                  fontFamily: isArabic
+                  ? "Vazirmatn, sans-serif"
+                  : "ProductSans, sans-serif",
+                  },
+                components:{
+                  Timeline: {
+                    dotBg: 'transparent',
+                  },
+                }
+              }}
+            >
+              <RouteF />
+            </ConfigProvider>
+          </ApolloProvider>
+        </AuthProvider>
       </BrowserRouter>
     </Provider>
   )
