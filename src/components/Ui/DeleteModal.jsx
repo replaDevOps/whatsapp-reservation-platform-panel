@@ -16,9 +16,6 @@ const DeleteModal = ({visible,onClose,title,subtitle,onConfirm,loading, deleteRe
                     <Button type='button' onClick={onClose} className='btncancel text-black border-gray' >
                         {t("Cancel")}
                     </Button>
-                    {/* <Button className={`btnsave border-0 text-white bg-red`} onClick={()=>{
-                        deleteRecord(visible)
-                    }} > */}
                     <Button className={`btnsave border-0 text-white bg-red`} onClick={onConfirm} loading={loading} >
                         {t("Confirm")}
                     </Button>
