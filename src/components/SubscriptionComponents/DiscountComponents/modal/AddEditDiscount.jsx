@@ -34,9 +34,9 @@ const AddEditDiscount = ({visible,onClose,edititem,messageApi}) => {
         if(visible && edititem){
             form.setFieldsValue({
                 code: edititem?.code,
-                group: edititem?.group,
-                packageType: edititem?.packageType,
-                discountType: edititem?.discountType,
+                group: edititem?.group?.charAt(0)?.toUpperCase() + edititem?.group?.slice(1).toLowerCase(),
+                packageType: edititem?.packageType?.charAt(0)?.toUpperCase() + edititem?.packageType?.slice(1).toLowerCase(),
+                discountType: edititem?.discountType?.charAt(0)?.toUpperCase() + edititem?.discountType?.slice(1).toLowerCase(),
                 value: edititem?.value,
                 usageLimit: edititem?.usageLimit,
                 startDate: dayjs(edititem?.startDate,'YYYY/MM/DD'),
