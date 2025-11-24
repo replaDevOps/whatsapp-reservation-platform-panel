@@ -12,8 +12,12 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+import { useTranslation } from 'react-i18next';
 
 function App() {
+
+  const { i18n } = useTranslation();
+  const isArabic = i18n.language === "ar";
   return (
     <ApolloProvider client={client}>
       <Provider store={store}>

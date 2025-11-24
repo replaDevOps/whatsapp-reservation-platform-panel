@@ -37,10 +37,14 @@ query GetFAQs($search: String) {
     faqs {
       id
       question
+<<<<<<< HEAD
       arabicQuestion
       answer
       arabicAnswer
       isArabic
+=======
+      answer
+>>>>>>> 903e56b17904e77d6703aee1babfdbf9665b0898
     }
   }
 }
