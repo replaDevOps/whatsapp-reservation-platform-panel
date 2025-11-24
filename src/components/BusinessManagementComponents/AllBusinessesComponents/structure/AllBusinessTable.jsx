@@ -9,7 +9,8 @@ import { typeitemsCust } from '../../../../shared';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GET_BUSINESSES } from '../../../../graphql/query';
-import { useLazyQuery } from '@apollo/client/react';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
+import { DELETE_BUSINESS } from '../../../../graphql/mutation';
 
 
 const AllBusinessTable = () => {
@@ -28,6 +29,12 @@ const AllBusinessTable = () => {
     const [getBusinesses, { data }] = useLazyQuery(GET_BUSINESSES, {
         fetchPolicy: "network-only",
     })
+     const [deleteBusiness] = useMutation(DELETE_BUSINESS, {
+        onCompleted: () => {
+            getBusinesses()
+            setDeleteItem(false)
+        }
+    });
 
     useEffect(()=>{
         if(getBusinesses)
@@ -146,12 +153,12 @@ const AllBusinessTable = () => {
                         pagination={false}
                         // loading={isLoading}
                     />
-                    <CustomPagination 
+                    {/* <CustomPagination 
                         total={12}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
-                    />
+                    /> */}
                 </Flex>
             </Card>
 
@@ -167,6 +174,9 @@ const AllBusinessTable = () => {
                 title={'Are you sure?'}
                 subtitle={'This action cannot be undone. Are you sure you want to delete this business?'}
                 onClose={()=>setDeleteItem(false)}
+                deleteRecord= {async (deleteBusinessId)=>{
+                    await deleteBusiness({ variables: {deleteBusinessId, deletedBy: '1eb5f017-9245-4258-8c8f-94f613a4db15'}  })
+                }}
             />
         </>
     );

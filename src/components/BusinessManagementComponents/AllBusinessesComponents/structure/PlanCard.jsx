@@ -3,26 +3,80 @@ import { CheckOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { useTranslation } from 'react-i18next';
 import { toArabicDigits } from '../../../../shared';
+import { useEffect, useState } from 'react';
 
 const { Title,Text } = Typography;
-const PlanCard = ({singledata,selectedvalue}) => {
+const PlanCard = ({subscriptionPlan}) => {
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
+    const [features, setFeatures]= useState([])
+        const [planDuration, setPlanDuration ] = useState('Monthly')
+        const handleDurationClick = ({ key }) => {
+            setPlanDuration(key)
+        }
+        useEffect(()=>{
+            if(subscriptionPlan){
+                setFeatures(extractPlanFeatures(subscriptionPlan))
+                setPlanDuration(subscriptionPlan?.duration || 'Monthly')
+            }
+        }, [subscriptionPlan])
+    
+        function extractPlanFeatures(plan) {
+            const ignoreKeys = ["price", "__typename", "id", "type", "description"]
+            const labels = {
+                noOfBranches: "Branch",
+                noOfAdmins: "Admin",
+                noOfStaffManagers: "Staff Manager",
+                noOfServiceProviders: "Service Provider",
+                noOfReceptionists: "Receptionist",
+                whatsappBot: "WhatsApp Bot",
+                manualReminder: "Manual Reminders",
+                automatedReminder: "Automated Reminders",
+                googleReviewLink: "Google Review Link",
+                promotions: "Promotions",
+                selfServiceTablet: "Self Service Tablet",
+                basicDashboard: "Basic Dashboard",
+                fullAccessDashboard: "Full Access Dashboard",
+            }
+            const features = [];
+            for (let key in plan) {
+                if (ignoreKeys.includes(key)) continue;
+    
+                const value = plan[key];
+                const label = labels[key];
+    
+                if (!label) continue;
+    
+                // Number features
+                if (typeof value === "number" && value > 0) {
+                features.push({
+                    title: `${value} ${label}${value > 1 ? "s" : ""}`
+                });
+                }
+    
+                // Boolean features
+                if (typeof value === "boolean" && value === true) {
+                features.push({
+                    title: label
+                });
+                }
+            }
+            return features
+        }
     return (
          <Card className='bg-brand-light border-brand card-cs radius-12 h-100'>
             <Flex vertical gap={20}>
                 <Flex vertical>
-                    <ModuleTopHeading level={4} name={t(singledata?.title)} />
-                    <Text className='text-gray fs-14'>{t(singledata?.subtitle)}</Text>
+                    <ModuleTopHeading level={4} name={t(subscriptionPlan?.type)} />
+                    <Text className='text-gray fs-14'>{t(subscriptionPlan?.description)}</Text>
                 </Flex>
                 <Title className={`m-0`} level={3}>
                     <Space size={8} wrap>
                         <sup className={`fs-16 fw-600 text-grey`}>{t("SAR")}</sup>
-                        {isArabic 
-                            ? toArabicDigits(singledata?.amount ?? 0) 
-                            : (singledata?.amount ?? 0)
+                        {
+                            subscriptionPlan?.price
                         }
-                        <span className='fs-16 fw-500 text-gray'>/{t(selectedvalue==='1'?'mon':'year' || 'monthly')}</span>
+                        <span className='fs-16 fw-500 text-gray'>/{t(planDuration)}</span>
                     </Space> 
                 </Title>
                 <Divider className='my-2 bg-divider' />
@@ -30,7 +84,7 @@ const PlanCard = ({singledata,selectedvalue}) => {
                     <Title level={5} className='m-0 fw-500'>{t("Included Features")}:</Title>
                     <List
                         itemLayout="horizontal"
-                        dataSource={singledata?.features}
+                        dataSource={features}
                         size='small'
                         renderItem={(item, _) => (
                         <List.Item>

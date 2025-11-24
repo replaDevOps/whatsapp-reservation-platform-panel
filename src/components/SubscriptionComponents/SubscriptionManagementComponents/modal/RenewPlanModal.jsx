@@ -5,28 +5,46 @@ import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
 import { periodOp, subscriptionplanOp, typeOp } from '../../../../shared'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
+import dayjs from 'dayjs'
+import { GET_SUBSCRIBERS_SUBSCRIPTIONS } from '../../../../graphql/query'
+import { useLazyQuery, useMutation } from '@apollo/client/react'
+import { RENEW_SUBSCRIBER_SUBSCRIPTION } from '../../../../graphql/mutation'
 
 const { Title, Text } = Typography
 const RenewPlanModal = ({visible,onClose,edititem}) => {
 
     const [form] = Form.useForm();
     const {t} = useTranslation()
+
+    const [getSubscriberSubscriptions] = useLazyQuery(GET_SUBSCRIBERS_SUBSCRIPTIONS, {
+        fetchPolicy: "network-only",
+    })
+    const [renewSubscriberSubscription, { loading }] = useMutation(RENEW_SUBSCRIBER_SUBSCRIPTION, {
+        onCompleted: () => {
+            getSubscriberSubscriptions()
+        }
+    });
     useEffect(()=>{
         if(visible && edititem){
             form.setFieldsValue({
-                businessName: edititem?.businessName,
-                type: edititem?.type,
-                email: edititem?.email,
-                currentsubscriptionPlan: edititem?.subscription,
-                currentperiod: edititem?.period,
-                currentexpDate: moment(edititem?.startDate,'DD/MM/YYYY'),
-                newexpDate: moment(edititem?.expiryDate,'DD/MM/YYYY'),
+                name: edititem?.business?.name,
+                businessType: edititem?.business?.businessType,
+                email: edititem?.business?.email,
+                type: edititem?.subscription?.type,
+                currentsubscriptionPlan:  edititem?.subscription?.type,
+                validity: edititem?.validity,
+                currentexpDate: dayjs(edititem?.endDate),
+                startDate: dayjs(),
+                endDate: edititem?.validity === 'MONTHLY' ? dayjs().add(1, "m")  : dayjs().add(1, 'year'),
             })
         }
         else {
             form.resetFields()
         }
     },[visible,edititem])
+      const save= async ()=>{ 
+        await renewSubscriberSubscription({ variables:{renewSubscriberSubscriptionId: edititem?.id }})
+    }
     return (
         <Modal
             title={null}
@@ -39,7 +57,7 @@ const RenewPlanModal = ({visible,onClose,edititem}) => {
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
                         {t("Cancel")}
                     </Button>
-                    <Button type="primary" className='btnsave border0 text-white brand-bg'>
+                    <Button type="primary" className='btnsave border0 text-white brand-bg' onClick={()=> form.submit()}>
                         {t("Renew")}
                     </Button>
                 </Flex>
@@ -61,21 +79,21 @@ const RenewPlanModal = ({visible,onClose,edititem}) => {
                 </Flex>
                 <Form layout="vertical" 
                     form={form} 
-                    // onFinish={} 
+                    onFinish={save} 
                     requiredMark={false}
                 >
                     <Row gutter={16}>
                         <Col span={24}>
                             <MyInput 
                                 label={t("Business Name")} 
-                                name="businessName" 
+                                name="name" 
                                 disabled={edititem}
                             />
                         </Col>
                         <Col span={24}>
                             <MySelect 
                                 label={t("Business Type")} 
-                                name="type" 
+                                name="businessType" 
                                 options={typeOp}
                                 disabled={edititem}
                             />
@@ -98,7 +116,7 @@ const RenewPlanModal = ({visible,onClose,edititem}) => {
                         <Col span={24}>
                             <MySelect 
                                 label={t("Current Period")} 
-                                name="currentperiod" 
+                                name="validity" 
                                 options={periodOp}
                                 disabled={edititem}
                             />
@@ -118,14 +136,29 @@ const RenewPlanModal = ({visible,onClose,edititem}) => {
                                 name="renewperiod" 
                                 required
                                 message={t('Choose renew period')}
-                                options={periodOp}
+                                options={[
+    {
+        id: "MONTHLY",
+        name: 'MONTHLY'
+    },
+    {
+        id: "YEARLY",
+        name: 'YEARLY'
+    },
+]}
+ onChange= {(value)=>{
+                                    if(value === 'MONTHLY')
+                                        form.setFieldValue("endDate", dayjs().add(1, 'M'))
+                                    else
+                                        form.setFieldValue("endDate", dayjs().add(1, 'year'))
+                                }}
                             />
                         </Col>
                         <Col span={24}>
                             <MyDatepicker
                                 datePicker
                                 label={t('New Expiry Date')}
-                                name='newexpDate'
+                                name='endDate'
                                 placeholder={t('Select date')}
                                 disabled={edititem}
                             />

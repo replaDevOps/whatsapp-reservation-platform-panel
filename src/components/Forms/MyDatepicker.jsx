@@ -1,4 +1,5 @@
 import { Form, TimePicker, DatePicker, Typography } from 'antd';
+import dayjs from 'dayjs';
 import moment from 'moment';
 export const MyDatepicker = ({withoutForm, name, label, disabled, required, message, value, rangePicker, placeholder, datePicker, ...props }) => {
     return (
@@ -50,7 +51,7 @@ export const MyDatepicker = ({withoutForm, name, label, disabled, required, mess
                 datePicker ?
                 <DatePicker
                     disabled={disabled || false}
-                    value={value ? moment(value, 'YYYY-MM-DD') : ''}
+                    // value={value ? dayjs(value, 'YYYY-MM-DD') : ''}
                     {...props}
                     className='w-100'
                     placeholder={placeholder}
@@ -59,14 +60,14 @@ export const MyDatepicker = ({withoutForm, name, label, disabled, required, mess
                 rangePicker ?
                     <DatePicker.RangePicker
                     disabled={disabled || false}
-                    value={value ? moment(value, 'YYYY-MM-DD') : ''}
+                    // value={value ? dayjs(value, 'YYYY-MM-DD') : ''}
                     {...props}
                     className='w-100'
                     placeholder={placeholder}
                 /> :
                 <TimePicker
                     disabled={disabled || false}
-                    value={moment(value || '00:00')}
+                    // value={dayjs(value || '00:00')}
                     format='HH:mm A'
                     placeholder={placeholder}
                     {...props}

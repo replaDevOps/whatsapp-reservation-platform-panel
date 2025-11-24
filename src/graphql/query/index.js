@@ -1,7 +1,7 @@
 export * from './subscriberCustomers'
 export * from "./subscriptionPlan"
 export * from './business'
-
+export * from './subscriptionManagement'
 
 
 export * from './queries'

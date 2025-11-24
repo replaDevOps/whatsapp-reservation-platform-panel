@@ -8,7 +8,7 @@ import moment from 'moment';
 import { subscriptionItems, typeItems } from '../../../../shared';
 import { EditSubscriptionPlanModal, RenewPlanModal, UpgradePlanModal } from '../modal';
 import { useTranslation } from 'react-i18next';
-import { GET_BUSINESSES } from '../../../../graphql/query';
+import { GET_BUSINESSES, GET_SUBSCRIBERS_SUBSCRIPTIONS } from '../../../../graphql/query';
 import { useLazyQuery } from '@apollo/client/react';
 
 
@@ -26,29 +26,45 @@ const SubscriptionManageTable = () => {
     const [ edititem, setEditItem ] = useState(null)
     const [ upgradeplan, setUpgradePlan ] = useState(false)
     const [ isrenew, setIsRenew ] = useState(false)
+    //filter
+    const [filters, setFilters]= useState({
+        search: null,
+        type: null,
+        validity: null,
+        plan: null,
+    })
+     const [ pagination, setPagination] = useState({ current: 1, pageSize: 10});
+  
 
 
     const periodItems = [
         { key: 'monthly', label: 'Monthly' },
         { key: 'yearly', label: 'Yearly' }, 
-    ];
+    ]
 
 
-    const [businesses, setBusinesses]= useState([])
-    const [getBusinesses, { data }] = useLazyQuery(GET_BUSINESSES, {
+    const [subscriberSubscriptions, setSubscriberSubscriptions]= useState([])
+    const [getSubscriberSubscriptions, { data }] = useLazyQuery(GET_SUBSCRIBERS_SUBSCRIPTIONS, {
         fetchPolicy: "network-only",
     })
 
     useEffect(()=>{
-        if(getBusinesses)
-            getBusinesses()
-    }, [getBusinesses])
+        if(getSubscriberSubscriptions)
+            getSubscriberSubscriptions()
+    }, [getSubscriberSubscriptions])
     useEffect(()=>{
-        if(data?.getBusinesses?.businesses?.length){
-            setBusinesses(data?.getBusinesses?.businesses)
+        if(data?.getSubscriberSubscriptions?.totalCount)
+        {
+            setSubscriberSubscriptions(data?.getSubscriberSubscriptions?.subscribersubscriptions)
+            setUpgradePlan(false);setEditItem(null);
         }
     }, [data])
 
+
+    const _getSubscriberSubscriptions= (key, value)=>{
+
+        // getSubscriberSubscriptions({ variables: { limit:20, offDet: 0, } })
+    }
     const handlePageChange = (page, size) => {
         setCurrent(page);
         setPageSize(size);
@@ -58,9 +74,6 @@ const SubscriptionManageTable = () => {
         setselectedAction(key);
     };
 
-    const handleTypeClick = ({ key }) => {
-        setselectedType(key);
-    };
 
     const handlePeriodClick = ({ key }) => {
         setselectedPeriod(key);
@@ -83,17 +96,24 @@ const SubscriptionManageTable = () => {
                                         // }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
+                                        onChange={(e)=>{
+                                            setFilters({...filters, search: e.target.value})
+                                        }}
                                     />
                                 </Col>
                                 <Col span={24} lg={12}>
                                     <Flex gap={5}>
                                         <Dropdown
                                             menu={{
-                                                items: typeItems.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleTypeClick
+                                                items:[
+                                                    { key: 'GENERAL', label: 'General' },
+                                                    { key: 'BARBER', label: 'Barber' },
+                                                    { key: 'CLINIC', label: 'Clinic' },
+                                                    { key: 'SPA', label: 'Spa' }
+                                                ],
+                                                onClick: ({ key }) => {
+                                                    setFilters({...filters, type: key})
+                                                }
                                             }}
                                             trigger={['click']}
                                         >
@@ -160,7 +180,7 @@ const SubscriptionManageTable = () => {
                     <Table
                         size='large'
                         columns={submanageColumns({setVisible,setEditItem,setUpgradePlan,setIsRenew,t,i18n})}
-                        dataSource={businesses}
+                        dataSource={subscriberSubscriptions}
                         className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1600 }}

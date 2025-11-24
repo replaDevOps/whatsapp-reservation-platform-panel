@@ -1,7 +1,7 @@
 import { DownOutlined, HolderOutlined } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Flex, Tag, Tooltip, Typography } from "antd";
 import { NavLink } from "react-router-dom";
-import { toArabicDigits } from "../shared";
+import { toArabicDigits, utcDateTimeToLocal } from "../shared";
 import dayjs from "dayjs";
 
 const { Text } = Typography
@@ -413,28 +413,30 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
 
 
 const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew, t, i18n  }) => [
-    {
-        title: t('Business ID'),
-        dataIndex: 'businessId',
-    },
+    // {
+    //     title: t('Business ID'),
+    //     dataIndex: 'business',
+    //     render:(business)=> '-'
+    // },
     {
         title: t('Business Logo'),
-        dataIndex: 'image',
-        render: (businessLogo) => {
+        dataIndex: 'business',
+        render: (business) => {
             return (
-                <Avatar src={businessLogo} size={40} />
+                <Avatar src={business?.image} size={40} />
             )
         }
     },
     {
         title: t('Business Name'),
-        dataIndex: 'name',
-        width: 200
+        dataIndex: 'business',
+        width: 200,
+        render:(business)=> business?.name
     },
     {
         title: t('Type'),
-        dataIndex: 'businessType',
-        render:(type)=> t(type)
+        dataIndex: 'business',
+        render:(business)=> business?.businessType
     },
     {
         title: t("Subscription Plan"),
@@ -454,25 +456,27 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
     },
     {
         title: t('Period'),
-        dataIndex: 'period',
-        render:(period)=> t(period)
+        dataIndex: 'validity',
+        render:(validity)=> t(validity)
     },
     {
         title: t('Start Date'),
         dataIndex: 'startDate',
-        render: (startDate) => i18n.language === "ar" ? toArabicDigits(startDate) : startDate
+        render: (startDate) => utcDateTimeToLocal(startDate),
+        width: '180px'
     },
     {
         title: t('Expiry Date'),
-        dataIndex: 'expiryDate',
-        render: (expiryDate) => i18n.language === "ar" ? toArabicDigits(expiryDate) : expiryDate
+        dataIndex: 'endDate',
+        render: (expiryDate) => utcDateTimeToLocal(expiryDate),
+        width: '180px'
     },
     {
         title: t('Status'),
         dataIndex: 'status',
         render: (status) => {
             return (
-                status === 'Active' ? (
+                true ? (
                     <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
                     <Text className='btnpill fs-12 inactive'>{t("Expires")}</Text>
@@ -749,6 +753,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
     {
         title: t("Business ID"),
         dataIndex: 'businessId',
+        render: ()=>  <Text>-</Text>
     },
     {
         title: t("Business Logo"),
@@ -794,7 +799,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
         dataIndex: 'status',
         render: (status) => {
             return (
-                status === 'active' ? (
+                true ? (
                     <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
                     <Text className='btnpill fs-12 inactive'>{t("Deactive")}</Text>
@@ -805,7 +810,8 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
     {
         title: t("Date"),
         dataIndex: 'createdAt',
-        render: (date) => i18n.language === "ar" ? toArabicDigits(date) : date
+        render: (date) => utcDateTimeToLocal(date),
+        width: '200px',
     },
     {
         title: t("Action"),
@@ -819,7 +825,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
                         { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/allbusiness/viewbusiness/'+row?.key) }}>{t("View")}</NavLink>, key: '1' },
                         row?.status === 'active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Inactive")}</NavLink>, key: '2' },
                         row?.status === 'deactive' &&{ label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Active")}</NavLink>, key: '3' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true) }}>{t("Delete")}</NavLink>, key: '4' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(_?.id) }}>{t("Delete")}</NavLink>, key: '4' },
                     ],
                 }}
                 trigger={['click']}

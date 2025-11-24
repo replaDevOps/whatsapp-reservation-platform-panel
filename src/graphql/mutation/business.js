@@ -7,7 +7,14 @@ const CREATE_BUSINESS = gql`
         }
     }
 `
-
+const DELETE_BUSINESS= gql `
+    mutation DeleteBusiness($deleteBusinessId: ID!, $deletedBy: String!) {
+        deleteBusiness(id: $deleteBusinessId, deletedBy: $deletedBy) {
+            id
+        }
+    }
+`
 export {
   CREATE_BUSINESS,
+  DELETE_BUSINESS
 }

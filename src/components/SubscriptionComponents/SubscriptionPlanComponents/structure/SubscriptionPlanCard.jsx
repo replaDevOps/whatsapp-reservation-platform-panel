@@ -64,7 +64,7 @@ const SubscriptionPlanCard = ({subscriptionPlan}) => {
         }
         return features
     }
-
+ 
 
 
     return (
