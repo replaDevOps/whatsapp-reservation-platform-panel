@@ -40,7 +40,10 @@ const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscript
                                             <Title level={5} className="m-0">
                                                 <Space size={8}>
                                                     <sup className="fs-14 fw-600 text-grey">{t("SAR")}</sup>
-                                                    {plan?.price}
+                                                    {
+                                                        subscriptionValidity === 'ENTERPRISE' ? "Custom Price" :
+                                                        subscriptionValidity === 'YEARLY' ? plan?.price*12 : plan?.price
+                                                    }
                                                     <span className="fs-14 fw-500 text-gray">/{t(subscriptionValidity)}</span>
                                                 </Space>
                                             </Title>

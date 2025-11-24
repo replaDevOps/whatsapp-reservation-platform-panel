@@ -24,6 +24,7 @@ const AddEditBusiness = () => {
     const [createBusiness, { loading, error, success }] = useMutation(CREATE_BUSINESS, {
         onCompleted: () => {
             // getSubscriptionPlans()
+            navigate("/allbusiness")
         }
     });
     const [getSubscriberCustomersLookup, { data }] = useLazyQuery(GET_SUBSCRIBER_CUSTOMERS_LOOKUP, {
@@ -58,9 +59,10 @@ const AddEditBusiness = () => {
             subscriberId: subscriberCustomersLookup?.find(subscriber => subscriber?.name === data?.subscriberId)?.id,
             subscriptionId: selectedSubscriptionPlan?.id,
             subscriptionType: selectedSubscriptionPlan?.type,
-            subscriptionPrice: selectedSubscriptionPlan?.price,
+            subscriptionPrice: selectedSubscriptionPlan?.type === 'ENTERPRISE' ? Number(data?.customPrice): subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.price*12 : selectedSubscriptionPlan?.price,
             subscriptionValidity
         }
+        delete data?.customPrice
         await createBusiness({ variables: { input: {...data} } })
     }
 console.log("subscriberCustomersLookup:", subscriberCustomersLookup)
@@ -200,7 +202,7 @@ console.log("subscriberCustomersLookup:", subscriberCustomersLookup)
                                         <Button type='button' className='btncancel text-black border-gray' >
                                             {t("Cancel")}
                                         </Button>
-                                        <Button onClick={()=>setConfirmSubmit(true)} className={`btnsave border-0 text-white brand-bg`}>
+                                        <Button loading={loading} onClick={()=>setConfirmSubmit(true)} className={`btnsave border-0 text-white brand-bg`}>
                                             {/* {edititem?'Update':'Save'} */}
                                             {t("Save")}
                                         </Button>

@@ -5,28 +5,45 @@ import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
 import { periodOp, subscriptionplanOp, typeOp } from '../../../../shared'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
+import dayjs from 'dayjs'
+import { UPDATE_SUBSCRIBER_SUBSCRIPTION } from '../../../../graphql/mutation'
+import { useLazyQuery, useMutation } from '@apollo/client/react'
+import { GET_SUBSCRIBERS_SUBSCRIPTIONS } from '../../../../graphql/query'
 
 const { Title, Text } = Typography
 const UpgradePlanModal = ({visible,onClose,edititem}) => {
-
+console.log("edit:", edititem)
     const [form] = Form.useForm();
     const {t} = useTranslation()
+
+    const [getSubscriberSubscriptions] = useLazyQuery(GET_SUBSCRIBERS_SUBSCRIPTIONS, {
+        fetchPolicy: "network-only",
+    })
+    const [updateSubscriberSubscription, { loading }] = useMutation(UPDATE_SUBSCRIBER_SUBSCRIPTION, {
+        onCompleted: () => {
+            getSubscriberSubscriptions()
+        }
+    });
     useEffect(()=>{
         if(visible && edititem){
             form.setFieldsValue({
-                businessName: edititem?.businessName,
-                type: edititem?.type,
-                email: edititem?.email,
-                subscriptionPlan: edititem?.subscription,
-                period: edititem?.period,
-                startDate: moment(edititem?.startDate,'DD/MM/YYYY'),
-                expDate: moment(edititem?.expiryDate,'DD/MM/YYYY'),
+                name: edititem?.business?.name,
+                businessType: edititem?.business?.businessType,
+                email: edititem?.business?.email,
+                type: edititem?.subscription?.type,
+                validity: edititem?.validity,
+                startDate: dayjs(),
+                endDate: edititem?.validity === 'MONTHLY' ? dayjs().add(1, "m")  : dayjs().add(1, 'year'),
             })
         }
         else {
             form.resetFields()
         }
     },[visible,edititem])
+    const save= async ()=>{ 
+        const {type, validity, startDate, endDate}= form.getFieldsValue()
+        await updateSubscriberSubscription({ variables: { input: {type, validity, startDate, endDate}, updateSubscriberSubscriptionId: edititem?.id } })
+    }
     return (
         <Modal
             title={null}
@@ -39,7 +56,8 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
                         {t("Cancel")}
                     </Button>
-                    <Button type="primary" className='btnsave border0 text-white brand-bg'>
+                    <Button type="primary" className='btnsave border0 text-white brand-bg'
+                    onClick={()=> form.submit()}>
                         {t("Confirm & Save")}
                     </Button>
                 </Flex>
@@ -61,21 +79,21 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
                 </Flex>
                 <Form layout="vertical" 
                     form={form} 
-                    // onFinish={} 
+                    onFinish={save} 
                     requiredMark={false}
                 >
                     <Row gutter={16}>
                         <Col span={24}>
                             <MyInput 
                                 label={t("Business Name")} 
-                                name="businessName" 
+                                name="name" 
                                 disabled={edititem}
                             />
                         </Col>
                         <Col span={24}>
                             <MySelect 
                                 label={t("Business Type")} 
-                                name="type" 
+                                name="businessType" 
                                 options={typeOp}
                                 disabled={edititem}
                             />
@@ -90,19 +108,51 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
                         <Col span={24}>
                             <MySelect 
                                 label={t("Subscription Plan")} 
-                                name="subscriptionPlan" 
+                                name="type" 
                                 required
                                 message={t('Choose subscription plan')}
-                                options={subscriptionplanOp}
+                                options={[
+    {
+        id: "BASIC",
+        name: 'BASIC'
+    },
+    {
+        id: "STANDARD",
+        name: 'STANDARD'
+    },
+    {
+        id: "PRO",
+        name: 'PRO'
+    },
+    {
+        id: 'ENTERPRISE',
+        name: 'ENTERPRISE'
+    },
+]}
                             />
                         </Col>
                         <Col span={24}>
                             <MySelect 
                                 label={t("Period")} 
-                                name="period" 
+                                name="validity" 
                                 required
                                 message={t('Choose period')}
-                                options={periodOp}
+                                options={[
+                                        {
+                                            id: 'MONTHLY',
+                                            name: 'MONTHLY'
+                                        },
+                                        {
+                                            id: "YEARLY",
+                                            name: 'YEARLY'
+                                        },]
+                                    }
+                                onChange= {(value)=>{
+                                    if(value === 'MONTHLY')
+                                        form.setFieldValue("endDate", dayjs().add(1, 'M'))
+                                    else
+                                        form.setFieldValue("endDate", dayjs().add(1, 'year'))
+                                }}
                             />
                         </Col>
                         <Col span={24}>
@@ -119,7 +169,7 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
                             <MyDatepicker
                                 datePicker
                                 label={t('Expiry Date')}
-                                name='expDate'
+                                name='endDate'
                                 placeholder={t('Select date')}
                                 disabled={edititem}
                             />

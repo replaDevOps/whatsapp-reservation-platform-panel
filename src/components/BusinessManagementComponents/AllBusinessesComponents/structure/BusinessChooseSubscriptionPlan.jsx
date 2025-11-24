@@ -28,7 +28,7 @@ const BusinessChooseSubscriptionPlan = ({subscriptionValidity, setSubscriptionVa
             setSelectedSubscriptionPlan({...data?.getSubscriptions?.find(plan => plan?.type === 'BASIC')})
         }
     }, [data])
-console.log("subscriptionValidity:", subscriptionValidity, ":", selectedSubscriptionPlan)
+console.log("selectedSubscriptionPlan:", selectedSubscriptionPlan)
     return (
         <Row gutter={[24, 24]}>
             <Col span={24} lg={{ span: 16 }}> 
@@ -55,7 +55,7 @@ console.log("subscriptionValidity:", subscriptionValidity, ":", selectedSubscrip
             </Col>
 
             <Col span={24} lg={{ span: 8 }}>
-                {/* <PlanCard selectedvalue={selectedValue} singledata={singleData} /> */}
+                <PlanCard {...{subscriptionPlan: selectedSubscriptionPlan}} />
             </Col>
         </Row>
     );

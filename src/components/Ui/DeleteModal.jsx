@@ -2,7 +2,7 @@ import { Button, Divider, Flex, Modal, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 
 const { Title, Text } = Typography
-const DeleteModal = ({visible,onClose,title,subtitle,onConfirm}) => {
+const DeleteModal = ({visible,onClose,title,subtitle,onConfirm, deleteRecord}) => {
 
     const {t} = useTranslation()
     return (
@@ -16,7 +16,9 @@ const DeleteModal = ({visible,onClose,title,subtitle,onConfirm}) => {
                     <Button type='button' onClick={onClose} className='btncancel text-black border-gray' >
                         {t("Cancel")}
                     </Button>
-                    <Button className={`btnsave border-0 text-white bg-red`} onClick={onConfirm} >
+                    <Button className={`btnsave border-0 text-white bg-red`} onClick={()=>{
+                        deleteRecord(visible)
+                    }} >
                         {t("Confirm")}
                     </Button>
                 </Flex>
