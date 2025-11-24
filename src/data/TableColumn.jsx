@@ -81,13 +81,13 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => 
     {
         title: t("Staff Name"),
         dataIndex: 'staffName',
+        render:(_,row) => row?.firstName + ' ' + row?.lastName
     },
     {
         title: t("Phone Number"),
-        dataIndex: 'phoneNo',
+        dataIndex: 'phone',
         render: (phoneNo) => {
         if (!phoneNo) return '';
-        
         const prefix = '+';
         return i18n.language === "ar" 
             ? `${prefix}${toArabicDigits(phoneNo)}`

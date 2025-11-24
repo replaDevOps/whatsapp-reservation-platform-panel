@@ -8,3 +8,4 @@ export * from './queries'
 
 export * from './terms'
 export * from './discount'
+export * from './staff'

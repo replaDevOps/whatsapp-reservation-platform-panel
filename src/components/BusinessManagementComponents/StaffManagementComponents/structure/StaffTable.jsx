@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col, Form } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { ConfirmModal, CustomPagination, DeleteModal } from '../../../Ui';
-import { stafftableColumn, stafftableData } from '../../../../data';
+import { stafftableColumn } from '../../../../data';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '../../../Forms';
 import { statusitemsCust } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
+import { GET_STAFFS } from '../../../../graphql/query';
+import { useLazyQuery } from '@apollo/client/react';
 
 const { Text } = Typography;
 
@@ -22,6 +24,10 @@ const StaffTable = () => {
     const navigate = useNavigate();
     const [ statuschange, setStatusChange ] = useState(false)
     const [ deleteitem, setDeleteItem ] = useState(false)
+    const [ getstaff, { data, loading }] = useLazyQuery(GET_STAFFS,{
+        fetchPolicy: 'network-only'
+    })
+    const [staffData, setStaffData]= useState([])
 
     const roleItems = [
         { key: 'superadmin', label: t("Super Admin") },
@@ -42,6 +48,22 @@ const StaffTable = () => {
     const handleStatusClick = ({ key }) => {
         setSelectedStatus(key);
     };
+
+    useEffect(()=>{
+        if(getstaff){
+            getstaff({
+                variables: {
+                    limit: 20,
+                    offset: 0,
+                }
+            })
+        }
+    },[getstaff])
+
+    useEffect(()=>{
+        if(data?.getStaffMembers?.users)
+            setStaffData(data?.getStaffMembers?.users)
+    }, [data])
 
     return (
         <>
@@ -115,13 +137,14 @@ const StaffTable = () => {
                     <Table
                         size='large'
                         columns={stafftableColumn({navigate,setStatusChange, setDeleteItem,t,i18n})}
-                        dataSource={stafftableData}
+                        dataSource={staffData}
                         className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1200 }}
                         rowHoverable={false}
                         pagination={false}
-                        // loading={isLoading}
+                        loading={loading}
+                        rowKey={(record)=>record?.id}
                     />
                     <CustomPagination 
                         total={12}
