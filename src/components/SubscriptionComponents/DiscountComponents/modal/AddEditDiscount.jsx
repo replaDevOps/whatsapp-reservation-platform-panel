@@ -40,7 +40,7 @@ const AddEditDiscount = ({visible,onClose,edititem,messageApi}) => {
                 value: edititem?.value,
                 usageLimit: edititem?.usageLimit,
                 startDate: dayjs(edititem?.startDate,'YYYY/MM/DD'),
-                endDate: dayjs(edititem?.expiryDate,'YYYY/MM/DD'),
+                expiryDate: dayjs(edititem?.expiryDate,'YYYY/MM/DD'),
             })
         }
         else {
@@ -64,8 +64,8 @@ const AddEditDiscount = ({visible,onClose,edititem,messageApi}) => {
             value: data.value ? Number(data.value) : 0,
             packageType: data.packageType?.toUpperCase() || "",
             usageLimit: data.usageLimit ? Number(data.usageLimit) : 0,
-            startDate: data.startDate ? dayjs(data.startDate).format("YYYY-MM-DD") : null,
-            expiryDate: data.expiryDate ? dayjs(data.expiryDate).format("YYYY-MM-DD") : null,
+            startDate: data.startDate,
+            expiryDate: data.expiryDate
         };
         try {
             if (edititem?.id) {
