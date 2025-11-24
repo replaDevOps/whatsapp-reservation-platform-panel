@@ -1,14 +1,14 @@
 const rolestaffopt = [
     {
-        id: 1,
+        id: 'SUPER_ADMIN',
         name: 'Supper Admin'
     },
     {
-        id: 2,
+        id: 'TECHNICAL_ADMIN',
         name: 'Techincal Admin'
     },
     {
-        id: 3,
+        id: 'DEMO_ADMIN',
         name: 'Demo Admin'
     },
 ]

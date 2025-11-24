@@ -42,7 +42,7 @@ export const MySelect = ({withoutForm, placeholder, name,label,mode,disabled,req
                 placeholder={placeholder}
                 >
                   {
-                      options?.map(opt=><Select.Option value={opt?.name} key={opt?.id}>{t(opt?.name)}</Select.Option>)
+                      options?.map(opt=><Select.Option value={opt?.id} key={opt?.id}>{t(opt?.name)}</Select.Option>)
                   }
               </Select>
       </Form.Item>  

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, } from '../../../Ui';
@@ -8,6 +8,9 @@ import moment from 'moment';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { MeetingNoteModal } from '../modal';
 import { useTranslation } from 'react-i18next';
+import { useLazyQuery } from '@apollo/client/react';
+import { GET_DEMO_REQUEST } from '../../../../graphql/query';
+import { TableLoader } from '../../../../shared';
 
 const { Text } = Typography;
 const DemoRequestTable = () => {
@@ -20,7 +23,10 @@ const DemoRequestTable = () => {
     const [selectedStatus, setselectedStatus] = useState(demoreqData);
     const [selectedYear, setSelectedYear] = useState(moment());
     const [ visible, setVisible ] = useState(false)
-
+    const [demorequestData, setDemoRequestData]= useState([])
+    const [ getDemoRequest, { data, loading }] = useLazyQuery(GET_DEMO_REQUEST,{
+        fetchPolicy: 'network-only'
+    })
 
     const statusItems = [
         { key: 'pending', label: 'Pending' },
@@ -55,6 +61,22 @@ const DemoRequestTable = () => {
         );
         console.log('key:',row)
     };
+
+    useEffect(()=>{
+        if(getDemoRequest){
+            getDemoRequest({
+                variables: {
+                    limit: 20,
+                    offset: 0,
+                }
+            })
+        }
+    },[getDemoRequest])
+    
+    useEffect(()=>{
+        if(data?.bookDemos)
+            setDemoRequestData(data?.bookDemos)
+    }, [data])
     
     return (
         <>
@@ -121,20 +143,26 @@ const DemoRequestTable = () => {
                     <Table
                         size='large'
                         columns={demoreqColumns({handleStatusChange,setVisible,t,i18n})}
-                        dataSource={demoreqData}
+                        dataSource={demorequestData}
                         className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1500 }}
                         rowHoverable={false}
                         pagination={false}
-                        // loading={isLoading}
+                        loading={
+                            {
+                                ...TableLoader,
+                                spinning: loading
+                            }
+                        }
+                        rowKey={(record)=> record?.id}
                     />
-                    <CustomPagination 
+                    {/* <CustomPagination 
                         total={12}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
-                    />
+                    /> */}
                 </Flex>
             </Card>
 

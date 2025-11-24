@@ -4,12 +4,13 @@ import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, DeleteModal, } from '../../../Ui';
 import { discountColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
-import { subscriptionItems, typeamountItem, typeitemsCust } from '../../../../shared';
+import { subscriptionItems, TableLoader, typeamountItem, typeitemsCust } from '../../../../shared';
 import moment from 'moment';
 import { AddEditDiscount } from '../modal';
 import { useTranslation } from 'react-i18next';
-import { useLazyQuery } from '@apollo/client/react';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { GET_DISCOUNTS } from '../../../../graphql/query';
+import { EXPIRE_DISCOUNT } from '../../../../graphql/mutation';
 
 
 const DiscountTable = ({visible,setVisible}) => {
@@ -28,6 +29,7 @@ const DiscountTable = ({visible,setVisible}) => {
     const [ getDiscounts, { data, loading } ] = useLazyQuery(GET_DISCOUNTS,{
         fetchPolicy: 'network-only'
     })
+    const [expireStaffPackage, { loading: expiring }] = useMutation(EXPIRE_DISCOUNT);
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -61,6 +63,22 @@ const DiscountTable = ({visible,setVisible}) => {
         if(data?.getDiscounts?.discounts?.length)
             setDiscountData(data?.getDiscounts?.discounts)
     }, [data])
+
+    const handleExpire = async () => {
+        if (!expireitem) return;
+        try {
+            await expireStaffPackage({
+                variables: { expireDiscountId: expireitem }
+            });
+            messageApi.success(t("Discount expired successfully"));
+            setExpireItem(null);
+            getDiscounts();
+        } catch (err) {
+            console.error(err);
+            messageApi.error(t("Failed to expire discount"));
+        }
+    };
+
     
     return (
         <>
@@ -163,15 +181,20 @@ const DiscountTable = ({visible,setVisible}) => {
                         scroll={{ x: 1600 }}
                         rowHoverable={false}
                         pagination={false}
-                        loading={loading}
                         rowKey={(record) => record.id}
+                        loading={
+                            {
+                                ...TableLoader,
+                                spinning: loading || expiring
+                            }
+                        }
                     />
-                    <CustomPagination 
+                    {/* <CustomPagination 
                         total={12}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
-                    />
+                    /> */}
                 </Flex>
             </Card>
             <AddEditDiscount 
@@ -185,6 +208,7 @@ const DiscountTable = ({visible,setVisible}) => {
                 title={'Are you sure?'}
                 subtitle={'This action cannot be undone. Are you sure you want to expire this discount?'}
                 onClose={()=>setExpireItem(false)}
+                onConfirm={handleExpire}
             />            
         </>
     );

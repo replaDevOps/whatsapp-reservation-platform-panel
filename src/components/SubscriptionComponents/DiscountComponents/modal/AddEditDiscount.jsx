@@ -29,6 +29,7 @@ const AddEditDiscount = ({visible,onClose,edititem,messageApi}) => {
             onClose()
         }
     })
+    
 
     useEffect(()=>{
         if(visible && edititem){

@@ -30,9 +30,42 @@ const UPDATE_DISCOUNTS = gql`
   }
 `
 
+const EXPIRE_DISCOUNT = gql`
+  mutation ExpireDiscount($expireDiscountId: ID!) {
+    expireDiscount(id: $expireDiscountId) {
+      id
+    }
+  }
+`
+
+const CREATE_STAFF = gql`
+  mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      id
+    }
+  }
+`
+
+const UPDATE_STAFF = gql`
+  mutation UpdateUser($input: UpdateUserInput!) {
+  updateUser(input: $input) {
+    id
+  }
+}
+`
+const DELETE_STAFF = gql`
+  mutation DeleteUser($deleteUserId: ID!) {
+    deleteUser(id: $deleteUserId)
+  }
+`
+
 export {
   CREATE_SUBSCRIBER_CUSTOMER,
   UPDATE_TERMS,
   CREATE_DISCOUNTS,
   UPDATE_DISCOUNTS,
+  CREATE_STAFF,
+  UPDATE_STAFF,
+  DELETE_STAFF,
+  EXPIRE_DISCOUNT,
 }
