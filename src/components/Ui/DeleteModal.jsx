@@ -28,7 +28,7 @@ const DeleteModal = ({visible,onClose,title,subtitle,onConfirm,loading}) => {
                 <Title level={5} className='m-0'>
                     {t(title)}
                 </Title>
-                <Text className='fs-14'>
+                <Text className='fs-14 text-center'>
                     {t(subtitle)}
                 </Text>
             </Flex>

@@ -26,10 +26,10 @@ const DiscountTable = ({visible,setVisible}) => {
     const [ edititem, setEditItem ] = useState(null)
     const [ expireitem, setExpireItem ] = useState(false)
     const [messageApi, contextHolder] = message.useMessage();
-    const [ getDiscounts, { data, loading } ] = useLazyQuery(GET_DISCOUNTS,{
+    const [ getDiscounts, { data, loading, refetch  } ] = useLazyQuery(GET_DISCOUNTS,{
         fetchPolicy: 'network-only'
     })
-    const [expireStaffPackage, { loading: expiring }] = useMutation(EXPIRE_DISCOUNT);
+    const [expireStaffPackage] = useMutation(EXPIRE_DISCOUNT);
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -72,7 +72,7 @@ const DiscountTable = ({visible,setVisible}) => {
             });
             messageApi.success(t("Discount expired successfully"));
             setExpireItem(null);
-            getDiscounts();
+            refetch();
         } catch (err) {
             console.error(err);
             messageApi.error(t("Failed to expire discount"));
@@ -185,7 +185,7 @@ const DiscountTable = ({visible,setVisible}) => {
                         loading={
                             {
                                 ...TableLoader,
-                                spinning: loading || expiring
+                                spinning: loading
                             }
                         }
                     />
@@ -209,6 +209,7 @@ const DiscountTable = ({visible,setVisible}) => {
                 subtitle={'This action cannot be undone. Are you sure you want to expire this discount?'}
                 onClose={()=>setExpireItem(false)}
                 onConfirm={handleExpire}
+                loading={loading}
             />            
         </>
     );
