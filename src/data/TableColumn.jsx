@@ -499,21 +499,29 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
 const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
     {
         title: t('Discount Code'),
-        dataIndex: 'discountCode',
+        dataIndex: 'code',
     },
     {
         title: t('Group'),
         dataIndex: 'group',
         render: (group) => {
             return (
-                <Tag className="sm-pill radius-20 fs-12">{t(group)}</Tag>
+                <Tag className="sm-pill radius-20 fs-12">
+                    {t(
+                        group?.charAt(0)?.toUpperCase() + group?.slice(1).toLowerCase()
+                    )}
+                </Tag>
             )
         }
     },
     {
         title: t('Type'),
-        dataIndex: 'type',
-        render: (type) => t(type)
+        dataIndex: 'discountType',
+        render: (discountType) => 
+            t(
+                discountType?.charAt(0)?.toUpperCase() + discountType?.slice(1).toLowerCase()
+            )
+        
     },
     {
         title: t('Value'),
@@ -522,15 +530,20 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
     },
     {
         title: t('Subscription Plan'),
-        dataIndex: 'subscriptionPlan',
+        dataIndex: 'packageType',
         render: (subscriptionPlan) => {
             return (
                 <Flex gap={5} wrap>
-                    {
+                    {/* {
                         subscriptionPlan?.map((items,index)=>
-                            <Tag key={index} className="sm-pill radius-20 fs-12">{t(items)}</Tag>
+                            
                         )
-                    }
+                    } */}
+                    <Tag className="sm-pill radius-20 fs-12">
+                        {t(
+                            subscriptionPlan?.charAt(0)?.toUpperCase() + subscriptionPlan?.slice(1).toLowerCase()
+                        )}
+                    </Tag>
                 </Flex>
             );
         }
@@ -538,24 +551,29 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
     {
         title: t('Used / Limit'),
         dataIndex: 'usedLimit',
-        render: (usedLimit) => i18n.language === "ar" ? toArabicDigits(usedLimit) : usedLimit
+        render: (_,row) => i18n.language === "ar" ? toArabicDigits(row?.usageLimit) : row?.remainingLimit
     },
     {
         title: t('Start Date'),
         dataIndex: 'startDate',
-        render: (startDate) => i18n.language === "ar" ? toArabicDigits(startDate) : startDate
+        render: (startDate) => i18n.language === "ar"  ? 
+            toArabicDigits(dayjs(startDate).format("YYYY-MM-DD"))
+            : dayjs(startDate).format("YYYY-MM-DD")
     },
     {
         title: t('End Date'),
-        dataIndex: 'endDate',
-        render: (endDate) => i18n.language === "ar" ? toArabicDigits(endDate) : endDate
+        dataIndex: 'expiryDate',
+        render: (expiryDate) => 
+            i18n.language === "ar"  ? 
+            toArabicDigits(dayjs(expiryDate).format("YYYY-MM-DD"))
+            : dayjs(expiryDate).format("YYYY-MM-DD")
     },
     {
         title: t('Status'),
         dataIndex: 'status',
         render: (status) => {
             return (
-                status === 'Active' ? (
+                status === 'ACTIVE' ? (
                     <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
                     <Text className='btnpill fs-12 inactive'>{t("Expire")}</Text>
