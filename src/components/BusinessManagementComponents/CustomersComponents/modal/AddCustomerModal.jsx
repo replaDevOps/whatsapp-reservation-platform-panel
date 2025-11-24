@@ -1,8 +1,12 @@
 import { CloseOutlined } from '@ant-design/icons'
-import { Button, Col, Divider, Flex, Form, Modal, Row, Select, Typography } from 'antd'
+import { Button, Col, Divider, Flex, Form, message, Modal, Row, Select, Typography } from 'antd'
 import { MyInput } from '../../../Forms'
 import { useTranslation } from 'react-i18next'
 import { toArabicDigits } from '../../../../shared'
+import { useLazyQuery, useMutation } from '@apollo/client/react'
+import { CREATE_SUBSCRIBER_CUSTOMER } from '../../../../graphql/mutation/mutations'
+import { GET_SUBSCRIBER_CUSTOMERS } from '../../../../graphql/query/subscriberCustomers'
+import { useEffect } from 'react'
 
 const { Title } = Typography
 const AddCustomerModal = ({visible,onClose}) => {
@@ -10,6 +14,41 @@ const AddCustomerModal = ({visible,onClose}) => {
     const [form] = Form.useForm();
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
+    const [getSubscriberCustomers] = useLazyQuery(GET_SUBSCRIBER_CUSTOMERS, {
+        fetchPolicy: "network-only",
+    })
+    const [createSubscriberCustomer, { loading, error, success }] = useMutation(CREATE_SUBSCRIBER_CUSTOMER, {
+        onCompleted: () => {
+            getSubscriberCustomers({
+                variables: {
+                    limit: 20,
+                    offset: 0,
+                    role: "SUBSCRIBER",
+                    isActive: false
+                },
+            })
+            onClose()
+        }
+     });
+
+console.log('hanan:', error,":", success)
+     useEffect(()=>{
+        if(error){
+            alert("i call")
+            message.error(  "Something went wrong")
+        }
+     }, [error])
+    const AddEditSubsriberCustomer= async () => {
+        console.log("customer:", form.getFieldsValue())
+        const data= form.getFieldsValue()
+        try {
+            await createSubscriberCustomer({ variables: { input: {...data, role: "SUBSCRIBER"} } })
+        }
+        catch (e){
+
+        }
+    }
+
     return (
         <Modal
             title={null}
@@ -23,7 +62,7 @@ const AddCustomerModal = ({visible,onClose}) => {
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
                         {t("Cancel")}
                     </Button>
-                    <Button type="primary" className='btnsave border0 text-white brand-bg' onClick={()=>form.submit()}>
+                    <Button loading={loading} type="primary" className='btnsave border0 text-white brand-bg' onClick={()=>form.submit()}>
                         {t("Save")}
                     </Button>
                 </Flex>
@@ -40,8 +79,7 @@ const AddCustomerModal = ({visible,onClose}) => {
                 </Flex>     
                 <Form layout="vertical" 
                     form={form} 
-                    // onFinish={} 
-                    requiredMark={false}
+                    onFinish={AddEditSubsriberCustomer}
                 >
                     <Row gutter={16}>
                         <Col span={24}>
@@ -65,7 +103,7 @@ const AddCustomerModal = ({visible,onClose}) => {
                         <Col span={24}>
                             <MyInput 
                                 label={t("Phone Number")} 
-                                name="phoneNo" 
+                                name="phone" 
                                 required 
                                 message={t("Please enter phone number")} 
                                 placeholder={t("Enter phone number")} 

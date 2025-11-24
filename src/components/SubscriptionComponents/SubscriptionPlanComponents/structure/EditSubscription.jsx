@@ -3,30 +3,126 @@ import { Button, Col, Divider, Flex, Form, Row, Select } from 'antd'
 import { MyInput } from '../../../Forms'
 import { IncludeFeatureField } from './IncludeFeatureField';
 import { useTranslation } from 'react-i18next';
+import { UPDATE_SUBSCRIPTION_PLAN } from '../../../../graphql/mutation';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
+import { GET_SUBSCRIPTION_PLANS } from '../../../../graphql/query/subscriptionPlan';
 
 const EditSubscription = ({setEditItem,edititem}) => {
 
     const [form] = Form.useForm();
     const {t} = useTranslation()
     const [featureValues, setFeatureValues] = useState({})
-
+    const [getSubscriptionPlans] = useLazyQuery(GET_SUBSCRIPTION_PLANS, {
+        fetchPolicy: "network-only",
+    })
+    const [updateSubscriptionPlan, { loading, error, success }] = useMutation(UPDATE_SUBSCRIPTION_PLAN, {
+        onCompleted: () => {
+            getSubscriptionPlans()
+        }
+    });
+console.log("featureValues:", success)
     useEffect(()=>{
         if(edititem){
             form.setFieldsValue({
                 name: edititem?.title,
                 description: edititem?.description,
-                price: edititem?.amount,
+                price: edititem?.price,
             })
+            let data= {...edititem}
+            delete data?.title
+            delete data?.description
+            delete data?.__typename
+            delete data?.type
+            delete data?.price
+            delete data?.ic
+            setFeatureValues(convertBackToInput(data))
         }
     },[edititem])
 
-    const handleSubmit = (values) => {
-        const allData = {
+    function convertBackToInput(output) {
+        const result = {}
+        Object.keys(output).forEach(key => {
+            const value = output[key];
+            const isNumberField = key.startsWith("noOf");
+
+            // Prepare select label (convert camelCase to readable text)
+            const selectLabel = key
+                .replace(/^noOf/, '') // remove leading noOf
+                .replace(/([A-Z])/g, ' $1')
+                .trim()
+                .toLowerCase();
+
+            if (isNumberField) {
+                // Number fields
+                if (value === 0 || value === null || value === "") {
+                    result[key] = {
+                        value: "",
+                        select: selectLabel,
+                        active: false
+                    };
+                } else {
+                    result[key] = {
+                        value: String(value),
+                        select: selectLabel,
+                        active: true
+                    };
+                }
+            } else {
+                // Boolean fields
+                if (value === true) {
+                    result[key] = {
+                        value: "1",
+                        select: selectLabel,
+                        active: true
+                    };
+                } else {
+                    result[key] = {
+                        value: "",
+                        select: selectLabel,
+                        active: false
+                    };
+                }
+            }
+        });
+        return result;
+    }
+
+
+    const handleSubmit = async (values) => {
+        console.log("featureValues:", featureValues)
+        const data = {
             ...values,
-            featureValues,
+            price: parseInt(values?.price),
+            ...convertPlanData(featureValues),
         };
-        console.log("✅ Submitted Data:", allData);
-    };
+        try {
+            await updateSubscriptionPlan({ variables: { input: {...data, id: edititem?.id} } })
+        }
+        catch (e){
+
+        }
+    }
+    function convertPlanData(input) {
+        const output = {};
+
+        Object.keys(input).forEach(key => {
+            const item = input[key]
+
+            const isNumberField = key.startsWith("noOf");
+
+            if (isNumberField) {
+                // Integer fields
+                if (!item.active || item.value === "" || item.value === "0") {
+                    output[key] = 0;
+                } else {
+                    output[key] = parseInt(item.value, 10) || 0;
+                }
+            } else {
+                 output[key] = item.active;
+            }
+        })
+        return output
+    }
     
 
     return (
@@ -39,9 +135,10 @@ const EditSubscription = ({setEditItem,edititem}) => {
                 <Col span={24}>
                     <MyInput 
                         label={t("Subscription Title")} 
-                        name="name" 
+                        value={edititem?.title}
                         required 
                         message={t("Please enter subscription title")} 
+                        disabled
                     />
                 </Col>
                 <Col span={24}>
@@ -71,6 +168,7 @@ const EditSubscription = ({setEditItem,edititem}) => {
                         }
                         value={form.getFieldValue("price") || ""}
                         className='w-100'
+                        type='number'
                     />
                 </Col>
                 <Col span={24}>
@@ -78,84 +176,84 @@ const EditSubscription = ({setEditItem,edititem}) => {
                         title="Included Features:"
                         fields={[
                             {
-                                key: "branch",
+                                key: "noOfBranches",
                                 selectOptions: [
                                     { label: "Branch", value: "branch" },
                                     { label: "Branches", value: "branches" },
                                 ],
                             },
                             {
-                                key: "admin",
+                                key: "noOfAdmins",
                                 selectOptions: [
                                     { label: "Admin", value: "admin" },
                                     { label: "Admins", value: "admins" },
                                 ],
                             },
                             {
-                                key: "staffmanag",
+                                key: "noOfStaffManagers",
                                 selectOptions: [
                                     { label: "Staff Manager", value: "staff manager" },
                                     { label: "Staff Managers", value: "staff managers" },
                                 ],
                             },
                             {
-                                key: "serviceprovid",
+                                key: "noOfServiceProviders",
                                 selectOptions: [
                                     { label: "Service Provider", value: "service provider" },
                                     { label: "Service Provider", value: "service providers" },
                                 ],
                             },
                             {
-                                key: "reception",
+                                key: "noOfReceptionists",
                                 selectOptions: [
                                     { label: "Receptionist", value: "receptionist" },
                                     { label: "Receptionists", value: "receptionists" },
                                 ],
                             },
                             {
-                                key: "whatsAppbot",
+                                key: "whatsappBot",
                                 selectOptions: [
                                     { label: "WhatsApp Bot", value: "whatsApp bot" },
                                 ],
                             },
                             {
-                                key: "manualreminder",
+                                key: "manualReminder",
                                 selectOptions: [
                                     { label: "Manual Reminders", value: "manual reminders" },
                                 ],
                             },
                             {
-                                key: "automatedremind",
+                                key: "automatedReminder",
                                 selectOptions: [
                                     { label: "Automated Reminders", value: "automated reminders" },
                                 ],
                             },
                             {
-                                key: "meetRreviewlink",
+                                key: "googleReviewLink",
                                 selectOptions: [
                                     { label: "Google Review Link", value: "Google link" },
                                 ],
                             },
                             {
-                                key: "promo",
+                                key: "promotions",
                                 selectOptions: [
                                     { label: "Promotions", value: "promotion" },
                                 ],
                             },
                             {
-                                key: "selfservicetablet",
+                                key: "selfServiceTablet",
                                 selectOptions: [
                                     { label: "Self Service Tablet", value: "self service tablet" },
                                 ],
                             },
                             {
-                                key: "basicdashboard",
+                                key: "basicDashboard",
                                 selectOptions: [
                                     { label: "Basic Dashboard", value: "basic dashboard" },
                                 ],
                             },
                             {
-                                key: "fullaccessdashboard",
+                                key: "fullAccessDashboard",
                                 selectOptions: [
                                     { label: "Full Access Dashboard", value: "full access dashboard" },
                                 ],
@@ -165,15 +263,16 @@ const EditSubscription = ({setEditItem,edititem}) => {
                         defaultSwitch={true}
                         withSelect
                         disabledKeys={[
-                            'whatsAppbot',
-                            'manualreminder',
-                            'automatedremind',
-                            'meetRreviewlink',
-                            'promo',
-                            'selfservicetablet',
-                            'basicdashboard',
-                            'fullaccessdashboard'
+                            'whatsappBot',
+                            'manualReminder',
+                            'automatedReminder',
+                            'googleReviewLink',
+                            'promotions',
+                            'selfServiceTablet',
+                            'basicDashboard',
+                            'fullAccessDashboard'
                         ]}
+                        featureValues={featureValues}
                         onValueChange={(data) => setFeatureValues(data)}
                         onSwitchChange={(checked, key) => console.log("Switch:", key, checked)}
                     />
@@ -186,7 +285,7 @@ const EditSubscription = ({setEditItem,edititem}) => {
                         <Button type='button' onClick={()=>setEditItem(null)} className='btncancel text-black border-gray' >
                             {t("Cancel")}
                         </Button>
-                        <Button htmlType='submit'  className={`btnsave border-0 text-white brand-bg`}>
+                        <Button loading={loading} htmlType='submit'  className={`btnsave border-0 text-white brand-bg`}>
                             {t("Update")}
                         </Button>
                     </Flex>

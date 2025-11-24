@@ -2,6 +2,7 @@ import { DownOutlined, HolderOutlined } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Flex, Tag, Tooltip, Typography } from "antd";
 import { NavLink } from "react-router-dom";
 import { toArabicDigits } from "../shared";
+import dayjs from "dayjs";
 
 const { Text } = Typography
 const BookingDashboardColumn = ({t,i18n})=> [
@@ -53,11 +54,11 @@ const customerColumn = ({t,i18n})=> [
     },
     {
         title: t("Phone Number"),
-        dataIndex: 'phoneNo',
+        dataIndex: 'phone',
         render: (phoneNo) => {
         if (!phoneNo) return '';
         
-        const prefix = '+';
+        const prefix = '+966 ';
         return i18n.language === "ar" 
             ? `${prefix}${toArabicDigits(phoneNo)}`
             : `${prefix}${phoneNo}`;
@@ -65,8 +66,8 @@ const customerColumn = ({t,i18n})=> [
     },
     {
         title: t("Joined At"),
-        dataIndex: 'joinedAt',
-        render: (joinedAt) => i18n.language === "ar" ? toArabicDigits(joinedAt) : joinedAt
+        dataIndex: 'createdAt',
+        render: (joinedAt) => i18n.language === "ar" ? toArabicDigits(joinedAt) : dayjs.utc(joinedAt).local().format("YYYY-MM-DD hh:mm A")
     },
 ];
 

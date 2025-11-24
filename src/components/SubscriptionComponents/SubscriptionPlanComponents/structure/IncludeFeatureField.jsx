@@ -17,26 +17,31 @@ export const IncludeFeatureField = ({
     onSwitchChange,
     onSelectChange,
     onValueChange, // callback for all row values
+    featureValues,
     }) => {
         
     const [localValues, setLocalValues] = useState({});
     const {t} = useTranslation()
 
-    useEffect(() => {
-        if (Object.keys(localValues).length === 0 && fields.length > 0) {
-            const initialValues = fields.reduce((acc, f) => {
-                const fieldSelectOptions = f.selectOptions || selectOptions;
-                acc[f.key] = {
-                    value: "",
-                    select: fieldSelectOptions?.[0]?.value || "",
-                    active: defaultSwitch,
-                };
-                return acc;
-            }, {});
-            setLocalValues(initialValues);
-        }
-    }, [fields, selectOptions, defaultSwitch]);
-
+    // useEffect(() => {
+    //     if (Object.keys(localValues).length === 0 && fields.length > 0) {
+    //         const initialValues = fields.reduce((acc, f) => {
+    //             const fieldSelectOptions = f.selectOptions || selectOptions;
+    //             acc[f.key] = {
+    //                 value: "",
+    //                 select: fieldSelectOptions?.[0]?.value || "",
+    //                 active: defaultSwitch,
+    //             };
+    //             return acc;
+    //         }, {});
+    //         setLocalValues(initialValues);
+    //     }
+    // }, [fields, selectOptions, defaultSwitch]);
+    useEffect(()=>{
+        if(featureValues)
+            setLocalValues(featureValues)
+    }, [featureValues])
+console.log("localValues:", localValues)
     
     const handleRowSwitchChange = (key, checked) => {
         const updated = {
@@ -92,7 +97,6 @@ export const IncludeFeatureField = ({
                                     <Switch
                                         size="small"
                                         checked={!!isActive}
-                                        disabled={isRowDisabled}
                                         onChange={(checked) => handleRowSwitchChange(key, checked)}
                                     />
                                     <MyInput

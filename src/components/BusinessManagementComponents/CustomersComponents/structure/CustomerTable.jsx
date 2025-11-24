@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, Flex, Table, Typography, Row, Col, Form, Image } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
@@ -8,6 +8,8 @@ import { MyDatepicker, SearchInput } from '../../../Forms';
 import { AddCustomerModal } from '../modal';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { GET_SUBSCRIBER_CUSTOMERS } from '../../../../graphql/query/subscriberCustomers';
+import { useLazyQuery } from '@apollo/client/react';
 
 const { Text } = Typography;
 
@@ -19,12 +21,31 @@ const CustomerTable = () => {
     const [current, setCurrent] = useState(1);
     const [ visible, setVisible ] = useState(false)
     const [selectedYear, setSelectedYear] = useState(moment());
-
     const handlePageChange = (page, size) => {
         setCurrent(page);
         setPageSize(size);
-    };
-    
+    }
+
+    const [getSubscriberCustomers, { data, loading }] = useLazyQuery(GET_SUBSCRIBER_CUSTOMERS, {
+        fetchPolicy: "network-only",
+    })
+    const [subscriberCustomers, setSubscriberCustomers]= useState([])
+    useEffect(()=>{
+        if(getSubscriberCustomers)
+            getSubscriberCustomers({
+                variables: {
+                    limit: 20,
+                    offset: 0,
+                    role: "SUBSCRIBER",
+                    isActive: false
+                }
+            })
+    }, [getSubscriberCustomers])
+
+    useEffect(()=>{
+        if(data?.getUsers?.users?.length)
+            setSubscriberCustomers(data?.getUsers?.users)
+    }, [data])
     return (
         <>
             <Card className='radius-12 card-cs border-gray h-100'>
@@ -76,20 +97,20 @@ const CustomerTable = () => {
                     <Table
                         size='large'
                         columns={customerColumn({t,i18n})}
-                        dataSource={customertableData}
+                        dataSource={subscriberCustomers}
                         className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1000 }}
                         rowHoverable={false}
                         pagination={false}
-                        // loading={isLoading}
+                        loading={loading}
                     />
-                    <CustomPagination 
+                    {/* <CustomPagination 
                         total={12}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
-                    />
+                    /> */}
                 </Flex>
             </Card>
 
