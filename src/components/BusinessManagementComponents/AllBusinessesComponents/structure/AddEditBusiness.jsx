@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowLeftOutlined, ArrowRightOutlined, EditFilled } from '@ant-design/icons'
 import { Button, Card, Col, Divider, Flex, Form, Row, Select, Typography } from 'antd'
 import { BreadCrumbCard, BusinessChooseSubscriptionPlan, ConfirmModal, MyInput, SingleFileUpload } from '../../../../components'
@@ -6,6 +6,9 @@ import { MySelect } from '../../../Forms'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BusinessTitle, toArabicDigits } from '../../../../shared'
+import { GET_SUBSCRIBER_CUSTOMERS_LOOKUP } from '../../../../graphql/query'
+import { useLazyQuery, useMutation } from '@apollo/client/react'
+import { CREATE_BUSINESS } from '../../../../graphql/mutation'
 
 const { Title } = Typography
 const AddEditBusiness = () => {
@@ -18,15 +21,49 @@ const AddEditBusiness = () => {
     const [ confirmsubmit, setConfirmSubmit ] = useState(false)
     const navigate = useNavigate()
 
+    const [createBusiness, { loading, error, success }] = useMutation(CREATE_BUSINESS, {
+        onCompleted: () => {
+            // getSubscriptionPlans()
+        }
+    });
+    const [getSubscriberCustomersLookup, { data }] = useLazyQuery(GET_SUBSCRIBER_CUSTOMERS_LOOKUP, {
+        fetchPolicy: "network-only",
+    })
+    const [subscriberCustomersLookup, setSubscriberCustomersLookup]= useState([])
+    const [subscriptionValidity, setSubscriptionValidity] = useState('MONTHLY')
+    const [selectedSubscriptionPlan, setSelectedSubscriptionPlan]= useState(null)
+    useEffect(()=>{
+        if(getSubscriberCustomersLookup)
+            getSubscriberCustomersLookup({
+                variables: {
+                    limit: 1000,
+                    offset: 0,
+                    role: "SUBSCRIBER",
+                    isActive: false 
+                }
+            })
+    }, [getSubscriberCustomersLookup])
+    useEffect(()=>{
+        if(data?.getUsers?.users?.length)
+            setSubscriberCustomersLookup(data?.getUsers?.users?.map(({id, firstName, lastName}) => ({id, name: lastName})))
+    }, [data])
     const handleChangeImage = () => {
         setPreviewImage(null);
     };
 
-    const onFinish = () => {
-        const data = form.getFieldsValue()
-        console.log('data',data)
+    const onFinish = async () => {
+        let data = form.getFieldsValue()
+        data= {
+            ...data,
+            subscriberId: subscriberCustomersLookup?.find(subscriber => subscriber?.name === data?.subscriberId)?.id,
+            subscriptionId: selectedSubscriptionPlan?.id,
+            subscriptionType: selectedSubscriptionPlan?.type,
+            subscriptionPrice: selectedSubscriptionPlan?.price,
+            subscriptionValidity
+        }
+        await createBusiness({ variables: { input: {...data} } })
     }
-
+console.log("subscriberCustomersLookup:", subscriberCustomersLookup)
     return (
         <>
             <Flex vertical gap={10}>
@@ -47,14 +84,13 @@ const AddEditBusiness = () => {
                         <Form layout="vertical" 
                             form={form} 
                             onFinish={onFinish} 
-                            requiredMark={false}
                         >
                             <Row gutter={16}>
                                 <Col span={24} className='my-5'>
                                     {
                                         !previewimage ?
                                         <SingleFileUpload
-                                            name="document"
+                                            name="image"
                                             title={t("Upload Logo")}
                                             form={form}
                                             onUpload={(file) => console.log("uploading:", file)}
@@ -89,16 +125,12 @@ const AddEditBusiness = () => {
                                 <Col span={24} md={12}>
                                     <MySelect 
                                         label={t("Customer Name" )}
-                                        name="customerName" 
+                                        name="subscriberId" 
                                         required 
                                         message={t("Please choose customer name")} 
                                         placeholder={t("Select customer name")} 
-                                        options={[
-                                            {
-                                                id: 1,
-                                                name: 'Customer Name'
-                                            }
-                                        ]}
+                                        options={subscriberCustomersLookup}
+                                        disabled={!subscriberCustomersLookup?.length || !subscriberCustomersLookup}
                                     />
                                 </Col>
                                 <Col span={24} md={12}>
@@ -109,17 +141,17 @@ const AddEditBusiness = () => {
                                         message={t("Please choose business type")} 
                                         placeholder={t("Select business type")} 
                                         options={[
-                                            {
-                                                id: 1,
-                                                name: 'Business Type'
-                                            }
+                                            {id: 'SPA',  name: 'SPA'},
+                                            {id: 'CLINIC',  name: 'CLINIC'},
+                                            {id: 'BARBER',  name: 'BARBER'},
+                                            {id: 'GENERAL',  name: 'GENERAL'},
                                         ]}
                                     />
                                 </Col>
                                 <Col span={24} md={12}>
                                     <MyInput
                                         label={t("Business Number")}
-                                        name="businessNo"
+                                        name="phoneNumber"
                                         required
                                         message={t("Please enter a valid business number")}
                                         addonBefore={
@@ -133,11 +165,11 @@ const AddEditBusiness = () => {
                                                 }
                                                 >
                                                 <Select.Option value="sa">
-                                                    +{isArabic ? toArabicDigits(966) : 966}
+                                                    +966
                                                 </Select.Option>
 
                                                 <Select.Option value="ae">
-                                                    +{isArabic ? toArabicDigits(971) : 971}
+                                                    +971
                                                 </Select.Option>
                                             </Select>
                                         }
@@ -148,19 +180,19 @@ const AddEditBusiness = () => {
                                 <Col span={24} md={12}>
                                     <MyInput 
                                         label={t("Website (optional)")} 
-                                        name="website" 
-                                        required 
-                                        message={t("Please enter website" )}
+                                        name="websiteLink" 
                                         placeholder={t("Enter website link")} 
                                     />
                                 </Col>
                                 <Col span={24}>
                                     <Title level={5} className='fw-500 my-3'>{t("Choose Subscription Plan")}</Title>
-                                </Col>
+                                </Col> 
                                 <Col span={24}>
-                                    <BusinessChooseSubscriptionPlan />
+                                    <BusinessChooseSubscriptionPlan 
+                                        {...{subscriptionValidity, setSubscriptionValidity, selectedSubscriptionPlan, setSelectedSubscriptionPlan}}
+                                    />
                                 </Col>
-                                <Col span={24}>
+                                <Col span={24}> 
                                     <Divider className='bg-divider' />
                                 </Col>
                                 <Col span={24}>

@@ -57,42 +57,29 @@ query GetAdminScheduledMeetings($search: String, $status: MeetingFilterType,$lim
       id
       meetingLink
       business {
-<<<<<<< HEAD
         id
         businessTitle
         price
         seller {
           id
-=======
-        businessTitle
-        price
-        
-        seller {
->>>>>>> 903e56b17904e77d6703aee1babfdbf9665b0898
           name
           email
           phone
         }
       }
-<<<<<<< HEAD
       adminAvailabilityDate
-=======
->>>>>>> 903e56b17904e77d6703aee1babfdbf9665b0898
       requestedTo {
         id
         name
         email
         phone
       }
-<<<<<<< HEAD
       requestedBy {
         name
         email
         phone
         id
       }
-=======
->>>>>>> 903e56b17904e77d6703aee1babfdbf9665b0898
       requestedDate
       offer {
         id
