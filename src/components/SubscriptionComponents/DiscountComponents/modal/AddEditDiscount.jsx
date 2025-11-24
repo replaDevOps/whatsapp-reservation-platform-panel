@@ -1,33 +1,101 @@
 import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
-import { Button, Col, Divider, Flex, Form, Modal, Row, Typography } from 'antd'
+import { Button, Col, Divider, Flex, Form, message, Modal, Row, Typography } from 'antd'
 import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
 import { customertypeOp, promoType, subscriptionplanOp } from '../../../../shared'
-import moment from 'moment'
 import { useTranslation } from 'react-i18next'
+import { useLazyQuery, useMutation } from '@apollo/client/react'
+import { CREATE_DISCOUNTS, UPDATE_DISCOUNTS } from '../../../../graphql/mutation/mutations'
+import { GET_DISCOUNTS } from '../../../../graphql/query/discount'
+import dayjs from 'dayjs'
 
 const { Title, Text } = Typography
-const AddEditDiscount = ({visible,onClose,edititem}) => {
+const AddEditDiscount = ({visible,onClose,edititem,messageApi}) => {
 
     const [form] = Form.useForm();
     const {t} = useTranslation()
+    const [ getDiscounts ] = useLazyQuery(GET_DISCOUNTS,{
+        fetchPolicy: 'network-only'
+    })
+    const [ updateDiscounts ] = useMutation(UPDATE_DISCOUNTS)
+    const [ createDiscount, { loading, error } ] = useMutation(CREATE_DISCOUNTS,{
+        onCompleted:()=> {
+            getDiscounts({
+                variables: {
+                    limit: 20,
+                    offset: 0,
+                }
+            })
+            onClose()
+        }
+    })
+
     useEffect(()=>{
         if(visible && edititem){
             form.setFieldsValue({
-                discountCode: edititem?.discountCode,
+                code: edititem?.code,
                 group: edititem?.group,
-                subscriptionType: edititem?.subscriptionPlan,
-                discountType: edititem?.type,
+                packageType: edititem?.packageType,
+                discountType: edititem?.discountType,
                 value: edititem?.value,
-                limit: edititem?.limit,
-                startDate: moment(edititem?.startDate,'DD/MM/YYYY'),
-                endDate: moment(edititem?.endDate,'DD/MM/YYYY'),
+                usageLimit: edititem?.usageLimit,
+                startDate: dayjs(edititem?.startDate,'YYYY/MM/DD'),
+                endDate: dayjs(edititem?.expiryDate,'YYYY/MM/DD'),
             })
         }
         else {
             form.resetFields()
         }
     },[visible,edititem])
+
+    useEffect(()=>{
+        if(error){
+            message.error(  "Something went wrong")
+        }
+     }, [error])
+
+
+    const AddEditDiscounts = async () => {
+        const data = form.getFieldsValue();
+        const input = {
+            code: data.code,
+            group: data.group?.toUpperCase() || null,
+            discountType: data.discountType?.toUpperCase() || null,
+            value: data.value ? Number(data.value) : 0,
+            packageType: data.packageType?.toUpperCase() || "",
+            usageLimit: data.usageLimit ? Number(data.usageLimit) : 0,
+            startDate: data.startDate ? dayjs(data.startDate).format("YYYY-MM-DD") : null,
+            expiryDate: data.expiryDate ? dayjs(data.expiryDate).format("YYYY-MM-DD") : null,
+        };
+        try {
+            if (edititem?.id) {
+                await updateDiscounts({
+                    variables: {
+                        editDiscountId: edititem.id,
+                        input
+                    }
+                });
+                messageApi.success("Discount updated successfully!");
+            } else {
+                await createDiscount({
+                    variables: { input }
+                });
+                messageApi.success("Discount created successfully!");
+            }
+            getDiscounts({
+                variables: {
+                    limit: 20,
+                    offset: 0,
+                }
+            });
+            onClose();
+        } catch (e) {
+            console.error(e);
+            message.error("Something went wrong!");
+        }
+    };
+
+
     return (
         <Modal
             title={null}
@@ -40,7 +108,7 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
                         {t("Cancel")}
                     </Button>
-                    <Button type="primary" onClick={()=>form.submit()} className='btnsave border0 text-white brand-bg'>
+                    <Button type="primary" loading={loading}  onClick={()=>form.submit()} className='btnsave border0 text-white brand-bg'>
                         {t(edititem?'Update':'Confirm & Save')}
                     </Button>
                 </Flex>
@@ -50,7 +118,7 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
                 <Flex vertical className='mb-2'>
                     <Flex justify='space-between' gap={6}>
                         <Title level={5} className='m-0'>
-                            {t(edititem? edititem?.discountCode : 'Add Discount')}
+                            {t(edititem? edititem?.code : 'Add Discount')}
                         </Title>
                         <Button type='button' onClick={onClose} className='p-0 border-0 bg-transparent'>
                             <CloseOutlined className='fs-18' />
@@ -64,14 +132,14 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
                 </Flex>
                 <Form layout="vertical" 
                     form={form} 
-                    // onFinish={} 
+                    onFinish={AddEditDiscounts} 
                     requiredMark={false}
                 >
                     <Row gutter={16}>
                         <Col span={24}>
                             <MyInput 
                                 label={t("Discount Code")} 
-                                name="discountCode" 
+                                name="code" 
                                 required
                                 message={t('Please enter discount code')}
                                 placeholder={t('Enter discount code')}
@@ -90,9 +158,9 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
                         </Col>
                         <Col span={24}>
                             <MySelect 
-                                mode={'multiple'}
+                                // mode={'multiple'}
                                 label={t("Subscription Plan Type")} 
-                                name="subscriptionType" 
+                                name="packageType" 
                                 required
                                 message={t('Choose subscription plan type')}
                                 options={subscriptionplanOp}
@@ -122,7 +190,7 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
                         <Col span={24}>
                             <MyInput 
                                 label={t("Limit")} 
-                                name="limit" 
+                                name="usageLimit" 
                                 required
                                 message={t('Please enter limit')}
                                 placeholder={t('Enter limit')}
@@ -142,7 +210,7 @@ const AddEditDiscount = ({visible,onClose,edititem}) => {
                             <MyDatepicker
                                 datePicker
                                 label={t('Expiry Date')}
-                                name='endDate'
+                                name='expiryDate'
                                 placeholder={t('Select date')}
                                 required
                                 message={t('Please select expiry date')}

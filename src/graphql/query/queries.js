@@ -37,10 +37,7 @@ query GetFAQs($search: String) {
     faqs {
       id
       question
-      arabicQuestion
       answer
-      arabicAnswer
-      isArabic
     }
   }
 }

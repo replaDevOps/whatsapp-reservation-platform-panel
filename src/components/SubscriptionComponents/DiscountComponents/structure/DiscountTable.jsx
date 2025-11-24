@@ -1,13 +1,15 @@
-import { useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Row, Col, Form } from 'antd';
+import { useEffect, useState } from 'react';
+import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, message } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, DeleteModal, } from '../../../Ui';
-import { discountColumns, discountData} from '../../../../data';
+import { discountColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import { subscriptionItems, typeamountItem, typeitemsCust } from '../../../../shared';
 import moment from 'moment';
 import { AddEditDiscount } from '../modal';
 import { useTranslation } from 'react-i18next';
+import { useLazyQuery } from '@apollo/client/react';
+import { GET_DISCOUNTS } from '../../../../graphql/query';
 
 
 const DiscountTable = ({visible,setVisible}) => {
@@ -22,6 +24,10 @@ const DiscountTable = ({visible,setVisible}) => {
     const [selectedYear, setSelectedYear] = useState(moment());
     const [ edititem, setEditItem ] = useState(null)
     const [ expireitem, setExpireItem ] = useState(false)
+    const [messageApi, contextHolder] = message.useMessage();
+    const [ getDiscounts, { data, loading } ] = useLazyQuery(GET_DISCOUNTS,{
+        fetchPolicy: 'network-only'
+    })
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -39,15 +45,32 @@ const DiscountTable = ({visible,setVisible}) => {
     const handleGroupClick = ({ key }) => {
         setselectedGroup(key);
     };
+
+    const [discountData, setDiscountData]= useState([])
+    useEffect(()=>{
+        if(getDiscounts)
+            getDiscounts({
+                variables: {
+                    limit: 20,
+                    offset: 0,
+                }
+            })
+    }, [getDiscounts])
+
+    useEffect(()=>{
+        if(data?.getDiscounts?.discounts?.length)
+            setDiscountData(data?.getDiscounts?.discounts)
+    }, [data])
     
     return (
         <>
+            {contextHolder}
             <Card className='radius-12 card-cs border-gray h-100'>
                 <Form layout="vertical" form={form} className='mb-3'>
                     <Row gutter={[16, 16]} justify="space-between" align="middle">
                         <Col xl={10} md={24} span={24}>        
-                            <Row gutter={[16, 16]}>
-                                <Col span={24} md={24} lg={12}>
+                            <Row gutter={[10, 10]}>
+                                <Col span={24} md={24} lg={10}>
                                     <SearchInput
                                         name='name'
                                         placeholder={t('Search by Discount code')}
@@ -59,7 +82,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                     />
                                 </Col>
-                                <Col span={24} lg={12}>
+                                <Col span={24} lg={14}>
                                     <Flex gap={5}>
                                         <Dropdown
                                             menu={{
@@ -140,7 +163,8 @@ const DiscountTable = ({visible,setVisible}) => {
                         scroll={{ x: 1600 }}
                         rowHoverable={false}
                         pagination={false}
-                        // loading={isLoading}
+                        loading={loading}
+                        rowKey={(record) => record.id}
                     />
                     <CustomPagination 
                         total={12}
@@ -153,6 +177,7 @@ const DiscountTable = ({visible,setVisible}) => {
             <AddEditDiscount 
                 visible={visible}
                 edititem={edititem}
+                messageApi={messageApi}
                 onClose={()=>{setVisible(false);setEditItem(null)}}
             />
             <DeleteModal 
