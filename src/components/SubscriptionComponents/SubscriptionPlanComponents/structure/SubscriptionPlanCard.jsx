@@ -11,7 +11,7 @@ const SubscriptionPlanCard = ({subscriptionPlan}) => {
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
     const [features, setFeatures]= useState([])
-     const [planDuration, setPlanDuration ] = useState('Monthly')
+    const [planDuration, setPlanDuration ] = useState('Monthly')
     const handleDurationClick = ({ key }) => {
         setPlanDuration(key)
     }

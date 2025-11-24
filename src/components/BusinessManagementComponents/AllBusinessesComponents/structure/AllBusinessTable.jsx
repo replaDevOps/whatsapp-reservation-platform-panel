@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { Button, Card, Dropdown, Flex, Table, Row, Col, Form } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { ConfirmModal, CustomPagination, DeleteModal, } from '../../../Ui';
 import { allbusinessColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
-import { allbusinessData } from '../../../../data';
 import { typeitemsCust } from '../../../../shared';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { GET_BUSINESSES } from '../../../../graphql/query';
+import { useLazyQuery } from '@apollo/client/react';
 
 
 const AllBusinessTable = () => {
@@ -23,7 +24,20 @@ const AllBusinessTable = () => {
     const [ deleteitem, setDeleteItem ] = useState(false)
     const [ statuschange, setStatusChange ] = useState(false)
     const navigate = useNavigate()
+    const [businesses, setBusinesses]= useState([])
+    const [getBusinesses, { data }] = useLazyQuery(GET_BUSINESSES, {
+        fetchPolicy: "network-only",
+    })
 
+    useEffect(()=>{
+        if(getBusinesses)
+            getBusinesses()
+    }, [getBusinesses])
+    useEffect(()=>{
+        if(data?.getBusinesses?.businesses?.length){
+            setBusinesses(data?.getBusinesses?.businesses)
+        }
+    }, [data])
 
     const statusItem = [
         {
@@ -124,7 +138,7 @@ const AllBusinessTable = () => {
                     <Table
                         size='large'
                         columns={allbusinessColumns({setDeleteItem,setStatusChange,navigate,t,i18n})}
-                        dataSource={allbusinessData}
+                        dataSource={businesses}
                         className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1300 }}

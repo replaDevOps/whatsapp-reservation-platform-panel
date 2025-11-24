@@ -408,7 +408,7 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
     },
     {
         title: t('Business Logo'),
-        dataIndex: 'businessLogo',
+        dataIndex: 'image',
         render: (businessLogo) => {
             return (
                 <Avatar src={businessLogo} size={40} />
@@ -417,28 +417,27 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
     },
     {
         title: t('Business Name'),
-        dataIndex: 'businessName',
+        dataIndex: 'name',
         width: 200
     },
     {
         title: t('Type'),
-        dataIndex: 'type',
+        dataIndex: 'businessType',
         render:(type)=> t(type)
     },
     {
-        title: t('Subscription Plan'),
-        dataIndex: 'subscriptionPlan',
-        render: (subscriptionPlan) => {
+        title: t("Subscription Plan"),
+        dataIndex: 'subscription',
+        render: (subscription) => {
             return (
-                subscriptionPlan === 'bp' ? (
+                subscription?.type === 'BASIC' ? 
                     <Text className='sm-pill text-white fs-12 bg-basic-color'>{t("BP")}</Text>
-                ) : subscriptionPlan === 'PP' ? (
-                    <Text className='sm-pill text-white fs-12 bg-red'>{t("PP")}</Text>
-                ) : subscriptionPlan === 'sp' ? (
-                    <Text className='sm-pill text-white fs-12 bg-violet'>{t("SP")}</Text>
-                ) : (
-                    <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("EP")}</Text>
-                )
+                : subscription?.type === 'STANDARD' ? 
+                   <Text className='sm-pill text-white fs-12 bg-red'>{t("SP")}</Text>
+                : subscription?.type === 'PRO' ? 
+                     <Text className='sm-pill text-white fs-12 bg-red'>{t("PP")}</Text>
+                :   <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("EP")}</Text>
+                
             );
         }
     },
@@ -742,7 +741,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
     },
     {
         title: t("Business Logo"),
-        dataIndex: 'businessLogo',
+        dataIndex: 'image',
         render: (businessLogo) => {
             return (
                 <Avatar src={businessLogo} size={40} />
@@ -751,31 +750,31 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
     },
     {
         title: t("Business Name"),
-        dataIndex: 'businessName',
+        dataIndex: 'name',
         width: 200
     },
     {
         title: t("Type"),
-        dataIndex: 'type',
+        dataIndex: 'businessType',
     },
     {
         title: t("Customer Name"),
-        dataIndex: 'customerName',
+        dataIndex: 'subscriber',
+        render: (subscriber)=>  <Text>{subscriber?.firstName + " " + subscriber?.lastName}</Text>
     },
     {
         title: t("Subscription Plan"),
-        dataIndex: 'subscriptionPlan',
-        render: (subscriptionPlan) => {
+        dataIndex: 'subscription',
+        render: (subscription) => {
             return (
-                subscriptionPlan === 'basicplan' ? (
+                subscription?.type === 'BASIC' ? 
                     <Text className='sm-pill text-white fs-12 bg-basic-color'>{t("Basic Plan")}</Text>
-                ) : subscriptionPlan === 'proplan' ? (
+                : subscription?.type === 'STANDARD' ? 
                     <Text className='sm-pill text-white fs-12 bg-red'>{t("Pro Plan")}</Text>
-                ) : subscriptionPlan === 'standardplan' ? (
+                : subscription?.type === 'PRO' ? 
                     <Text className='sm-pill text-white fs-12 bg-violet'>{t("Standard Plan")}</Text>
-                ) : (
-                    <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("Enterprise Plan")}</Text>
-                )
+                : <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("Enterprise Plan")}</Text>
+                
             );
         }
     },
@@ -794,7 +793,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
     },
     {
         title: t("Date"),
-        dataIndex: 'date',
+        dataIndex: 'createdAt',
         render: (date) => i18n.language === "ar" ? toArabicDigits(date) : date
     },
     {

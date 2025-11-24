@@ -4,62 +4,58 @@ import { BusinessSubscriptionPackagesCard } from './BusinessSubscriptionPackages
 import { PlanCard } from './PlanCard';
 import { subplanData } from '../../../../data';
 import { useTranslation } from 'react-i18next';
+import { GET_SUBSCRIPTION_PLANS } from '../../../../graphql/query';
+import { useLazyQuery } from '@apollo/client/react';
 
 const { Text } = Typography;
 
-const BusinessChooseSubscriptionPlan = () => {
+const BusinessChooseSubscriptionPlan = ({subscriptionValidity, setSubscriptionValidity, selectedSubscriptionPlan, setSelectedSubscriptionPlan}) => {
+
     const {t} = useTranslation()
-    const [selectedValue, setSelectedValue] = useState('1');
-    const [selectedPlanId, setSelectedPlanId] = useState(null);
-    const currentPlanGroup = subplanData?.find((item) => item?.id === selectedValue);
-    const planDetails = currentPlanGroup?.details || [];
+    const [subscriptionPlans, setSubscriptionPlans]= useState([]) 
+    const [getSubscriptionPlans, { data, loading }] = useLazyQuery(GET_SUBSCRIPTION_PLANS, {
+        fetchPolicy: "network-only",
+    })
 
-    useEffect(() => {
-        if (planDetails?.length > 0) {
-            setSelectedPlanId(planDetails[0].id);
+    useEffect(()=>{
+        if(getSubscriptionPlans)
+            getSubscriptionPlans()
+    }, [getSubscriptionPlans])
+
+    useEffect(()=>{
+        if(data?.getSubscriptions?.length){
+            setSubscriptionPlans(data?.getSubscriptions)
+            setSelectedSubscriptionPlan({...data?.getSubscriptions?.find(plan => plan?.type === 'BASIC')})
         }
-    }, [selectedValue, planDetails]);
-
-    const singleData = planDetails?.find((plan) => plan?.id === selectedPlanId);
-
-
-    const handleTabChange = (key) => {
-        setSelectedValue(key);
-        setSelectedPlanId(null);
-    };
-
-    const handlePlanSelect = (id) => {
-        setSelectedPlanId(id);
-        console.log('selected id',id)
-    };
-
+    }, [data])
+console.log("subscriptionValidity:", subscriptionValidity, ":", selectedSubscriptionPlan)
     return (
         <Row gutter={[24, 24]}>
-            <Col span={24} lg={{ span: 16 }}>
+            <Col span={24} lg={{ span: 16 }}> 
                 <Flex vertical gap={16}>
                     <Flex justify="space-between" align="center">
                         <Text className="fw-600">{t("Select Subscription Plan")}</Text>
                         <Tabs
-                            activeKey={selectedValue}
-                            onChange={handleTabChange}
+                            activeKey={subscriptionValidity}
+                            onChange={(key) => {
+                                setSubscriptionValidity(key)
+                            }}
                             items={[
-                                { key: '1', label: t("Monthly") },
-                                { key: '2', label: t("Yearly") },
+                                { key: 'MONTHLY', label: t("Monthly") },
+                                { key: 'YEARLY', label: t("Yearly") },
                             ]}
                             className="tab-fill"
                         />
                     </Flex>
 
                     <BusinessSubscriptionPackagesCard
-                        selectedvalue={selectedValue}
-                        data={planDetails}
-                        onSelect={handlePlanSelect}
+                        {...{subscriptionPlans, selectedSubscriptionPlan, setSelectedSubscriptionPlan, subscriptionValidity}}
                     />
                 </Flex>
             </Col>
 
             <Col span={24} lg={{ span: 8 }}>
-                <PlanCard selectedvalue={selectedValue} singledata={singleData} />
+                {/* <PlanCard selectedvalue={selectedValue} singledata={singleData} /> */}
             </Col>
         </Row>
     );

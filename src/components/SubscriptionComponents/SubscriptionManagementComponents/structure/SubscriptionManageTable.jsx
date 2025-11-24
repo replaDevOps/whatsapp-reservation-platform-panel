@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, Dropdown, Flex, Table, Row, Col, Form } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, } from '../../../Ui';
@@ -8,6 +8,8 @@ import moment from 'moment';
 import { subscriptionItems, typeItems } from '../../../../shared';
 import { EditSubscriptionPlanModal, RenewPlanModal, UpgradePlanModal } from '../modal';
 import { useTranslation } from 'react-i18next';
+import { GET_BUSINESSES } from '../../../../graphql/query';
+import { useLazyQuery } from '@apollo/client/react';
 
 
 const SubscriptionManageTable = () => {
@@ -28,8 +30,24 @@ const SubscriptionManageTable = () => {
 
     const periodItems = [
         { key: 'monthly', label: 'Monthly' },
-        { key: 'yearly', label: 'Yearly' },
+        { key: 'yearly', label: 'Yearly' }, 
     ];
+
+
+    const [businesses, setBusinesses]= useState([])
+    const [getBusinesses, { data }] = useLazyQuery(GET_BUSINESSES, {
+        fetchPolicy: "network-only",
+    })
+
+    useEffect(()=>{
+        if(getBusinesses)
+            getBusinesses()
+    }, [getBusinesses])
+    useEffect(()=>{
+        if(data?.getBusinesses?.businesses?.length){
+            setBusinesses(data?.getBusinesses?.businesses)
+        }
+    }, [data])
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -142,7 +160,7 @@ const SubscriptionManageTable = () => {
                     <Table
                         size='large'
                         columns={submanageColumns({setVisible,setEditItem,setUpgradePlan,setIsRenew,t,i18n})}
-                        dataSource={submanageData}
+                        dataSource={businesses}
                         className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1600 }}
