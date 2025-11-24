@@ -5,16 +5,33 @@ const GET_STAFFS = gql`
     getStaffMembers(limit: $limit, offset: $offset, filter: $filter) {
         totalCount
         users {
-                id
-                firstName
-                lastName
-                phone
-                email
-                role
-                createdAt
-            }
+            id
+            firstName
+            lastName
+            phone
+            email
+            role
+            createdAt
         }
     }
+}
 `;
 
-export {GET_STAFFS}
+const GET_STAFFS_BY_ID = gql`
+    query GetUser($getUserId: ID) {
+        getUser(id: $getUserId) {
+            id
+            firstName
+            lastName
+            phone
+            email
+            role
+            createdAt
+        }
+    }
+`
+
+export {
+    GET_STAFFS,
+    GET_STAFFS_BY_ID,
+}

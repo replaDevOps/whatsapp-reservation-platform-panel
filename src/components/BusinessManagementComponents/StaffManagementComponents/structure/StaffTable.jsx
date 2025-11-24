@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col, Form } from 'antd';
+import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col, Form, message } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { ConfirmModal, CustomPagination, DeleteModal } from '../../../Ui';
 import { stafftableColumn } from '../../../../data';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '../../../Forms';
-import { statusitemsCust } from '../../../../shared';
+import { statusitemsCust, TableLoader } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
 import { GET_STAFFS } from '../../../../graphql/query';
-import { useLazyQuery } from '@apollo/client/react';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
+import { DELETE_STAFF } from '../../../../graphql/mutation/mutations';
 
 const { Text } = Typography;
 
@@ -24,10 +25,12 @@ const StaffTable = () => {
     const navigate = useNavigate();
     const [ statuschange, setStatusChange ] = useState(false)
     const [ deleteitem, setDeleteItem ] = useState(false)
+    const [messageApi, contextHolder] = message.useMessage();
     const [ getstaff, { data, loading }] = useLazyQuery(GET_STAFFS,{
         fetchPolicy: 'network-only'
     })
     const [staffData, setStaffData]= useState([])
+    const [deleteStaff, { loading: deleting }] = useMutation(DELETE_STAFF);
 
     const roleItems = [
         { key: 'superadmin', label: t("Super Admin") },
@@ -65,8 +68,28 @@ const StaffTable = () => {
             setStaffData(data?.getStaffMembers?.users)
     }, [data])
 
+    const handleDelete = async () => {
+        if (!deleteitem) return;
+        try {
+            await deleteStaff({ variables: { deleteUserId: deleteitem } });
+            messageApi.success('Staff deleted successfully');
+            setDeleteItem(null);
+            getstaff({
+                variables: {
+                    limit: 20,
+                    offset: 0
+                }
+            });
+        } catch (err) {
+            console.error(err);
+            messageApi.error('Failed to delete staff');
+        }
+    };
+
+
     return (
         <>
+            {contextHolder}
             <Card className='radius-12 card-cs border-gray h-100'>
                 <Flex vertical gap={10} className='mb-2'>
                     <Flex align='center' justify='space-between' gap={10}>
@@ -140,18 +163,23 @@ const StaffTable = () => {
                         dataSource={staffData}
                         className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
-                        scroll={{ x: 1200 }}
+                        scroll={{ x: 1300 }}
                         rowHoverable={false}
                         pagination={false}
-                        loading={loading}
                         rowKey={(record)=>record?.id}
+                        loading={
+                            {
+                                ...TableLoader,
+                                spinning: loading
+                            }
+                        }
                     />
-                    <CustomPagination 
+                    {/* <CustomPagination 
                         total={12}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
-                    />
+                    /> */}
                 </Flex>
             </Card>
             <ConfirmModal 
@@ -166,6 +194,8 @@ const StaffTable = () => {
                 title={'Are you sure?'}
                 subtitle={'This action cannot be undone. Are you sure you want to delete this Staff?'}
                 onClose={()=>setDeleteItem(false)}
+                onConfirm={handleDelete} 
+                loading={deleting}
             />
         </>
     );

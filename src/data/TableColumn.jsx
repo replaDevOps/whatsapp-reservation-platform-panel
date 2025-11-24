@@ -86,12 +86,12 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => 
     {
         title: t("Phone Number"),
         dataIndex: 'phone',
-        render: (phoneNo) => {
-        if (!phoneNo) return '';
+        render: (phone) => {
+        if (!phone) return '';
         const prefix = '+';
         return i18n.language === "ar" 
-            ? `${prefix}${toArabicDigits(phoneNo)}`
-            : `${prefix}${phoneNo}`;
+            ? `${prefix}${toArabicDigits(phone)}`
+            : `${prefix}${phone}`;
         }
     },
     {
@@ -101,6 +101,17 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => 
     {
         title: t("Role"),
         dataIndex: 'role',
+        render:(role) => {
+            return (
+                role === 'SUPER_ADMIN' ? (
+                    <Text>{t("Super Admin")}</Text>
+                ) : role === 'TECHNICAL_ADMIN' ? (
+                    <Text>{t("Technical Admin")}</Text>
+                ) : role === 'DEMO_ADMIN' ? (
+                    <Text>{t("Demo Admin")}</Text>
+                ) : {role}
+            );
+        }
     },
     {
         title: t("Status"),
@@ -124,10 +135,10 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => 
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/staff/staffmanagement/editstaff/'+row?.key)}}>{t("Edit")}</NavLink>, key: '1' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/staff/staffmanagement/editstaff/'+row?.id)}}>{t("Edit")}</NavLink>, key: '1' },
                         row?.status === 'Active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Inactive")}</NavLink>, key: '2' },
                         row?.status === 'Inactive' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Active")}</NavLink>, key: '2a' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true) }}>{t("Delete")}</NavLink>, key: '3' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(row?.id) }}>{t("Delete")}</NavLink>, key: '3' },
                     ],
                 }}
                 trigger={['click']}
@@ -593,8 +604,8 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>{t("Edit")}</NavLink>, key: '1' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setExpireItem(true)}}>{t("Expire")}</NavLink>, key: '2' },
+                       row?.status !== 'ACTIVE' && { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>{t("Edit")}</NavLink>, key: '1' },
+                       row?.status === 'ACTIVE' && { label: <NavLink onClick={(e) => {e.preventDefault(); setExpireItem(row?.id)}}>{t("Expire")}</NavLink>, key: '2' },
                     ]
                 }}
                 trigger={['click']}

@@ -1429,6 +1429,14 @@
     box-shadow: none !important;
 }
 
+.spining-cs .ant-spin{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 111;
+}
+
 /* =================================================== media querry =============================================== */
 @media (max-width: 991px){
     .width-drag{
