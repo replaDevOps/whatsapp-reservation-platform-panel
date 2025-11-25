@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const GET_DISCOUNTS = gql`
-    query GetDiscounts($offset: Int!, $limit: Int!) {
-        getDiscounts(offset: $offset, limit: $limit) {
+    query GetDiscounts($offset: Int!, $limit: Int!, $filter: DiscountFilter) {
+        getDiscounts(offset: $offset, limit: $limit, filter: $filter) {
             totalCount
             discounts {
                 id

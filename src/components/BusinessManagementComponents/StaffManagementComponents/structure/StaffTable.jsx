@@ -21,22 +21,28 @@ const StaffTable = () => {
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [selectedRole, setselectedRole] = useState('');
-    const [selectedStatus, setSelectedStatus] = useState('');
+    const [selectedStatus, setSelectedStatus] = useState(true);
     const navigate = useNavigate();
     const [ statuschange, setStatusChange ] = useState(false)
     const [ deleteitem, setDeleteItem ] = useState(false)
     const [messageApi, contextHolder] = message.useMessage();
-    const [ getstaff, { data, loading }] = useLazyQuery(GET_STAFFS,{
+    const [ search, setSearch ] = useState('')
+    const [ getstaff, { data, loading, refetch }] = useLazyQuery(GET_STAFFS,{
         fetchPolicy: 'network-only'
     })
     const [staffData, setStaffData]= useState([])
     const [deleteStaff, { loading: deleting }] = useMutation(DELETE_STAFF);
 
     const roleItems = [
-        { key: 'superadmin', label: t("Super Admin") },
-        { key: 'technicaladmin', label: t("Technical Admin") },
-        { key: 'demoadmin', label: t("Demo Admin") },
+        { key: 'SUPER_ADMIN', label: t("Super Admin") },
+        { key: 'TECHNICAL_ADMIN', label: t("Technical Admin") },
+        { key: 'DEMO_ADMIN', label: t("Demo Admin") },
     ];
+    const buildFilterObject = () => ({
+        search: search || undefined,
+        role: selectedRole || undefined,
+        isActive: selectedStatus,
+    });
 
 
     const handlePageChange = (page, size) => {
@@ -49,19 +55,27 @@ const StaffTable = () => {
     };
 
     const handleStatusClick = ({ key }) => {
-        setSelectedStatus(key);
+        setSelectedStatus(key === "true");
     };
 
     useEffect(()=>{
         if(getstaff){
             getstaff({
                 variables: {
-                    limit: 20,
-                    offset: 0,
+                    limit: pageSize,
+                    offset: (current - 1) * pageSize,
+                    filter: buildFilterObject(),
                 }
             })
         }
-    },[getstaff])
+    },[
+        getstaff,
+        search,
+        selectedRole,
+        selectedStatus,
+        current,
+        pageSize
+    ])
 
     useEffect(()=>{
         if(data?.getStaffMembers?.users)
@@ -74,11 +88,10 @@ const StaffTable = () => {
             await deleteStaff({ variables: { deleteUserId: deleteitem } });
             messageApi.success('Staff deleted successfully');
             setDeleteItem(null);
-            getstaff({
-                variables: {
-                    limit: 20,
-                    offset: 0
-                }
+            refetch({
+                limit: 20,
+                offset: 0,
+                filter: buildFilterObject()
             });
         } catch (err) {
             console.error(err);
@@ -107,10 +120,10 @@ const StaffTable = () => {
                                 <SearchInput
                                     name='name'
                                     placeholder={t("Search by Staff Name")}
-                                    // value={search}
-                                    // onChange={(e) => {
-                                    //     setSearch(e.target.value);
-                                    // }}
+                                    value={search}
+                                    onChange={(e) => {
+                                        setSearch(e.target.value);
+                                    }}
                                     prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                 />
@@ -137,7 +150,7 @@ const StaffTable = () => {
                                     <Dropdown
                                         menu={{
                                             items: statusitemsCust.map((item) => ({
-                                                key: String(item.key),
+                                                key: item.key,
                                                 label: t(item.label)
                                             })),
                                             onClick: handleStatusClick
@@ -174,12 +187,12 @@ const StaffTable = () => {
                             }
                         }
                     />
-                    {/* <CustomPagination 
-                        total={12}
+                    <CustomPagination 
+                        total={data?.getStaffMembers?.totalCount}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
-                    /> */}
+                    />
                 </Flex>
             </Card>
             <ConfirmModal 

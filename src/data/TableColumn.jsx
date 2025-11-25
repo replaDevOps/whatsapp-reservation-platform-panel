@@ -115,10 +115,10 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => 
     },
     {
         title: t("Status"),
-        dataIndex: 'status',
-        render: (status) => {
+        dataIndex: 'isActive',
+        render: (isActive) => {
             return (
-                status === 'Active' ? (
+                isActive === true ? (
                     <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
                     <Text className='btnpill fs-12 inactive'>{t("Inactive")}</Text>
@@ -305,7 +305,7 @@ const revenueColumns = ({t,i18n})=> [
 const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
     {
         title: t("Customer Name"),
-        dataIndex: 'customerName',
+        dataIndex: 'name',
     },
     {
         title: t("Email Address"),
@@ -313,7 +313,7 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
     },
     {
         title: t("Phone Number"),
-        dataIndex: 'phoneNo',
+        dataIndex: 'phone',
         render: (phoneNo) => {
         if (!phoneNo) return '';
         
@@ -325,7 +325,7 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
     },
     {
         title: t("Business Type"),
-        dataIndex: 'type',
+        dataIndex: 'businessType',
     },
     {
         title: t("Message"),
@@ -347,8 +347,8 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
     },
     {
         title: t("Date"),
-        dataIndex: 'date',
-        render: (date) => i18n.language === "ar" ? toArabicDigits(date) : date
+        dataIndex: 'createdAt',
+        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(createdAt) : createdAt
     },
     {
         title: t("Note"),
@@ -600,22 +600,69 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
         key: "action",
         fixed: "right",
         width: 100,
-        render: (_,row) => (
-            <Dropdown
-                menu={{
-                    items: [
-                       row?.status !== 'ACTIVE' && { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>{t("Edit")}</NavLink>, key: '1' },
-                       row?.status === 'ACTIVE' && { label: <NavLink onClick={(e) => {e.preventDefault(); setExpireItem(row?.id)}}>{t("Expire")}</NavLink>, key: '2' },
-                    ]
-                }}
-                trigger={['click']}
-            >
-                <Button disabled={row?.status === 'Expire' && true} className="bg-transparent border-0 p-0">
-                    <img src={row?.status === 'Expire'? "/assets/icons/disable-dot.webp":"/assets/icons/dots.webp"} alt='dots icon' fetchPriority="high" width={16} />
-                </Button>
-            </Dropdown>
-        ),
-    },
+        render: (_, row) => {
+
+            const now = new Date();
+            const startExpired = new Date(row.startDate) < now;
+            const endExpired = new Date(row.expiryDate) < now;
+            const allowActions = startExpired && endExpired;
+
+            const items = allowActions
+                ? [
+                    {
+                        label: (
+                            <NavLink
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setVisible(true);
+                                    setEditItem(row);
+                                }}
+                            >
+                                {t("Edit")}
+                            </NavLink>
+                        ),
+                        key: "1",
+                    },
+                    {
+                        label: (
+                            <NavLink
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setExpireItem(row?.id);
+                                }}
+                            >
+                                {t("Expire")}
+                            </NavLink>
+                        ),
+                        key: "2",
+                    },
+                ]
+                : [];
+
+            return (
+                <Dropdown
+                    menu={{ items }}
+                    trigger={['click']}
+                    disabled={!allowActions} // disable dropdown
+                >
+                    <Button
+                        disabled={!allowActions}
+                        className="bg-transparent border-0 p-0"
+                    >
+                        <img
+                            src={
+                                !allowActions
+                                    ? "/assets/icons/disable-dot.webp"
+                                    : "/assets/icons/dots.webp"
+                            }
+                            alt='dots icon'
+                            width={16}
+                        />
+                    </Button>
+                </Dropdown>
+            );
+        },
+    }
 ]
 
 const faqColumns = ({ setVisible, setEditItem, setDeleteItem,t }) => [

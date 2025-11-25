@@ -19,6 +19,7 @@ const DiscountTable = ({visible,setVisible}) => {
     const {t,i18n} = useTranslation();
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
+    const [search, setSearch] = useState('');
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
     const [selectedgroup, setselectedGroup] = useState('');
@@ -30,6 +31,15 @@ const DiscountTable = ({visible,setVisible}) => {
         fetchPolicy: 'network-only'
     })
     const [expireStaffPackage] = useMutation(EXPIRE_DISCOUNT);
+
+    const buildFilterObject = () => ({
+        search: search || undefined,
+        discountType: selectedType || undefined,
+        group: selectedgroup || undefined,
+        packageType: selectedAction || undefined,
+        startDate: selectedYear?.[0] ? moment(selectedYear[0]).toISOString() : undefined,
+        endDate: selectedYear?.[1] ? moment(selectedYear[1]).toISOString() : undefined,
+    });
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -49,18 +59,29 @@ const DiscountTable = ({visible,setVisible}) => {
     };
 
     const [discountData, setDiscountData]= useState([])
-    useEffect(()=>{
-        if(getDiscounts)
+    useEffect(() => {
+        if (getDiscounts) {
             getDiscounts({
                 variables: {
-                    limit: 20,
-                    offset: 0,
+                    limit: pageSize,
+                    offset: (current - 1) * pageSize,
+                    filter: buildFilterObject()
                 }
-            })
-    }, [getDiscounts])
+            });
+        }
+    }, [
+        getDiscounts,
+        search,
+        selectedType,
+        selectedgroup,
+        selectedAction,
+        selectedYear,
+        current,
+        pageSize
+    ]);
 
     useEffect(()=>{
-        if(data?.getDiscounts?.discounts?.length)
+        if(data?.getDiscounts?.discounts)
             setDiscountData(data?.getDiscounts?.discounts)
     }, [data])
 
@@ -72,7 +93,11 @@ const DiscountTable = ({visible,setVisible}) => {
             });
             messageApi.success(t("Discount expired successfully"));
             setExpireItem(null);
-            refetch();
+            refetch({
+                limit: 20,
+                offset: 0,
+                filter: buildFilterObject()
+            });
         } catch (err) {
             console.error(err);
             messageApi.error(t("Failed to expire discount"));
@@ -92,10 +117,10 @@ const DiscountTable = ({visible,setVisible}) => {
                                     <SearchInput
                                         name='name'
                                         placeholder={t('Search by Discount code')}
-                                        // value={search}
-                                        // onChange={(e) => {
-                                        //     setSearch(e.target.value);
-                                        // }}
+                                        value={search}
+                                        onChange={(e) => {
+                                            setSearch(e.target.value);
+                                        }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                     />
@@ -189,12 +214,12 @@ const DiscountTable = ({visible,setVisible}) => {
                             }
                         }
                     />
-                    {/* <CustomPagination 
-                        total={12}
+                    <CustomPagination 
+                        total={data?.getDiscounts?.totalCount}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
-                    /> */}
+                    />
                 </Flex>
             </Card>
             <AddEditDiscount 
@@ -202,6 +227,11 @@ const DiscountTable = ({visible,setVisible}) => {
                 edititem={edititem}
                 messageApi={messageApi}
                 onClose={()=>{setVisible(false);setEditItem(null)}}
+                refetch={() => refetch({
+                    limit: 20,
+                    offset: 0,
+                    filter: buildFilterObject()
+                })}
             />
             <DeleteModal 
                 visible={expireitem}

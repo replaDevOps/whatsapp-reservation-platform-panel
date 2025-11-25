@@ -3,12 +3,20 @@ import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, Row, Typography } from 'antd'
 import { MyInput } from '../../../Forms'
 import { useTranslation } from 'react-i18next'
+import { useMutation } from '@apollo/client/react'
+import { CREATE_FAQS } from '../../../../graphql/mutation'
 
 const { Title, Text } = Typography
-const AddEditFaqs = ({visible,onClose,edititem}) => {
+const AddEditFaqs = ({visible,onClose,edititem,refetch}) => {
 
     const [form] = Form.useForm();
     const {t} = useTranslation()
+    const [ createFaqs, { loading: creating, error } ] = useMutation(CREATE_FAQS,{
+        onCompleted: async () => {
+            await refetch();
+            onClose();     
+        }
+    })
     useEffect(()=>{
         if(visible && edititem){
             form.setFieldsValue({
