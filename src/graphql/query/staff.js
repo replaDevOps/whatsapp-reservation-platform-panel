@@ -12,6 +12,7 @@ const GET_STAFFS = gql`
             email
             role
             createdAt
+            isActive
         }
     }
 }

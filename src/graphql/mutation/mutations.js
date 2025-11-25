@@ -59,6 +59,14 @@ const DELETE_STAFF = gql`
   }
 `
 
+const CREATE_FAQS = gql`
+  mutation AddFaq($input: CreateFAQInput!) {
+    addFaq(input: $input) {
+      id
+    }
+  }
+`
+
 export {
   CREATE_SUBSCRIBER_CUSTOMER,
   UPDATE_TERMS,
@@ -68,4 +76,5 @@ export {
   UPDATE_STAFF,
   DELETE_STAFF,
   EXPIRE_DISCOUNT,
+  CREATE_FAQS,
 }

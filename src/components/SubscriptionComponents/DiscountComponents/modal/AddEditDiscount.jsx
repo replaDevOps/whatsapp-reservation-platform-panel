@@ -6,27 +6,18 @@ import { customertypeOp, promoType, subscriptionplanOp } from '../../../../share
 import { useTranslation } from 'react-i18next'
 import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { CREATE_DISCOUNTS, UPDATE_DISCOUNTS } from '../../../../graphql/mutation/mutations'
-import { GET_DISCOUNTS } from '../../../../graphql/query/discount'
 import dayjs from 'dayjs'
 
 const { Title, Text } = Typography
-const AddEditDiscount = ({visible,onClose,edititem,messageApi}) => {
+const AddEditDiscount = ({visible,onClose,edititem,messageApi,refetch}) => {
 
     const [form] = Form.useForm();
     const {t} = useTranslation()
-    const [ getDiscounts ] = useLazyQuery(GET_DISCOUNTS,{
-        fetchPolicy: 'network-only'
-    })
-    const [ updateDiscounts ] = useMutation(UPDATE_DISCOUNTS)
-    const [ createDiscount, { loading, error } ] = useMutation(CREATE_DISCOUNTS,{
-        onCompleted:()=> {
-            getDiscounts({
-                variables: {
-                    limit: 20,
-                    offset: 0,
-                }
-            })
-            onClose()
+    const [ updateDiscounts, {loading: updating} ] = useMutation(UPDATE_DISCOUNTS)
+    const [ createDiscount, { loading: creating, error } ] = useMutation(CREATE_DISCOUNTS,{
+        onCompleted: async () => {
+            await refetch();
+            onClose();     
         }
     })
     
@@ -83,12 +74,7 @@ const AddEditDiscount = ({visible,onClose,edititem,messageApi}) => {
                 });
                 messageApi.success("Discount created successfully!");
             }
-            getDiscounts({
-                variables: {
-                    limit: 20,
-                    offset: 0,
-                }
-            });
+            await refetch();
             onClose();
         } catch (e) {
             console.error(e);
@@ -109,7 +95,7 @@ const AddEditDiscount = ({visible,onClose,edititem,messageApi}) => {
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
                         {t("Cancel")}
                     </Button>
-                    <Button type="primary" loading={loading}  onClick={()=>form.submit()} className='btnsave border0 text-white brand-bg'>
+                    <Button type="primary" loading={creating || updating}  onClick={()=>form.submit()} className='btnsave border0 text-white brand-bg'>
                         {t(edititem?'Update':'Confirm & Save')}
                     </Button>
                 </Flex>

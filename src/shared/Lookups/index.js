@@ -26,35 +26,35 @@ const languageopt = [
 
 const promoType = [
     {
-        id: 1,
+        id: 'FIXED',
         name: 'Fixed'
     },
     {
-        id: 2,
+        id: 'PERCENTAGE',
         name: 'Percentage'
     },
 ]
 
 const customertypeOp = [
     {
-        id: 1,
+        id: 'OLD',
         name: 'Old'
     },
     {
-        id: 2,
+        id: 'NEW',
         name: 'New'
     },
 ]
 
 
 const typeitemsCust = [
-    { key: 'new', label: 'New' },
-    { key: 'old', label: 'Old' },
+    { key: 'NEW', label: 'New' },
+    { key: 'OLD', label: 'Old' },
 ];
 
 const statusitemsCust = [
-    { key: 'active', label: 'Active' },
-    { key: 'inactive', label: 'Inactive' },
+    { key: true, label: 'Active' },
+    { key: false, label: 'Inactive' },
 ];
 
 const statusItem = [
@@ -80,27 +80,27 @@ const typeOp = [
 ];
 
 const subscriptionItems = [
-    { key: 'bp', label: 'BP' },
-    { key: 'sp', label: 'SP' },
-    { key: 'pp', label: 'PP' },
-    { key: 'ep', label: 'EP' },
+    { key: 'BASIC', label: 'BP' },
+    { key: 'STANDARD', label: 'SP' },
+    { key: 'PRO', label: 'PP' },
+    { key: 'ENTERPRISE', label: 'EP' },
 ];
 
 const subscriptionplanOp = [
     {
-        id: 1,
+        id: 'BASIC',
         name: 'Basic'
     },
     {
-        id: 2,
+        id: 'STANDARD',
         name: 'Standard'
     },
     {
-        id: 3,
+        id: 'PRO',
         name: 'Pro'
     },
     {
-        id: 4,
+        id: 'ENTERPRISE',
         name: 'Enterprise'
     },
 ]
@@ -118,11 +118,11 @@ const periodOp = [
 
 const typeamountItem = [
     {
-        key: 'fixed',
+        key: 'FIXED',
         label: 'Fixed'
     },
     {
-        key: 'percentage',
+        key: 'PERCENTAGE',
         label: 'Percentage'
     },
 ]
