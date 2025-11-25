@@ -6,6 +6,7 @@ import { discountactivityColumn, discountactivityData } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { exportToExcel } from '../../../../shared';
 
 const DiscountActivityLog = () => {
 
@@ -104,7 +105,7 @@ const DiscountActivityLog = () => {
                         </Col>
                         <Col span={24} md={24} xl={10}>
                             <Flex justify='end' gap={10}>
-                                <Button className='btncancel'> 
+                                <Button className='btncancel'  onClick={() => exportToExcel('', 'DiscountActivityLog')}> 
                                     <Flex align='center' gap={10}>
                                         <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export Data")}
                                     </Flex>

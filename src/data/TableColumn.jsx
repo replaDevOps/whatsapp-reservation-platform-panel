@@ -360,7 +360,7 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
     {
         title: t("Date"),
         dataIndex: 'createdAt',
-        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(createdAt) : createdAt
+        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(createdAt) : utcDateTimeToLocal(createdAt)
     },
     {
         title: t("Note"),
@@ -734,17 +734,17 @@ const faqColumns = ({ setVisible, setEditItem, setDeleteItem,t }) => [
 const activitylogColumn = ({t,i18n})=> [
     {
         title: t('Name'),
-        dataIndex: 'name',
+        dataIndex: 'userName',
     },
     {
         title: t('Role'),
-        dataIndex: 'role',
-        render:(role) => t(role)
+        dataIndex: 'userRole',
+        render:(role) => t(role)?.charAt(0)?.toUpperCase() + t(role)?.slice(1).toLowerCase()
     },
     {
         title: t('Action'),
         dataIndex: 'action',
-        render:(action) => t(action)
+        render:(action) => t(action)?.charAt(0)?.toUpperCase() + t(action)?.slice(1).toLowerCase()
     },
     {
         title: t('Activity'),
@@ -752,19 +752,19 @@ const activitylogColumn = ({t,i18n})=> [
     },
     {
         title: t('Date & Time'),
-        dataIndex: 'dateTime',
-        render: (dateTime) => {
-            if (!dateTime) return '';
+        dataIndex: 'createdAt',
+        render: (createdAt) => {
+            if (!createdAt) return '';
 
             if (i18n?.language === 'ar') {
-            let arabicDate = toArabicDigits(dateTime)
+            let arabicDate = toArabicDigits(createdAt)
                 .replace('AM', 'ص')
                 .replace('PM', 'م')
                 .replace('am', 'ص')
                 .replace('pm', 'م');
                 return arabicDate;
             }
-            return dateTime;
+            return utcDateTimeToLocal(createdAt)
         }
     }
 ]
