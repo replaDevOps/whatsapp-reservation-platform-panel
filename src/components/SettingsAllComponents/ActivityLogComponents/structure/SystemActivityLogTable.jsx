@@ -6,6 +6,7 @@ import { activitylogColumn, activitylogtableData } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { roleItems } from '../../../../shared';
 
 const SystemActivityLogTable = () => {
 
@@ -30,11 +31,6 @@ const SystemActivityLogTable = () => {
         { key: 'maintenancemode', label: 'Maintenance Mode' },
     ];
 
-     const roleItems = [
-        { key: 'supperadmin', label: 'Supper Admin' },
-        { key: 'technicaladmin', label: 'Technical Admin' },
-        { key: 'demoadmin', label: 'Demo Admin' },
-    ];
 
     const handlePageChange = (page, size) => {
         setCurrent(page);

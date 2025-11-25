@@ -28,6 +28,41 @@ const AddEditFaqs = ({visible,onClose,edititem,refetch}) => {
             form.resetFields()
         }
     },[visible,edititem])
+
+    const CreateUpdateFaqs = async() => {
+        const input = form.getFieldsValue()
+        // const input = {
+        //     code: data.code,
+        //     group: data.group?.toUpperCase() || null,
+        //     discountType: data.discountType?.toUpperCase() || null,
+        //     value: data.value ? Number(data.value) : 0,
+        //     packageType: data.packageType?.toUpperCase() || "",
+        //     usageLimit: data.usageLimit ? Number(data.usageLimit) : 0,
+        //     startDate: data.startDate,
+        //     expiryDate: data.expiryDate
+        // };
+        try {
+            if (edititem?.id) {
+                await updateDiscounts({
+                    variables: {
+                        editDiscountId: edititem.id,
+                        input
+                    }
+                });
+                messageApi.success("Faqs updated successfully!");
+            } else {
+                await createFaqs({
+                    variables: { input }
+                });
+                messageApi.success("Faqs created successfully!");
+            }
+            await refetch();
+            onClose();
+        } catch (e) {
+            console.error(e);
+            message.error("Something went wrong!");
+        }
+    }
     return (
         <Modal
             title={null}
@@ -40,7 +75,7 @@ const AddEditFaqs = ({visible,onClose,edititem,refetch}) => {
                     <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
                         {t("Cancel")}
                     </Button>
-                    <Button type="primary" className='btnsave border0 text-white brand-bg' onClick={()=>form.submit()}>
+                    <Button type="primary" loading={creating} className='btnsave border0 text-white brand-bg' onClick={()=>form.submit()}>
                         {t(edititem?'Update':'Save')}
                     </Button>
                 </Flex>

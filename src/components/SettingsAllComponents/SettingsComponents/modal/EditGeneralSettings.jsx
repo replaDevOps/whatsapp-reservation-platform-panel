@@ -14,7 +14,10 @@ const EditGeneralSettings = ({visible,onClose,edititem}) => {
     useEffect(()=>{
         if(visible && edititem){
             form.setFieldsValue({
-                name: edititem,
+                firstName: edititem?.getUser?.firstName,
+                lastName: edititem?.getUser?.lastName,
+                phone: edititem?.getUser?.phone,
+                email: edititem?.getUser?.email,
             })
         }
     },[visible,edititem])
@@ -73,7 +76,7 @@ const EditGeneralSettings = ({visible,onClose,edititem}) => {
                             <MyInput
                                 type='number' 
                                 label={t("Phone Number")} 
-                                name="phoneNo" 
+                                name="phone" 
                                 required 
                                 message={t("Please enter phone number")} 
                                 placeholder={t("Enter phone number")} 

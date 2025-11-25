@@ -10,7 +10,7 @@ import { MeetingNoteModal } from '../modal';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery } from '@apollo/client/react';
 import { GET_DEMO_REQUEST } from '../../../../graphql/query';
-import { TableLoader } from '../../../../shared';
+import { servicetypeItems, statusItems, TableLoader } from '../../../../shared';
 
 const { Text } = Typography;
 const DemoRequestTable = () => {
@@ -28,17 +28,12 @@ const DemoRequestTable = () => {
         fetchPolicy: 'network-only'
     })
 
-    const statusItems = [
-        { key: 'pending', label: 'Pending' },
-        { key: 'contacted', label: 'Contacted' },
-    ];
+    const buildFilterObject = () => ({
+        businessType: selectedType || undefined,
+        status: selectedAction || undefined ,
+    });
 
-     const typeItems = [
-        { key: 'general', label: 'General' },
-        { key: 'barber', label: 'Barber' },
-        { key: 'clinic', label: 'Clinic' },
-        { key: 'spa', label: 'Spa' },
-    ];
+    
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -66,16 +61,17 @@ const DemoRequestTable = () => {
         if(getDemoRequest){
             getDemoRequest({
                 variables: {
-                    limit: 20,
-                    offset: 0,
+                    limit: pageSize,
+                    offset: (current - 1) * pageSize,
+                    filter: buildFilterObject()
                 }
             })
         }
-    },[getDemoRequest])
+    },[getDemoRequest, current, pageSize, selectedType, selectedAction])
     
     useEffect(()=>{
-        if(data?.bookDemos)
-            setDemoRequestData(data?.bookDemos)
+        if (data?.getBookDemos?.bookDemos)
+            setDemoRequestData(data.getBookDemos.bookDemos);
     }, [data])
     
     return (
@@ -91,7 +87,7 @@ const DemoRequestTable = () => {
                             <Flex gap={5}>
                                 <Dropdown
                                     menu={{
-                                        items: typeItems.map((item) => ({
+                                        items: servicetypeItems.map((item) => ({
                                             key: String(item.key),
                                             label: t(item.label)
                                         })),
@@ -101,7 +97,7 @@ const DemoRequestTable = () => {
                                 >
                                     <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                         <Flex justify="space-between" align="center" gap={30}>
-                                            {t(typeItems.find((i) => i.key === selectedType)?.label || "Type")}
+                                            {t(servicetypeItems.find((i) => i.key === selectedType)?.label || "Type")}
                                             <DownOutlined />
                                         </Flex>
                                     </Button>
