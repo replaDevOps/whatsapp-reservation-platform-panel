@@ -36,8 +36,7 @@ const CustomerTable = () => {
                 variables: {
                     limit: 20,
                     offset: 0,
-                    role: "SUBSCRIBER",
-                    isActive: true
+                    role: "SUBSCRIBER"
                 }
             })
     }, [getSubscriberCustomers])

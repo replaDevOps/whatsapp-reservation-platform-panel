@@ -39,8 +39,7 @@ const AddEditBusiness = () => {
                 variables: {
                     limit: 1000,
                     offset: 0,
-                    role: "SUBSCRIBER",
-                    isActive: true 
+                    role: "SUBSCRIBER"
                 }
             })
     }, [getSubscriberCustomersLookup])

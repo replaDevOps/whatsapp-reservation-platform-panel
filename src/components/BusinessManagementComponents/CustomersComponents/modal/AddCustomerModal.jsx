@@ -23,8 +23,7 @@ const AddCustomerModal = ({visible,onClose}) => {
                 variables: {
                     limit: 20,
                     offset: 0,
-                    role: "SUBSCRIBER",
-                    isActive: false
+                    role: "SUBSCRIBER"
                 },
             })
             onClose()
