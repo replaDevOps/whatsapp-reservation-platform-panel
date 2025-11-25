@@ -48,6 +48,7 @@ const customertypeOp = [
 
 
 const typeitemsCust = [
+    { key: '', label: 'All' },
     { key: 'NEW', label: 'New' },
     { key: 'OLD', label: 'Old' },
 ];
@@ -66,6 +67,7 @@ const statusItem = [
 ]
 
 const typeItems = [
+    { key: '', label: 'All Type' },
     { key: 'general', label: 'General' },
     { key: 'barber', label: 'Barber' },
     { key: 'clinic', label: 'Clinic' },
@@ -80,6 +82,7 @@ const typeOp = [
 ];
 
 const subscriptionItems = [
+    { key: '', label: 'All' },
     { key: 'BASIC', label: 'BP' },
     { key: 'STANDARD', label: 'SP' },
     { key: 'PRO', label: 'PP' },
@@ -117,6 +120,7 @@ const periodOp = [
 ]
 
 const typeamountItem = [
+    { key: '', label: 'All' },
     {
         key: 'FIXED',
         label: 'Fixed'
@@ -128,17 +132,20 @@ const typeamountItem = [
 ]
 
 const roleItems = [
+    { key: '', label: 'All' },
     { key: 'SUPER_ADMIN', label: "Super Admin" },
     { key: 'TECHNICAL_ADMIN', label: "Technical Admin" },
     { key: 'DEMO_ADMIN', label: "Demo Admin" },
 ];
 
 const statusItems = [
+    { key: '', label: 'All' },
     { key: 'PENDING', label: 'Pending' },
     { key: 'CONTACTED', label: 'Contacted' },
 ];
 
 const servicetypeItems = [
+    { key: '', label: 'All Type' },
     { key: 'GENERAL', label: 'General' },
     { key: 'BARBER', label: 'Barber' },
     { key: 'CLINIC', label: 'Clinic' },
