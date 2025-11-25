@@ -5,7 +5,7 @@ import { ConfirmModal, CustomPagination, DeleteModal, } from '../../../Ui';
 import { allbusinessColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
-import { typeitemsCust } from '../../../../shared';
+import { TableLoader, typeitemsCust } from '../../../../shared';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GET_BUSINESSES } from '../../../../graphql/query';
@@ -26,7 +26,7 @@ const AllBusinessTable = () => {
     const [ statuschange, setStatusChange ] = useState(false)
     const navigate = useNavigate()
     const [businesses, setBusinesses]= useState([])
-    const [getBusinesses, { data }] = useLazyQuery(GET_BUSINESSES, {
+    const [getBusinesses, { data, loading}] = useLazyQuery(GET_BUSINESSES, {
         fetchPolicy: "network-only",
     })
      const [deleteBusiness] = useMutation(DELETE_BUSINESS, {
@@ -79,10 +79,6 @@ const AllBusinessTable = () => {
                                     <SearchInput
                                         name='name'
                                         placeholder={t("Search by Business Name / Customer Name")}
-                                        // value={search}
-                                        // onChange={(e) => {
-                                        //     setSearch(e.target.value);
-                                        // }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                     />
@@ -152,6 +148,10 @@ const AllBusinessTable = () => {
                         rowHoverable={false}
                         pagination={false}
                         // loading={isLoading}
+                         loading={{
+                            ...TableLoader,
+                            spinning: loading,
+                        }}
                     />
                     {/* <CustomPagination 
                         total={12}
@@ -174,7 +174,7 @@ const AllBusinessTable = () => {
                 title={'Are you sure?'}
                 subtitle={'This action cannot be undone. Are you sure you want to delete this business?'}
                 onClose={()=>setDeleteItem(false)}
-                deleteRecord= {async (deleteBusinessId)=>{
+                onConfirm= {async (deleteBusinessId)=>{
                     await deleteBusiness({ variables: {deleteBusinessId, deletedBy: '1eb5f017-9245-4258-8c8f-94f613a4db15'}  })
                 }}
             />
@@ -182,4 +182,4 @@ const AllBusinessTable = () => {
     );
 };
 
-export { AllBusinessTable };
+export { AllBusinessTable }
