@@ -1,45 +1,46 @@
 import { Form, Button, Typography, Row, Col, Checkbox, Flex, Image } from "antd";
 import { NavLink } from "react-router-dom";
 import { message } from "antd";
-// import { useMutation } from "@apollo/client";
-// import { LOGIN } from "../../graphql/mutation/login";
+import { useMutation } from "@apollo/client/react";
 import { useNavigate } from "react-router-dom";
 import { MyInput } from "../../components";
 import { LanguageChange } from "../Sidebar/LanguageChange";
 import { useTranslation } from "react-i18next";
+import { LOGIN_USER } from "../../graphql/mutation";
 
 const { Title, Paragraph } = Typography;
 const LoginPage = () => {
     const navigate = useNavigate()
     const {t} = useTranslation()
     const [messageApi, contextHolder] = message.useMessage();
-    // const [loginUser, { loading, error }] = useMutation(LOGIN);
+    const [loginUser, { loading, error }] = useMutation(LOGIN_USER);
     const [form] = Form.useForm();
 
     const handleFinish = async () => {
+            const values = form.getFieldsValue()
              try {
-            //   const { email, password } = values;
-            const email = "platformpanel@gmail.com";
-            const password = "test@123";
-            //   const { data,error } = await loginUser({ variables: { email, password } });
-                localStorage.setItem("email", email);
-                localStorage.setItem("password", password);
-
-                messageApi.success("Login successful!");
-                navigate("/")
-            //   if (data) {
-                // store token/id
-                // localStorage.setItem("accessToken", data.login.token);
-                // localStorage.setItem("userId", data.login.user.id);
+              const { email, password } = values;
+            // const email = "platformpanel@gmail.com";
+            // const password = "test@123";
+              const { data,error } = await loginUser({ variables: { email, password } });
                 // localStorage.setItem("email", email);
                 // localStorage.setItem("password", password);
 
                 // messageApi.success("Login successful!");
                 // navigate("/")
+              if (data) {
+                // store token/id
+                localStorage.setItem("accessToken", data.loginUser.token);
+                localStorage.setItem("userId", data.loginUser.user.id);
+                localStorage.setItem("email", email);
+                localStorage.setItem("password", password);
+
+                messageApi.success("Login successful!");
+                navigate("/")
                 // compute destination safely (it could be a string or Location object)
-            //   } else {
-            //     messageApi.error("Login failed: Invalid credentials");
-            //   }
+              } else {
+                messageApi.error("Login failed: Invalid credentials");
+              }
             } catch (error) {
             console.error("Login error:", error);
             messageApi.error("Login failed: Something went wrong");
@@ -65,10 +66,10 @@ const LoginPage = () => {
                         </Paragraph>
 
                         <Form layout="vertical" form={form} onFinish={handleFinish} requiredMark={false}
-                            initialValues={{
-                                email: "platformpanel@gmail.com",
-                                password: "test@123",
-                            }}
+                            // initialValues={{
+                            //     email: "platformpanel@gmail.com",
+                            //     password: "test@123",
+                            // }}
                         >
                             <MyInput 
                                 label={t("Email Address" )}
@@ -92,7 +93,7 @@ const LoginPage = () => {
                                 </NavLink>
                             </Flex>
                             <Button htmlType="submit" type="primary" className="btnsave bg-dark-blue fs-16" block 
-                                // loading={loading}
+                                loading={loading}
                             >
                                 {t("Sign In")}
                             </Button>

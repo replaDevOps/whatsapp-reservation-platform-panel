@@ -1,17 +1,35 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Card, Col, Flex, Form, Row, Typography } from 'antd'
 import { EditGeneralSettings, MyInput } from '../../../../components'
 import { useTranslation } from 'react-i18next'
 import { toArabicDigits } from '../../../../shared'
+import { useQuery } from '@apollo/client/react'
+import { GET_STAFFS_BY_ID } from '../../../../graphql/query'
 
 const { Title } = Typography
 const GeneralSetting = () => {
 
+    const userId = localStorage.getItem('userId');
     const [form] = Form.useForm();
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
     const [ visible, setVisible ] = useState(false)
     const [ edititem, setEditItem ] = useState(null)
+    const { data, loading } = useQuery(GET_STAFFS_BY_ID, {
+        variables: { getUserId: userId },
+        skip: !userId,
+    });
+
+    useEffect(() => {
+        if (!loading && data) {
+            form.setFieldsValue({
+                firstName: data?.getUser?.firstName,
+                lastName: data?.getUser?.lastName,
+                phone: data?.getUser?.phone,
+                email: data?.getUser?.email,
+            });
+        }
+    }, [loading, data]);
 
     return (
         <>
@@ -19,7 +37,7 @@ const GeneralSetting = () => {
                 <Flex gap={10} vertical>
                     <Flex gap={10} justify='space-between' align='center'>
                         <Title level={5} className="fw-500 m-0">{t("General Settings")}</Title>
-                        <Button className='btncancel' onClick={()=>{setVisible(true);setEditItem(1)}}> 
+                        <Button className='btncancel' onClick={()=>{setVisible(true);setEditItem(data)}}> 
                             {t("Edit")}
                         </Button>
                     </Flex>
@@ -49,7 +67,7 @@ const GeneralSetting = () => {
                                 <MyInput
                                     type='number' 
                                     label={t("Phone Number")} 
-                                    name="phoneNo" 
+                                    name="phone" 
                                     placeholder={t("Enter phone number")} 
                                     addonBefore={ isArabic ? `${toArabicDigits(966)}+`: `+${966}`}
                                     disabled

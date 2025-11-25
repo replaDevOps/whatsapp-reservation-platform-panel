@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeftOutlined, ArrowRightOutlined, EditFilled, LoadingOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons'
 import { Button, Card, Col, Flex, Form, message, Row, Select, Spin, Typography } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
-import { MyInput, MySelect, SingleFileUpload } from '../../../Forms'
-import { stafftableData } from '../../../../data'
+import { MyInput, MySelect} from '../../../Forms'
 import { BusinessTitle, rolestaffopt, TableLoader, toArabicDigits } from '../../../../shared'
 import { BreadCrumbCard } from '../../../Ui'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from '@apollo/client/react'
 import { CREATE_STAFF, UPDATE_STAFF } from '../../../../graphql/mutation/mutations'
-import { GET_STAFFS, GET_STAFFS_BY_ID } from '../../../../graphql/query'
+import { GET_STAFFS_BY_ID } from '../../../../graphql/query'
 
 const { Title } = Typography
 const AddEditStaff = () => {

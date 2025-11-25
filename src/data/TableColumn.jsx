@@ -318,13 +318,13 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
     {
         title: t("Phone Number"),
         dataIndex: 'phone',
-        render: (phoneNo) => {
-        if (!phoneNo) return '';
+        render: (phone) => {
+        if (!phone) return '';
         
         const prefix = '+';
         return i18n.language === "ar" 
-            ? `${prefix}${toArabicDigits(phoneNo)}`
-            : `${prefix}${phoneNo}`;
+            ? `${prefix}${toArabicDigits(phone)}`
+            : `${prefix}${phone}`;
         }
     },
     {
@@ -378,7 +378,7 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
         const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
 
         return (
-            status === 'pending' ? (
+            status === 'PENDING' ? (
                 <Dropdown
                     menu={{
                         items: [
@@ -395,7 +395,7 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
                                         {t("Contacted")}
                                     </NavLink>
                                 ),
-                                key: 'contacted',
+                                key: 'CONTACTED',
                             },
                         ],
                     }}

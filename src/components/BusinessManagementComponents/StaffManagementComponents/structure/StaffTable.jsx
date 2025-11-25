@@ -6,7 +6,7 @@ import { ConfirmModal, CustomPagination, DeleteModal } from '../../../Ui';
 import { stafftableColumn } from '../../../../data';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '../../../Forms';
-import { statusitemsCust, TableLoader } from '../../../../shared';
+import { roleItems, statusitemsCust, TableLoader } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
 import { GET_STAFFS } from '../../../../graphql/query';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
@@ -33,11 +33,7 @@ const StaffTable = () => {
     const [staffData, setStaffData]= useState([])
     const [deleteStaff, { loading: deleting }] = useMutation(DELETE_STAFF);
 
-    const roleItems = [
-        { key: 'SUPER_ADMIN', label: t("Super Admin") },
-        { key: 'TECHNICAL_ADMIN', label: t("Technical Admin") },
-        { key: 'DEMO_ADMIN', label: t("Demo Admin") },
-    ];
+    
     const buildFilterObject = () => ({
         search: search || undefined,
         role: selectedRole || undefined,

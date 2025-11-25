@@ -67,6 +67,26 @@ const CREATE_FAQS = gql`
   }
 `
 
+
+const CHANGE_PASSWORD_USER =  gql`
+  mutation ChangedPassword($changedPasswordId: ID!, $oldPassword: String!, $newPassword: String!) {
+    changedPassword(id: $changedPasswordId, oldPassword: $oldPassword, newPassword: $newPassword) {
+      id
+    }
+  }
+`
+
+const LOGIN_USER = gql`
+  mutation LoginUser($email: String, $password: String) {
+    loginUser(email: $email, password: $password) {
+      token
+      user {
+        id
+      }
+    }
+  }
+`
+
 export {
   CREATE_SUBSCRIBER_CUSTOMER,
   UPDATE_TERMS,
@@ -77,4 +97,6 @@ export {
   DELETE_STAFF,
   EXPIRE_DISCOUNT,
   CREATE_FAQS,
+  CHANGE_PASSWORD_USER,
+  LOGIN_USER,
 }

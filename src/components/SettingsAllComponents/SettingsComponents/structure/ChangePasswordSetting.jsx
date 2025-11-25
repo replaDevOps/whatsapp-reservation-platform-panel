@@ -1,25 +1,62 @@
-import { Button, Card, Col, Flex, Form, Row, Typography } from 'antd'
+import { Button, Card, Col, Flex, Form, message, Row, Typography } from 'antd'
 import { MyInput } from '../../../../components'
 import { useTranslation } from 'react-i18next';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { CHANGE_PASSWORD_USER } from '../../../../graphql/mutation';
+import { GET_STAFFS } from '../../../../graphql/query';
 
 const { Title } = Typography
 const ChangePasswordSetting = () => {
 
+    const userId = localStorage.getItem('userId');
     const [form] = Form.useForm();
+    const [messageApi, contextHolder] = message.useMessage();
     const {t} = useTranslation()
+
+    const [ changePassword, { loading } ] = useMutation(CHANGE_PASSWORD_USER,{
+        onCompleted: () => {
+            messageApi.success('Password changed successfully!');
+            form.resetFields();
+        },
+        onError: (err) => {
+            messageApi.error(err || 'Failed to change password.');
+        }
+    });
+
+    const onFinish = () => {
+        const values = form.getFieldsValue();
+        if (values.newPassword !== values.confirmPassword) {
+            messageApi.error('New password and confirmation do not match.');
+            return;
+        }
+
+        if (!userId) {
+            messageApi.error("User ID not found.");
+            return;
+        }
+
+        changePassword({
+            variables: {
+                changedPasswordId: userId,
+                oldPassword: values.oldPassword,
+                newPassword: values.newPassword
+            }
+        });
+    };
     return (
         <>
+            {contextHolder}
             <Card className='card-bg card-cs radius-12 border-gray'>
                 <Flex gap={10} vertical>
                     <Flex gap={10} justify='space-between' align='center'>
                         <Title level={5} className="fw-500 m-0">{t("Password Manager")}</Title>
-                        <Button className='btncancel' onClick={()=>form.submit()}>
+                        <Button className='btncancel' loading={loading} onClick={()=>form.submit()}>
                             {t("Save")}
                         </Button>
                     </Flex>
                     <Form layout="vertical" 
                         form={form} 
-                        // onFinish={} 
+                        onFinish={onFinish} 
                         requiredMark={false}
                     >
                         <Row gutter={16}>

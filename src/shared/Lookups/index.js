@@ -127,6 +127,23 @@ const typeamountItem = [
     },
 ]
 
+const roleItems = [
+    { key: 'SUPER_ADMIN', label: "Super Admin" },
+    { key: 'TECHNICAL_ADMIN', label: "Technical Admin" },
+    { key: 'DEMO_ADMIN', label: "Demo Admin" },
+];
+
+const statusItems = [
+    { key: 'PENDING', label: 'Pending' },
+    { key: 'CONTACTED', label: 'Contacted' },
+];
+
+const servicetypeItems = [
+    { key: 'GENERAL', label: 'General' },
+    { key: 'BARBER', label: 'Barber' },
+    { key: 'CLINIC', label: 'Clinic' },
+    { key: 'SPA', label: 'Spa' },
+];
 
 export { 
     rolestaffopt,
@@ -141,5 +158,8 @@ export {
     subscriptionItems,
     subscriptionplanOp,
     periodOp,
-    typeamountItem
+    typeamountItem,
+    roleItems,
+    statusItems,
+    servicetypeItems,
 }
