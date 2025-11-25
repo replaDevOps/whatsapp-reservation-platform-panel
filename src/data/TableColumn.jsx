@@ -242,45 +242,52 @@ const revenueColumns = ({t,i18n})=> [
     {
         title: t("Business ID"),
         dataIndex: 'businessId',
+        render: (businessId) => `${businessId ? `#${ businessId?.slice(0, 5)}` : '-'}`
     },
     {
         title: t("Business Logo"),
-        dataIndex: 'businessLogo',
-        render: (businessLogo) => {
+        dataIndex: 'business',
+        render: (business) => {
             return (
-                <Avatar src={businessLogo} size={40} />
+                <Avatar src={business?.image} size={40} />
             )
         }
     },
     {
         title: t("Business Name"),
-        dataIndex: 'businessName',
+        dataIndex: 'business',
+        render: (business) => business?.name ? business?.name : '-'
     },
     {
         title: t("Type"),
-        dataIndex: 'type',
+        dataIndex: 'business',
+        render: (business) => 
+            business?.businessType ?
+            business?.businessType?.charAt(0)?.toUpperCase() + business?.businessType?.slice(1)?.toLowerCase()
+            :
+            '-'
     },
     {
         title: t("Subscription Plan"),
-        dataIndex: 'subscriptionPlan',
-        render: (subscriptionPlan) => {
+        dataIndex: 'subscription',
+        render: (subscription) => {
             return (
-                subscriptionPlan === 'bp' ? (
+                subscription?.type === 'BASIC' ? (
                     <Text className='sm-pill text-white fs-12 bg-basic-color'>{t("BP")}</Text>
-                ) : subscriptionPlan === 'PP' ? (
+                ) : subscription?.type === 'PRO' ? (
                     <Text className='sm-pill text-white fs-12 bg-red'>{t("PP")}</Text>
-                ) : subscriptionPlan === 'sp' ? (
+                ) : subscription?.type === 'STANDARD' ? (
                     <Text className='sm-pill text-white fs-12 bg-violet'>{t("SP")}</Text>
-                ) : (
+                ) : subscription?.type === 'ENTERPRISE' ? (
                     <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("EP")}</Text>
-                )
+                ) : null
             );
         }
     },
     {
         title: t("Period"),
-        dataIndex: 'period',
-        render:(period)=> t(period)
+        dataIndex: 'validity',
+        render:(validity)=> t(validity)?.charAt(0)?.toUpperCase() + t(validity)?.slice(1)?.toLowerCase()
     },
     {
         title: t("Discount"),
@@ -294,15 +301,16 @@ const revenueColumns = ({t,i18n})=> [
             const isArabic = i18n.language === "ar"
             return (
                 <Flex align="flex-end" gap={5}>
-                    {t("SAR")} {isArabic ? toArabicDigits(price?.current): price?.current} <sup><Text className="fs-12" delete>{isArabic ? toArabicDigits(price?.original): price?.original}</Text></sup>
+                    {t("SAR")} {isArabic ? toArabicDigits(price): price} 
+                    {/* <sup><Text className="fs-12" delete>{isArabic ? toArabicDigits(price?.original): price?.original}</Text></sup> */}
                 </Flex>
             )
         }
     },
     {
         title: t("Purchasing Date"),
-        dataIndex: 'purchasingDate',
-        render: (purchasingDate) => i18n.language === "ar" ? toArabicDigits(purchasingDate) : purchasingDate
+        dataIndex: 'createdAt',
+        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(createdAt) : dayjs.utc(createdAt).local().format("YYYY-MM-DD hh:mm A")
     },
 ]
 

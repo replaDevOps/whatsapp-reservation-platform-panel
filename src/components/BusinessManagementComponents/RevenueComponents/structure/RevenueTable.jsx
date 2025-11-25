@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, Image } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, } from '../../../Ui';
-import { revenueColumns, revenueData } from '../../../../data';
-import { MyDatepicker, SearchInput } from '../../../Forms';
-import moment from 'moment';
-import { subscriptionItems, typeItems } from '../../../../shared';
+import { revenueColumns } from '../../../../data';
+import { SearchInput } from '../../../Forms';
+import { subscriptionItems, TableLoader, servicetypeItems } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
+import { useLazyQuery } from '@apollo/client/react';
+import { GET_REVENUE } from '../../../../graphql/query';
 
 
 const RevenueTable = () => {
@@ -17,7 +18,12 @@ const RevenueTable = () => {
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
-    const [selectedYear, setSelectedYear] = useState(moment());
+    // const [selectedYear, setSelectedYear] = useState(moment());
+    const [revenueData, setRevenueData]= useState([])
+    const [ search, setSearch ] = useState('')
+    const [ getRevenue, { data, loading }] = useLazyQuery(GET_REVENUE,{
+        fetchPolicy: 'network-only'
+    })
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -31,6 +37,33 @@ const RevenueTable = () => {
     const handleTypeClick = ({ key }) => {
         setselectedType(key);
     };
+
+    useEffect(() => {
+        getRevenue({
+            variables: {
+                limit: pageSize,
+                offDet: (current - 1) * pageSize,
+                search: search || undefined,
+                type: selectedType || undefined,
+                plan: selectedAction || undefined,
+            }
+        });
+    }, [
+        getRevenue,
+        search,
+        selectedType,
+        selectedAction,
+        current,
+        pageSize
+    ]);
+
+
+    useEffect(()=>{
+        if(data?.getSubscriberSubscriptions?.subscribersubscriptions)
+            setRevenueData(data?.getSubscriberSubscriptions?.subscribersubscriptions)
+
+        console.log('data',data?.getSubscriberSubscriptions?.subscribersubscriptions)
+    }, [data])
     
     return (
         <>
@@ -43,10 +76,10 @@ const RevenueTable = () => {
                                     <SearchInput
                                         name='name'
                                         placeholder='Search by Business Name'
-                                        // value={search}
-                                        // onChange={(e) => {
-                                        //     setSearch(e.target.value);
-                                        // }}
+                                        value={search}
+                                        onChange={(e) => {
+                                            setSearch(e.target.value);
+                                        }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                     />
@@ -55,7 +88,7 @@ const RevenueTable = () => {
                                     <Flex gap={5}>
                                         <Dropdown
                                             menu={{
-                                                items: typeItems.map((item) => ({
+                                                items: servicetypeItems.map((item) => ({
                                                     key: String(item.key),
                                                     label: t(item.label)
                                                 })),
@@ -65,7 +98,7 @@ const RevenueTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(typeItems.find((i) => i.key === selectedType)?.label || "Type")}
+                                                    {t(servicetypeItems.find((i) => i.key === selectedType)?.label || "Type")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -98,14 +131,14 @@ const RevenueTable = () => {
                                         <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export")}
                                     </Flex>
                                 </Button>
-                                <MyDatepicker
+                                {/* <MyDatepicker
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
                                     placeholder={[t("Start Year"),t("End Year")]}
                                     value={selectedYear}
                                     onChange={(year) => setSelectedYear(year)}
-                                />
+                                /> */}
                             </Flex>
                         </Col>
                     </Row>
@@ -120,10 +153,16 @@ const RevenueTable = () => {
                         scroll={{ x: 1300 }}
                         rowHoverable={false}
                         pagination={false}
-                        // loading={isLoading}
+                        rowKey={(record)=>record?.id}
+                        loading={
+                            {
+                                ...TableLoader,
+                                spinning: loading
+                            }
+                        }
                     />
                     <CustomPagination 
-                        total={12}
+                        total={data?.getSubscriberSubscriptions?.totalCount}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
