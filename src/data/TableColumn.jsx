@@ -53,6 +53,10 @@ const customerColumn = ({t,i18n})=> [
         dataIndex: 'email', 
     },
     {
+        title: t("Current Subscriptions"),
+        dataIndex: 'email', 
+    },
+    {
         title: t("Phone Number"),
         dataIndex: 'phone',
         render: (phoneNo) => {

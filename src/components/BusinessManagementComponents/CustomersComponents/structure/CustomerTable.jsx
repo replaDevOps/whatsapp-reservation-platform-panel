@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { CustomPagination } from '../../../Ui';
 import { customerColumn, customertableData } from '../../../../data';
-import { MyDatepicker, SearchInput } from '../../../Forms';
+import { MyDatepicker, MySelect, SearchInput } from '../../../Forms';
 import { AddCustomerModal } from '../modal';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -37,7 +37,7 @@ const CustomerTable = () => {
                     limit: 20,
                     offset: 0,
                     role: "SUBSCRIBER",
-                    isActive: false
+                    isActive: true
                 }
             })
     }, [getSubscriberCustomers])
@@ -61,8 +61,9 @@ const CustomerTable = () => {
                     </Flex>
                     <Form layout="vertical" form={form}>
                         <Row gutter={[16, 16]} justify={'space-between'}>
-                            <Col span={24} md={24} lg={7}>
-                                <SearchInput
+                            <Col span={24} md={24} lg={12} >
+                                <Flex gap={10}>
+                                    <SearchInput
                                     name='name'
                                     placeholder={t("Search by Customer Name")}
                                     // value={search}
@@ -72,8 +73,15 @@ const CustomerTable = () => {
                                     prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                 />
+                                <MySelect
+                                    withoutForm
+                                    placeholder='...select'
+                                    options={[{id:"Active", name: 'Active'}, {id:'inActive', name: 'inActive'}]}
+                                    style={{width: '170px'}}
+                                />
+                                </Flex>
                             </Col>
-                            <Col span={24} md={8} lg={8}>
+                            <Col span={24} md={8} lg={12}>
                                 <Flex justify='end' gap={10}>         
                                     <Button className='btncancel'> 
                                         <Flex align='center' gap={10}>

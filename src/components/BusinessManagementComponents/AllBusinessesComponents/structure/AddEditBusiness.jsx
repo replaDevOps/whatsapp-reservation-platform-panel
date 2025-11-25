@@ -40,7 +40,7 @@ const AddEditBusiness = () => {
                     limit: 1000,
                     offset: 0,
                     role: "SUBSCRIBER",
-                    isActive: false 
+                    isActive: true 
                 }
             })
     }, [getSubscriberCustomersLookup])
@@ -54,9 +54,10 @@ const AddEditBusiness = () => {
 
     const onFinish = async () => {
         let data = form.getFieldsValue()
+        console.log("data:", data)
         data= {
             ...data,
-            subscriberId: subscriberCustomersLookup?.find(subscriber => subscriber?.name === data?.subscriberId)?.id,
+            subscriberId: subscriberCustomersLookup?.find(subscriber => subscriber?.id === data?.subscriberId)?.id,
             subscriptionId: selectedSubscriptionPlan?.id,
             subscriptionType: selectedSubscriptionPlan?.type,
             subscriptionPrice: selectedSubscriptionPlan?.type === 'ENTERPRISE' ? Number(data?.customPrice): subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.price*12 : selectedSubscriptionPlan?.price,
@@ -65,7 +66,7 @@ const AddEditBusiness = () => {
         delete data?.customPrice
         await createBusiness({ variables: { input: {...data} } })
     }
-console.log("subscriberCustomersLookup:", subscriberCustomersLookup)
+console.log("subscriberCustomersLookup:", data)
     return (
         <>
             <Flex vertical gap={10}>
