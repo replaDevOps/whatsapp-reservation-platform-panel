@@ -4,7 +4,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, } from '../../../Ui';
 import { revenueColumns } from '../../../../data';
 import { SearchInput } from '../../../Forms';
-import { subscriptionItems, TableLoader, servicetypeItems } from '../../../../shared';
+import { subscriptionItems, TableLoader, servicetypeItems, exportToExcel } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery } from '@apollo/client/react';
 import { GET_REVENUE } from '../../../../graphql/query';
@@ -61,8 +61,6 @@ const RevenueTable = () => {
     useEffect(()=>{
         if(data?.getSubscriberSubscriptions?.subscribersubscriptions)
             setRevenueData(data?.getSubscriberSubscriptions?.subscribersubscriptions)
-
-        console.log('data',data?.getSubscriberSubscriptions?.subscribersubscriptions)
     }, [data])
     
     return (
@@ -126,7 +124,7 @@ const RevenueTable = () => {
                         </Col>
                         <Col span={24} md={24} xl={8}>
                             <Flex justify='end' gap={10}>
-                                <Button className='btncancel'> 
+                                <Button className='btncancel'  onClick={() => exportToExcel(revenueData, 'RevenueData')}> 
                                     <Flex align='center' gap={10}>
                                         <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export")}
                                     </Flex>

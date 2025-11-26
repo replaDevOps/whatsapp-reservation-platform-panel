@@ -152,6 +152,22 @@ const servicetypeItems = [
     { key: 'SPA', label: 'Spa' },
 ];
 
+const actionItems = [
+    { key: '', label: 'All' },
+    { key: 'CREATE', label: 'Add' },
+    { key: 'EDIT', label: 'Edit' },
+    { key: 'DELETE', label: 'Delete' },
+    { key: 'CHANGE_STATUS', label: 'Inactive' },
+    { key: 'EXPORT', label: 'Export' },
+    { key: 'LOGIN', label: 'Login' },
+    { key: 'LOGOUT', label: 'Logout' },
+    { key: 'REQUEST', label: 'Request' },
+    { key: 'CONTACTED', label: 'Contacted' },
+    { key: 'RENEW', label: 'Renew' },
+    { key: 'UPDATE', label: 'Update' },
+    { key: 'MAINTENANCE_MODE', label: 'Maintenance Mode' },
+];
+
 export { 
     rolestaffopt,
     languageopt, 
@@ -169,4 +185,5 @@ export {
     roleItems,
     statusItems,
     servicetypeItems,
+    actionItems,
 }

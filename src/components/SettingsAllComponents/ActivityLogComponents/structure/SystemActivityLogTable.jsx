@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Dropdown, Flex, Table, Row, Col, Form, Image } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination } from '../../../Ui';
@@ -6,7 +6,9 @@ import { activitylogColumn, activitylogtableData } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { roleItems } from '../../../../shared';
+import { actionItems, exportToExcel, roleItems, TableLoader } from '../../../../shared';
+import { useLazyQuery } from '@apollo/client/react';
+import { ACTIVITY_LOG } from '../../../../graphql/query';
 
 const SystemActivityLogTable = () => {
 
@@ -17,19 +19,19 @@ const SystemActivityLogTable = () => {
     const [selectedAction, setselectedAction] = useState('');
     const [selectedRole, setselectedRole] = useState('');
     const [selectedYear, setSelectedYear] = useState(moment());
+    const [systemactivityData, setSystemActivityData]= useState([])
+    const [ search, setSearch ] = useState('')
+    const [ getSystemActivity, { data, loading } ] = useLazyQuery(ACTIVITY_LOG,{
+        fetchPolicy: 'network-only'
+    })
 
+    const buildFilterObject = () => ({
+        search: search || undefined,
+        role: selectedRole || undefined,
+        action: selectedAction || undefined,
+    });
 
-    const actionItems = [
-        { key: 'add', label: 'Add' },
-        { key: 'edit', label: 'Edit' },
-        { key: 'delete', label: 'Delete' },
-        { key: 'inactive', label: 'Inactive' },
-        { key: 'export', label: 'Export' },
-        { key: 'cancel', label: 'Cancel' },
-        { key: 'renew', label: 'Renew' },
-        { key: 'upgrade', label: 'Upgrade' },
-        { key: 'maintenancemode', label: 'Maintenance Mode' },
-    ];
+    
 
 
     const handlePageChange = (page, size) => {
@@ -44,6 +46,30 @@ const SystemActivityLogTable = () => {
     const handleRoleClick = ({ key }) => {
         setselectedRole(key);
     };
+
+
+    useEffect(() => {
+        getSystemActivity({
+            variables: {
+                limit: pageSize,
+                offset: (current - 1) * pageSize,
+                filters: buildFilterObject(),
+            }
+        });
+    }, [
+        getSystemActivity,
+        search,
+        selectedRole,
+        selectedAction,
+        current,
+        pageSize
+    ]);
+
+
+    useEffect(()=>{
+        if(data?.getAlerts?.alerts)
+            setSystemActivityData(data?.getAlerts?.alerts)
+    }, [data])
     
     return (
         <>
@@ -57,10 +83,10 @@ const SystemActivityLogTable = () => {
                                     <SearchInput
                                         name='name'
                                         placeholder={t('Search by Role Name')}
-                                        // value={search}
-                                        // onChange={(e) => {
-                                        //     setSearch(e.target.value);
-                                        // }}
+                                        value={search}
+                                        onChange={(e) => {
+                                            setSearch(e.target.value);
+                                        }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                     />
@@ -107,19 +133,19 @@ const SystemActivityLogTable = () => {
                         </Col>
                         <Col span={24} md={24} xl={10}>
                             <Flex justify='end' gap={10}>
-                                <Button className='btncancel'> 
+                                <Button className='btncancel' onClick={() => exportToExcel(systemactivityData, 'SystemActivityTable')}> 
                                     <Flex align='center' gap={10}>
                                         <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export Data")}
                                     </Flex>
                                 </Button>
-                                <MyDatepicker
+                                {/* <MyDatepicker
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
                                     placeholder={[t("Start Year"),t("End Year")]}
                                     value={selectedYear}
                                     onChange={(year) => setSelectedYear(year)}
-                                />
+                                /> */}
                             </Flex>
                         </Col>
                     </Row>
@@ -129,16 +155,21 @@ const SystemActivityLogTable = () => {
                 <Table
                     size='large'
                     columns={activitylogColumn({t,i18n})}
-                    dataSource={activitylogtableData}
+                    dataSource={systemactivityData}
                     className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                     showSorterTooltip={false}
                     scroll={{ x: 1200 }}
                     rowHoverable={false}
                     pagination={false}
-                    // loading={isLoading}
+                    loading={
+                        {
+                            ...TableLoader,
+                            spinning: loading
+                        }
+                    }
                 />
                 <CustomPagination 
-                    total={12}
+                    total={data?.getAlerts?.totalCount}
                     current={current}
                     pageSize={pageSize}
                     onPageChange={handlePageChange}
