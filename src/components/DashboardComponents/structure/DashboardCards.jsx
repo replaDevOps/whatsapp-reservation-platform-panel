@@ -62,51 +62,7 @@ const DashboardCards = () => {
       title: dashboardStats?.enterprisePlanBusinesses || 0,
       subtitle: "Enterprise Plan Businesses",
     },
-  ])
-  const [getDashboardStats, { data, loading}] = useLazyQuery(GET_DASHBOARD_STATS, {
-      fetchPolicy: "network-only",
-  })
-  useEffect(()=>{
-    getDashboardStats()
-  }, [])
-  useEffect(()=>{
-    if(data?.getDashboardCountApi){
-      setStats(
-        [
-          {
-            id: 1,
-            icon: '/assets/icons/briefcase-w.webp',
-            title: data?.getDashboardCountApi?.totalBusinesses,
-            subtitle: "Total Businesses", 
-          },
-          {
-            id: 2,
-            icon: '/assets/icons/plan-business.webp',
-            title: data?.getDashboardCountApi?.basicPlanBusinesses,
-            subtitle: "Basic Plan Businesses",
-          },
-          {
-            id: 3,
-            icon: '/assets/icons/plan-business.webp',
-            title: data?.getDashboardCountApi?.standardPlanBusinesses,
-            subtitle: "Standard Plan Businesses",
-          },
-          {
-            id: 4,
-            icon: '/assets/icons/plan-business.webp',
-            title: data?.getDashboardCountApi?.proPlanBusinesses,
-            subtitle: "Pro Plan Businesses",
-          },
-          {
-            id: 5,
-            icon: '/assets/icons/plan-business.webp',
-            title: data?.getDashboardCountApi?.enterprisePlanBusinesses,
-            subtitle: "Enterprise Plan Businesses",
-          },
-        ]
-      )
-    }
-  }, [data])
+  ]
   return (
     <>
     <Row gutter={[14,24]} className='h-100'>
