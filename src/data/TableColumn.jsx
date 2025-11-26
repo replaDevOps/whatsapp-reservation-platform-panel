@@ -845,9 +845,9 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
                 subscription?.type === 'BASIC' ? 
                     <Text className='sm-pill text-white fs-12 bg-basic-color'>{t("Basic Plan")}</Text>
                 : subscription?.type === 'STANDARD' ? 
-                    <Text className='sm-pill text-white fs-12 bg-red'>{t("Pro Plan")}</Text>
+                    <Text className='sm-pill text-white fs-12 bg-red'>{t("Standard Plan")}</Text>
                 : subscription?.type === 'PRO' ? 
-                    <Text className='sm-pill text-white fs-12 bg-violet'>{t("Standard Plan")}</Text>
+                    <Text className='sm-pill text-white fs-12 bg-violet'>{t("PRO Plan")}</Text>
                 : <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("Enterprise Plan")}</Text>
                 
             );

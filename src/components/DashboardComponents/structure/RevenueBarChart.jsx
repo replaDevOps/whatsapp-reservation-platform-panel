@@ -27,11 +27,11 @@ const RevenueBarChart = () => {
         series: [
           {
             name: t("New Customers Bookings"),
-            data: [20, 40, 60, 45, 75, 90, 55,30,43, 60, 44, 50],
+            data: [200, 400, 0, 50, 90, 90, 55,30,43, 60, 44, 50],
           },
           {
             name: t("Old Customers Bookings"),
-            data: [10, 30, 45, 25, 60, 75, 50,25,38, 55, 53, 40],
+            data: [10, 30, 45, 205, 60, 75, 50,25,38, 55, 53, 40],
           },
         ],
         options: {

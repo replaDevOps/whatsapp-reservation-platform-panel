@@ -26,7 +26,6 @@ const AddCustomerModal = ({visible,onClose}) => {
                     role: "SUBSCRIBER"
                 },
             })
-            onClose()
         }
      });
 

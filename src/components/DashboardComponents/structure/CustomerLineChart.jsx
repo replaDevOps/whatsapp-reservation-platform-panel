@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, Flex, Typography} from 'antd';
 import ReactApexChart from 'react-apexcharts';
 import { ModuleTopHeading } from '../../PageComponent';
@@ -6,6 +6,8 @@ import { MyDatepicker } from '../../Forms';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { toArabicDigits } from '../../../shared';
+import { GET_CUSTOMER_ANALYTICS } from '../../../graphql/query';
+import { useLazyQuery } from '@apollo/client/react';
 
 const { Title, Text } = Typography
 const CustomerLineChart = () => {
@@ -15,7 +17,7 @@ const CustomerLineChart = () => {
     const [selectedYear, setSelectedYear] = useState(moment());
     const chartData = {
         series: [
-            { name: t("Customers"), data: [0, 13, 17, 10, 15, 16, 25, 14, 17, 15, 12, 20] },
+            { name: t("Customers"), data: [0, 0, 0, 0, 0, 0, 0, 2, 3, 2, 0, 3] },
         ],
         options: {
         chart: {
@@ -72,7 +74,16 @@ const CustomerLineChart = () => {
          legend: { show: false },
         },
     };
-    
+    const [getCustomerAnalytics, { data, loading}] = useLazyQuery(GET_CUSTOMER_ANALYTICS, {
+      fetchPolicy: "network-only",
+  })
+  useEffect(()=>{
+    getCustomerAnalytics({variables: {startDate: '2025-11-20', endDate: '2025-11-25'}})
+  }, [])
+  useEffect(()=>{
+
+  }, [])
+  console.log("customer:", data)
 
   return (
     <Card className='radius-12 border-gray card-cs'>
@@ -83,7 +94,7 @@ const CustomerLineChart = () => {
                     <Text className='text-gray fs-13'>{t("Total registered customers in system")}</Text>
                 </Flex>
                 <Title level={4} className='fw-500 text-black m-0'>
-                    {isArabic ? toArabicDigits(6820):6820} <span className='text-bright-red fs-13 fw-400'>{i18n?.language === 'ar' ? '9%-':'-9%'} {t("then last month")} <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" /></span>
+                    {isArabic ? toArabicDigits(6820):6820} <span className='text-bright-red fs-13 fw-400'>{i18n?.language === 'ar' ? '9%-':'-3%'} {t("then last month")} <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" /></span>
                 </Title>
             </Flex>
             <Flex justify='end' gap={10}>

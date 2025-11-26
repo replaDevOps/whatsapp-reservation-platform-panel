@@ -22,7 +22,7 @@ const TotalRegisteredBusiness = () => {
   };
 
   const chartData = {
-    series: [190, 190, 78, 78],
+    series: [0, 2, 1, 2],
     options: {
       chart: {
         type: 'donut',
@@ -64,25 +64,25 @@ const TotalRegisteredBusiness = () => {
     {
       id: 1,
       icon: '/assets/icons/spa-ic.webp',
-      title:190,
+      title:0,
       subtitle:'Spa'
     },
     {
       id: 2,
       icon: '/assets/icons/clinic-ic.webp',
-      title:190,
+      title:2,
       subtitle:'Clinic'
     },
     {
       id: 3,
       icon: '/assets/icons/barber-ic.webp',
-      title:78,
+      title:1,
       subtitle:'Barber'
     },
     {
       id: 4,
       icon: '/assets/icons/general-ic.webp',
-      title: 78,
+      title: 3,
       subtitle:'General'
     },
   ]
@@ -111,7 +111,7 @@ const TotalRegisteredBusiness = () => {
           </Flex>
         </Flex>
         <Title level={4} className="fw-500 text-black m-0">
-          {isArabic? toArabicDigits("2,000"):'2,000'}
+          {isArabic? toArabicDigits("6"):'6'}
         </Title>
       </Flex>
 
