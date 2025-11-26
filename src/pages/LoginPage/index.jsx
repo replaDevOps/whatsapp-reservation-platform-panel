@@ -34,7 +34,6 @@ const LoginPage = () => {
                 localStorage.setItem("userId", data.loginUser.user.id);
                 localStorage.setItem("email", email);
                 localStorage.setItem("password", password);
-
                 messageApi.success("Login successful!");
                 navigate("/")
                 // compute destination safely (it could be a string or Location object)

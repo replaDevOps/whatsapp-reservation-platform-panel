@@ -717,7 +717,7 @@ const faqColumns = ({ setVisible, setEditItem, setDeleteItem,t }) => [
                 menu={{
                     items: [
                         { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>{t("Edit")}</NavLink>, key: '1' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(true)}}>{t("Delete")}</NavLink>, key: '2' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(row?.id)}}>{t("Delete")}</NavLink>, key: '2' },
                     ]
                 }}
                 trigger={['click']}

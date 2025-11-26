@@ -66,7 +66,21 @@ const CREATE_FAQS = gql`
     }
   }
 `
+const UPDATE_FAQS = gql`
+  mutation UpdateFaq($updateFaqId: ID!, $input: UpdateFAQInput!) {
+    updateFaq(id: $updateFaqId, input: $input) {
+      id
+    }
+  }
+`
 
+const DELETE_FAQS = gql`
+  mutation DeleteFaq($deleteFaqId: ID!) {
+    deleteFaq(id: $deleteFaqId) {
+      id
+    }
+  }
+`
 
 const CHANGE_PASSWORD_USER =  gql`
   mutation ChangedPassword($changedPasswordId: ID!, $oldPassword: String!, $newPassword: String!) {
@@ -99,4 +113,6 @@ export {
   CREATE_FAQS,
   CHANGE_PASSWORD_USER,
   LOGIN_USER,
+  UPDATE_FAQS,
+  DELETE_FAQS,
 }

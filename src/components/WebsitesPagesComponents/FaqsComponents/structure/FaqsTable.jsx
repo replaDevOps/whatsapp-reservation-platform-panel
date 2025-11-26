@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Flex, Table } from 'antd';
+import { Card, Flex, message, Table } from 'antd';
 import { CustomPagination, DeleteModal } from '../../../Ui';
 import { faqColumns, faqsData } from '../../../../data';
 import { AddEditFaqs } from '../modal';
@@ -19,8 +19,9 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { CSS } from '@dnd-kit/utilities';
 import { useTranslation } from 'react-i18next';
 import { GET_FAQS } from '../../../../graphql/query';
-import { useLazyQuery } from '@apollo/client/react';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { TableLoader } from '../../../../shared';
+import { DELETE_FAQS } from '../../../../graphql/mutation';
 
 const DraggableRow = (props) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -58,9 +59,11 @@ const FaqsTable = ({ visible, setVisible }) => {
     const [current, setCurrent] = useState(1);
     const [editItem, setEditItem] = useState(null);
     const [deleteItem, setDeleteItem] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
     const [ getFaqs, { data, loading, refetch  } ] = useLazyQuery(GET_FAQS,{
         fetchPolicy: 'network-only'
     })
+    const [deleteFaqs, { loading: deleting }] = useMutation(DELETE_FAQS);
     useEffect(() => {
         if (getFaqs) {
             getFaqs({
@@ -103,11 +106,26 @@ const FaqsTable = ({ visible, setVisible }) => {
         setPageSize(size);
     };
 
-    
+    const handleDelete = async () => {
+        if (!deleteItem) return;
+        try {
+            await deleteFaqs({ variables: { deleteFaqId: deleteItem } });
+            messageApi.success('Staff deleted successfully');
+            setDeleteItem(null);
+            refetch({
+                limit: 20,
+                offset: 0,
+            });
+        } catch (err) {
+            console.error(err);
+            messageApi.error('Failed to delete staff',err);
+        }
+    };
 
 
     return (
         <>
+            {contextHolder}
             <Card className="radius-12 card-cs border-gray h-100">
                 <Flex vertical gap={20}>
                     <DndContext
@@ -167,6 +185,8 @@ const FaqsTable = ({ visible, setVisible }) => {
                 title="Are you sure?"
                 subtitle="This action cannot be undone. Are you sure you want to delete this question?"
                 onClose={() => setDeleteItem(false)}
+                onConfirm={handleDelete} 
+                loading={deleting}
             />
         </>
     );

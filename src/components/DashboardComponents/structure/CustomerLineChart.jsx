@@ -1,21 +1,43 @@
-import { useState } from 'react';
-import { Card, Flex, Typography} from 'antd';
+import { useEffect, useState } from 'react';
+import { Card, Flex, Spin, Typography} from 'antd';
 import ReactApexChart from 'react-apexcharts';
 import { ModuleTopHeading } from '../../PageComponent';
 import { MyDatepicker } from '../../Forms';
-import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { toArabicDigits } from '../../../shared';
+import { TableLoader, toArabicDigits } from '../../../shared';
+import { GET_CUSTOMER_ANALYTICS_STATS } from '../../../graphql/query';
+import { useQuery } from '@apollo/client/react';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography
 const CustomerLineChart = () => {
 
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
-    const [selectedYear, setSelectedYear] = useState(moment());
+    const [dateRange, setDateRange] = useState([
+        dayjs().startOf("month"),
+        dayjs().endOf("month"),
+    ]);
+    const [startDate, endDate] = dateRange ?? [];
+    const { data, loading, refetch } = useQuery(GET_CUSTOMER_ANALYTICS_STATS, {
+        variables: { 
+            startDate: startDate?.format("YYYY-MM-DD"),
+            endDate: endDate?.format("YYYY-MM-DD"),
+         },
+    });
+    const monthlyStats = data?.getCustomersAnalyticsApi?.chartData || [];
+    const maxCount = Math.max(...monthlyStats.map(m => m.count || 0), 0);
+
+    const yAxisMax =
+    maxCount < 100
+      ? 100
+      : maxCount < 1000
+      ? Math.ceil(maxCount / 100) * 100
+      : Math.ceil(maxCount / 1000) * 1000;
+
     const chartData = {
         series: [
-            { name: t("Customers"), data: [0, 13, 17, 10, 15, 16, 25, 14, 17, 15, 12, 20] },
+            { name: t("Customers"), data: monthlyStats.map((m) => m.count || 0)},
         ],
         options: {
         chart: {
@@ -32,20 +54,7 @@ const CustomerLineChart = () => {
             width: 2,
         },
         xaxis: {
-            categories: [
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '6',
-            '7',
-            '8',
-            '9',
-            '10',
-            '11',
-            '12'
-            ],
+            categories: monthlyStats.map((m) => m.count),
             labels: {
                 style: {
                     colors: '#000',
@@ -54,7 +63,7 @@ const CustomerLineChart = () => {
         },
         yaxis: {
             min: 0,
-            max: 35,
+            max: yAxisMax,
             tickAmount: 5,
             labels: {
                 style: {
@@ -72,6 +81,15 @@ const CustomerLineChart = () => {
          legend: { show: false },
         },
     };
+
+    useEffect(() => {
+        if (!startDate || !endDate) return;
+
+        refetch({
+            startDate: startDate.format("YYYY-MM-DD"),
+            endDate: endDate.format("YYYY-MM-DD"),
+        });
+    }, [startDate, endDate, refetch]);
     
 
   return (
@@ -82,8 +100,38 @@ const CustomerLineChart = () => {
                     <ModuleTopHeading level={4} name={t("Customers")} />
                     <Text className='text-gray fs-13'>{t("Total registered customers in system")}</Text>
                 </Flex>
+                {/* <Title level={4} className='fw-500 text-black m-0'>
+                    {isArabic ? toArabicDigits(data?.getCustomersAnalyticsApi?.totalCustomers):data?.getCustomersAnalyticsApi?.totalCustomers} 
+                    <span className='text-bright-red fs-13 fw-400'>{i18n?.language === 'ar' ? 
+                    `${data?.getCustomersAnalyticsApi?.percentageChange}%-`:
+                    `${data?.getCustomersAnalyticsApi?.percentageChange}%`} {t("then last month")} <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" /></span>
+                </Title> */}
                 <Title level={4} className='fw-500 text-black m-0'>
-                    {isArabic ? toArabicDigits(6820):6820} <span className='text-bright-red fs-13 fw-400'>{i18n?.language === 'ar' ? '9%-':'-9%'} {t("then last month")} <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" /></span>
+                    {isArabic 
+                        ? toArabicDigits(data?.getCustomersAnalyticsApi?.totalCustomers) 
+                        : data?.getCustomersAnalyticsApi?.totalCustomers
+                    } 
+                    <span className={`fs-13 fw-400
+                        ${
+                            data?.getCustomersAnalyticsApi?.isPositiveTrend ? 'text-green':'text-bright-red'
+                        }
+                    `}>
+                        {data?.getCustomersAnalyticsApi?.isPositiveTrend 
+                        ? '+' 
+                        : '-'
+                        }
+                        {
+                            i18n?.language === 'ar' 
+                            ? `${toArabicDigits(data?.getCustomersAnalyticsApi?.percentageChange)}%` 
+                            : `${data?.getCustomersAnalyticsApi?.percentageChange}%`
+                        } {t("than last month")} 
+                        {
+                            data?.getCustomersAnalyticsApi?.isPositiveTrend 
+                            ? <img src='/assets/icons/up-ar.webp' width={12} alt='up arrow icon' fetchPriority="high" />
+                            : <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" />
+                        }
+                        
+                    </span>
                 </Title>
             </Flex>
             <Flex justify='end' gap={10}>
@@ -91,20 +139,27 @@ const CustomerLineChart = () => {
                     withoutForm
                     rangePicker
                     className="datepicker-cs"
-                    placeholder={t("Select Year")}
-                    value={selectedYear}
-                    onChange={(year) => setSelectedYear(year)}
+                    placeholder={[t("Start Year"),t("End Year")]}
+                    value={dateRange}
+                    onChange={(values) => setDateRange(values)}
                 />
             </Flex>
         </Flex>
-        <ReactApexChart
-            options={chartData.options}
-            series={chartData.series}
-            type="line"
-            height={300}
-            width={'100%'}
-            className='bar-width'
-        />
+        {
+            loading ? 
+            <Flex justify='center' align='center'>
+                <Spin {...TableLoader} size="large" />
+            </Flex>
+            :
+            <ReactApexChart
+                options={chartData.options}
+                series={chartData.series}
+                type="line"
+                height={300}
+                width={'100%'}
+                className='bar-width'
+            />
+        }
       </Card>
   );
 };
