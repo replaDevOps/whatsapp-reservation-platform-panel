@@ -4,7 +4,7 @@ import { MyInput } from '../../../Forms';
 import { useTranslation } from 'react-i18next';
 
 const { Title } = Typography
-const MeetingNoteModal = ({visible,onClose}) => {
+const MeetingNoteModal = ({visible,onClose,refetch}) => {
 
     const [form] = Form.useForm();
     const {t} = useTranslation()

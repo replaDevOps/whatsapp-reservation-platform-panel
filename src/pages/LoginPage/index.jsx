@@ -32,8 +32,7 @@ const LoginPage = () => {
                 // store token/id
                 localStorage.setItem("accessToken", data.loginUser.token);
                 localStorage.setItem("userId", data.loginUser.user.id);
-                localStorage.setItem("email", email);
-                localStorage.setItem("password", password);
+                localStorage.setItem("email", data.loginUser.user.email);
                 messageApi.success("Login successful!");
                 navigate("/")
                 // compute destination safely (it could be a string or Location object)

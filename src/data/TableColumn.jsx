@@ -315,112 +315,118 @@ const revenueColumns = ({t,i18n})=> [
 ]
 
 const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
-    {
-        title: t("Customer Name"),
-        dataIndex: 'name',
-    },
-    {
-        title: t("Email Address"),
-        dataIndex: 'email',
-    },
-    {
-        title: t("Phone Number"),
-        dataIndex: 'phone',
-        render: (phone) => {
-        if (!phone) return '';
-        
-        const prefix = '+';
-        return i18n.language === "ar" 
-            ? `${prefix}${toArabicDigits(phone)}`
-            : `${prefix}${phone}`;
-        }
-    },
-    {
-        title: t("Business Type"),
-        dataIndex: 'businessType',
-    },
-    {
-        title: t("Message"),
-        dataIndex: 'message',
-        render: (message) => {
-            const words = message?.split(' ') || [];
-            const previewText = words.slice(0, 5).join(' ');
-            const showEllipsis = words.length > 5;
+        {
+            title: t("Customer Name"),
+            dataIndex: 'name',
+        },
+        {
+            title: t("Email Address"),
+            dataIndex: 'email',
+        },
+        {
+            title: t("Phone Number"),
+            dataIndex: 'phone',
+            render: (phone) => {
+            if (!phone) return '';
+            
+            const prefix = '+';
+            return i18n.language === "ar" 
+                ? `${prefix}${toArabicDigits(phone)}`
+                : `${prefix}${phone}`;
+            }
+        },
+        {
+            title: t("Business Type"),
+            dataIndex: 'businessType',
+        },
+        {
+            title: t("Message"),
+            dataIndex: 'message',
+            render: (message) => {
+                if (!message) {
+                    return '--';
+                }
+
+                const words = message.split(' ');
+                const previewText = words.slice(0, 5).join(' ');
+                const showEllipsis = words.length > 5;
+
+                return (
+                    <Tooltip title={message}>
+                        <Text>
+                            {previewText}{showEllipsis ? '...' : ''}
+                        </Text>
+                    </Tooltip>
+                );
+            }
+        },
+        {
+            title: t("Date"),
+            dataIndex: 'createdAt',
+            render: (createdAt) => i18n.language === "ar" ? toArabicDigits(createdAt) : utcDateTimeToLocal(createdAt)
+        },
+        {
+            title: t("Note"),
+            dataIndex: 'note',
+            render: (note) => {
+                if (!note) {
+                    return '--';
+                }
+
+                const words = note.split(' ');
+                const previewText = words.slice(0, 5).join(' ');
+                const showEllipsis = words.length > 5;
+
+                return (
+                    <Tooltip title={note}>
+                        <Text>
+                            {previewText}{showEllipsis ? '...' : ''}
+                        </Text>
+                    </Tooltip>
+                );
+            }
+        },
+        {
+        title: t("Status"),
+        dataIndex: 'status',
+        render: (status, row) => {
+            const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
 
             return (
-                message === null ? '--' :
-                <Tooltip title={message}>
-                    <Text>
-                        {previewText}{showEllipsis ? '...' : ''}
-                    </Text>
-                </Tooltip>
+                status === 'PENDING' ? (
+                    <Dropdown
+                        menu={{
+                            items: [
+                                {
+                                    label: (
+                                        <NavLink
+                                            className="fs-12"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleStatusChange('Contacted', row);
+                                                setVisible(true)
+                                            }}
+                                        >
+                                            {t("Contacted")}
+                                        </NavLink>
+                                    ),
+                                    key: 'CONTACTED',
+                                },
+                            ],
+                        }}
+                        trigger={['click']}
+                    >
+                        <Flex gap={5} justify="space-between" className="btnpill fs-12 dsasellerpending cursor">
+                            {t(formattedStatus)}
+                            <DownOutlined />
+                        </Flex>
+                    </Dropdown>
+                ) : (
+                    <Text className="btnpill fs-12 success">{t(formattedStatus)}</Text>
+                )
             );
-        }
-    },
-    {
-        title: t("Date"),
-        dataIndex: 'createdAt',
-        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(createdAt) : utcDateTimeToLocal(createdAt)
-    },
-    {
-        title: t("Note"),
-        dataIndex: 'note',
-        render: (note) => {
-            const words = note.split(' ') || [];
-            const previewText = words.slice(0,5).join(' ');
-            const showEllipsis = words.length > 5;
-            return (
-                note === null ? '--' :
-                <Tooltip title={note}>
-                    <Text>
-                        {previewText}{showEllipsis ? '...' : ''}
-                    </Text>
-                </Tooltip>
-            );
-        }
-    },
-    {
-    title: t("Status"),
-    dataIndex: 'status',
-    render: (status, row) => {
-        const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
-
-        return (
-            status === 'PENDING' ? (
-                <Dropdown
-                    menu={{
-                        items: [
-                            {
-                                label: (
-                                    <NavLink
-                                        className="fs-12"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            handleStatusChange('Contacted', row);
-                                            setVisible(true)
-                                        }}
-                                    >
-                                        {t("Contacted")}
-                                    </NavLink>
-                                ),
-                                key: 'CONTACTED',
-                            },
-                        ],
-                    }}
-                    trigger={['click']}
-                >
-                    <Flex gap={5} justify="space-between" className="btnpill fs-12 dsasellerpending cursor">
-                        {t(formattedStatus)}
-                        <DownOutlined />
-                    </Flex>
-                </Dropdown>
-            ) : (
-                <Text className="btnpill fs-12 success">{t(formattedStatus)}</Text>
-            )
-        );
-    },
-}
-
+        },
+    }
 ]
 
 

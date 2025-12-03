@@ -18,10 +18,10 @@ const DemoRequestTable = () => {
     const [pageSize, setPageSize] = useState(10);
     const {t,i18n} = useTranslation()
     const [current, setCurrent] = useState(1);
-    const [selectedAction, setselectedAction] = useState('');
+    const [statusfilter, setStatusFilter] = useState('');
     const [selectedType, setselectedType] = useState('');
     const [selectedStatus, setselectedStatus] = useState(demoreqData);
-    const [selectedYear, setSelectedYear] = useState(moment());
+    const [selectedYear, setSelectedYear] = useState([null, null]);
     const [ visible, setVisible ] = useState(false)
     const [demorequestData, setDemoRequestData]= useState([])
     const [ getDemoRequest, { data, loading }] = useLazyQuery(GET_DEMO_REQUEST,{
@@ -30,7 +30,9 @@ const DemoRequestTable = () => {
 
     const buildFilterObject = () => ({
         businessType: selectedType || undefined,
-        status: selectedAction || undefined ,
+        status: statusfilter || undefined ,
+        startDate: selectedYear?.[0] ? selectedYear[0].format("DD-MM-YYYY") : undefined,
+        endDate: selectedYear?.[1] ? selectedYear[1].format("DD-MM-YYYY") : undefined
     });
 
     
@@ -40,8 +42,8 @@ const DemoRequestTable = () => {
         setPageSize(size);
     };
 
-    const handleActionClick = ({ key }) => {
-        setselectedAction(key);
+    const handleStatusClick = ({ key }) => {
+        setStatusFilter(key);
     };
 
     const handleTypeClick = ({ key }) => {
@@ -67,7 +69,7 @@ const DemoRequestTable = () => {
                 }
             })
         }
-    },[getDemoRequest, current, pageSize, selectedType, selectedAction])
+    },[getDemoRequest, current, pageSize, selectedType, statusfilter, selectedYear])
     
     useEffect(()=>{
         if (data?.getBookDemos?.bookDemos)
@@ -108,13 +110,13 @@ const DemoRequestTable = () => {
                                             key: String(item.key),
                                             label: t(item.label)
                                         })),
-                                        onClick: handleActionClick
+                                        onClick: handleStatusClick
                                     }}
                                     trigger={['click']}
                                 >
                                     <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                         <Flex justify="space-between" align="center" gap={30}>
-                                            {t(statusItems.find((i) => i.key === selectedAction)?.label || "Status")}
+                                            {t(statusItems.find((i) => i.key === statusfilter)?.label || "Status")}
                                             <DownOutlined />
                                         </Flex>
                                     </Button>
@@ -129,7 +131,7 @@ const DemoRequestTable = () => {
                                     className="datepicker-cs"
                                     placeholder={[t("Start Year"),t("Start Year")]}
                                     value={selectedYear}
-                                    onChange={(year) => setSelectedYear(year)}
+                                    onChange={(range) => setSelectedYear(range)}
                                 />
                             </Flex>
                         </Col>
@@ -153,18 +155,22 @@ const DemoRequestTable = () => {
                         }
                         rowKey={(record)=> record?.id}
                     />
-                    {/* <CustomPagination 
-                        total={12}
+                    <CustomPagination 
+                        total={data?.getBookDemos?.totalCount}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
-                    /> */}
+                    />
                 </Flex>
             </Card>
 
             <MeetingNoteModal 
                 visible={visible}
                 onClose={()=>setVisible(false)}
+                refetch={() => refetch({
+                    limit: 10,
+                    offset: 0,
+                })}
             />
         </>
     );
