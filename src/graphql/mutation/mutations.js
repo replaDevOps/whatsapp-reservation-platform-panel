@@ -91,8 +91,8 @@ const CHANGE_PASSWORD_USER =  gql`
 `
 
 const LOGIN_USER = gql`
-  mutation LoginUser($email: String, $password: String) {
-    loginUser(email: $email, password: $password) {
+  mutation LoginUser($email: String, $password: String, $role: UserRole!) {
+    loginUser(email: $email, password: $password, role: $role) {
       token
       user {
         id
