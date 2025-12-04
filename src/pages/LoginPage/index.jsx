@@ -22,7 +22,7 @@ const LoginPage = () => {
               const { email, password } = values;
             // const email = "platformpanel@gmail.com";
             // const password = "test@123";
-              const { data,error } = await loginUser({ variables: { email, password, role: 'SUBSCRIBER'} });
+              const { data,error } = await loginUser({ variables: { email, password, role: 'SUPER_ADMIN'} });
                 // localStorage.setItem("email", email);
                 // localStorage.setItem("password", password);
 
