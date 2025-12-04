@@ -66,10 +66,31 @@ const GET_TOP_PERFORMING_BUSINESS = gql`
     }
 `
 
+const GET_BOOKING_STATS = gql`
+    query GetBusinessTypeBookingTrend($startDate: DateTime, $endDate: DateTime) {
+        getBusinessTypeBookingTrend(startDate: $startDate, endDate: $endDate) {
+            summary {
+                totalBookings
+                growthPercentage
+                comparisonText
+            }
+            chartData {
+                Barber
+                Clinic
+                General
+                Spa
+                count
+                date
+            }
+        }
+    }
+`
+
 export {
     GET_DASHBOARD_STATS,
     GET_CUSTOMER_ANALYTICS_STATS,
     GET_REGISTERED_BUSINESSES,
     GET_REVENUE_STATS,
     GET_TOP_PERFORMING_BUSINESS,
+    GET_BOOKING_STATS,
 }

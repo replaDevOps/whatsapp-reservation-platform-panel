@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, Flex, Typography} from 'antd';
 import ReactApexChart from 'react-apexcharts';
 import { ModuleTopHeading } from '../../PageComponent';
@@ -6,19 +6,42 @@ import { MyDatepicker } from '../../Forms';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { toArabicDigits } from '../../../shared';
+import { GET_BOOKING_STATS } from '../../../graphql/query';
+import { useQuery } from '@apollo/client/react';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography
 const BookingLineChart = () => {
 
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
-    const [selectedYear, setSelectedYear] = useState(moment());
+    const [dateRange, setDateRange] = useState([
+        dayjs().startOf("month"),
+        dayjs().endOf("month"),
+    ]);
+    const [startDate, endDate] = dateRange ?? [];
+    const { data, loading, refetch } = useQuery(GET_BOOKING_STATS, {
+        variables: { 
+            startDate: startDate?.format("YYYY-MM-DD"),
+            endDate: endDate?.format("YYYY-MM-DD"),
+            },
+    });
+    const detail = data?.getBusinessTypeBookingTrend
+    useEffect(() => {
+        refetch({
+            startDate: startDate?.format("YYYY-MM-DD"),
+            endDate: endDate?.format("YYYY-MM-DD")
+        });
+    }, [startDate, endDate]);
+    const xCategories = detail?.chartData?.map(item =>
+        dayjs(item.date).format("D")
+    ) || [];
     const chartData = {
         series: [
-            { name: t("Spa"), data: [0, 13, 17, 10, 15, 16, 25, 14, 17, 15, 12, 20] },
-            { name: t("Barber"), data: [0, 25, 5, 20, 24, 22, 18, 25, 22, 10, 17, 21] },
-            { name: t("Clinic"), data: [0, 5, 13, 8, 32, 35, 12, 28, 17, 20, 6, 14] },
-            { name: t("General"), data: [0, 15, 21, 16, 12, 18,25, 17, 10, 25, 13, 3] },
+            { name: t("Spa"), data: detail?.chartData?.map(item => item.Spa) || [] },
+            { name: t("Barber"), data: detail?.chartData?.map(item => item.Barber) || [] },
+            { name: t("Clinic"), data: detail?.chartData?.map(item => item.Clinic) || [] },
+            { name: t("General"), data: detail?.chartData?.map(item => item.General) || [] },
         ],
         options: {
         chart: {
@@ -35,20 +58,7 @@ const BookingLineChart = () => {
             width: 2,
         },
         xaxis: {
-            categories: [
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '6',
-            '7',
-            '8',
-            '9',
-            '10',
-            '11',
-            '12'
-            ],
+            categories: xCategories,
             labels: {
                 style: {
                     colors: '#000',
@@ -89,8 +99,41 @@ const BookingLineChart = () => {
                     <ModuleTopHeading level={4} name={t("Bookings")} />
                     <Text className='text-gray fs-13'>{t("Spa VS Barber VS Clinic VS General")}</Text>
                 </Flex>
-                <Title level={4} className='fw-500 text-black m-0'>
-                    {isArabic ? toArabicDigits(6820):6820} <span className='text-bright-red fs-13 fw-400'>{i18n?.language === 'ar' ? '9%-':'-9%'} {t("then last month")} <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" /></span>
+                <Title level={4} className="fw-500 text-black m-0">
+                    {isArabic
+                        ? toArabicDigits(detail?.summary?.totalBookings ?? 0)
+                        : detail?.summary?.totalBookings ?? 0}
+                        <span className={
+                            `fs-13 fw-400 ${
+                                detail?.summary?.growthPercentage >=0 ? 'text-green':'text-bright-red'
+                            }`
+                        }>
+                        {isArabic
+                            ? toArabicDigits(
+                                (detail?.summary?.growthPercentage ?? 0) +
+                                    (detail?.summary?.growthPercentage >= 0 ? "%+" : "%-")
+                            )
+                            : `${detail?.summary?.growthPercentage ?? 0}${
+                                detail?.summary?.growthPercentage >= 0 ? "%+" : "%-"
+                            }`}{" "}
+                        {t(detail?.summary?.comparisonText)}
+                        {
+                            detail?.summary?.growthPercentage >= 0 ?
+                            <img
+                                src="/assets/icons/up-ar.webp"
+                                width={12}
+                                alt="down arrow icon"
+                                fetchPriority="high"
+                            />
+                            :
+                            <img
+                                src="/assets/icons/down-ar.webp"
+                                width={12}
+                                alt="down arrow icon"
+                                fetchPriority="high"
+                            />
+                        }
+                    </span>
                 </Title>
             </Flex>
             <Flex justify='end' gap={10}>
@@ -99,8 +142,8 @@ const BookingLineChart = () => {
                     rangePicker
                     className="datepicker-cs"
                     placeholder={[t("Start Year"),t("End Year")]}
-                    value={(selectedYear)}
-                    onChange={(year) => setSelectedYear(year)}
+                    value={dateRange}
+                    onChange={(values) => setDateRange(values)}
                 />
             </Flex>
         </Flex>
