@@ -101,7 +101,6 @@ const LOGIN_USER = gql`
     }
   }
 `
-
 export {
   CREATE_SUBSCRIBER_CUSTOMER,
   UPDATE_TERMS,
