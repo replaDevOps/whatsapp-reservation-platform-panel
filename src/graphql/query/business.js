@@ -73,9 +73,22 @@ const GET_BUSINESSES_BY_ID = gql`
   }
 `
 
+const GET_BRANCH_BY_BUSINESS = gql`
+  query GetBusinessBranches($businessId: ID!) {
+    getBusinessBranches(businessId: $businessId) {
+      id
+      name
+      phone
+      location
+      status
+    }
+  }
+`
+
 export {
   GET_SUBSCRIBER_CUSTOMERS_LOOKUP,
   GET_SUBSCRIPTIONS_STATS,
   GET_BUSINESSES,
-  GET_BUSINESSES_BY_ID
+  GET_BUSINESSES_BY_ID,
+  GET_BRANCH_BY_BUSINESS
 }

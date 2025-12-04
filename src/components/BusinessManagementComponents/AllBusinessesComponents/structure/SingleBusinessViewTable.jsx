@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, Dropdown, Flex, Table, Row, Col, Form } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { ConfirmModal, CustomPagination } from '../../../Ui';
 import { singleviewColumns, singleviewData } from '../../../../data';
 import { SearchInput } from '../../../Forms';
-import { statusitemsCust } from '../../../../shared';
+import { statusitemsCust, TableLoader } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
+import { useLazyQuery } from '@apollo/client/react';
+import { GET_BRANCH_BY_BUSINESS } from '../../../../graphql/query';
 
 
-const SingleBusinessViewTable = ({setViewItem}) => {
+const SingleBusinessViewTable = ({setViewItem,id}) => {
 
     const [form] = Form.useForm();
     const {t,i18n} = useTranslation()
@@ -16,6 +18,21 @@ const SingleBusinessViewTable = ({setViewItem}) => {
     const [current, setCurrent] = useState(1);
     const [selectedstatus, setselectedStatus] = useState('');
     const [ statuschange, setStatusChange ] = useState(false)
+    const [ search, setSearch ] = useState(null)
+    const [ branchBusinessData, setBranchBusinessData ] = useState([])
+    const [ getBranchesByBusiness, {data,loading} ] = useLazyQuery(GET_BRANCH_BY_BUSINESS,{
+        fetchPolicy:'network-only'
+    })
+
+    useEffect(()=>{
+        if(id) {
+            getBranchesByBusiness({
+                variables:{
+                    businessId: id 
+                }
+            })
+        }
+    },[id])
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -26,6 +43,11 @@ const SingleBusinessViewTable = ({setViewItem}) => {
         setselectedStatus(key);
     };
     
+    useEffect(()=>{
+        setBranchBusinessData(data?.getBusinessBranches)
+    },[data])
+
+    console.log('branch business data',data?.getBusinessBranches)
     return (
         <>
             <Card className='radius-12 card-cs border-gray h-100'>
@@ -36,10 +58,10 @@ const SingleBusinessViewTable = ({setViewItem}) => {
                                 <SearchInput
                                     name='name'
                                     placeholder={t("Search by Branch Name")}
-                                    // value={search}
-                                    // onChange={(e) => {
-                                    //     setSearch(e.target.value);
-                                    // }}
+                                    value={search}
+                                    onChange={(e) => {
+                                        setSearch(e.target.value);
+                                    }}
                                     prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                 />
@@ -75,16 +97,19 @@ const SingleBusinessViewTable = ({setViewItem}) => {
                     <Table
                         size='large'
                         columns={singleviewColumns({setViewItem,t,i18n})}
-                        dataSource={singleviewData}
+                        dataSource={branchBusinessData}
                         className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1000 }}
                         rowHoverable={false}
                         pagination={false}
-                        // loading={isLoading}
+                        loading={{
+                            ...TableLoader,
+                            spinning: loading
+                        }}
                     />
                     <CustomPagination 
-                        total={12}
+                        total={branchBusinessData?.length ?? 0}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
