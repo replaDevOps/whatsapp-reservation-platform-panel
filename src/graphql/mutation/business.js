@@ -14,7 +14,16 @@ const DELETE_BUSINESS= gql `
         }
     }
 `
+
+const CHANGE_BUSINESS_STATUS = gql`
+    mutation UpdateBusiness($input: UpdateBusinessInput!) {
+        updateBusiness(input: $input) {
+            id
+        }
+    }
+`
 export {
   CREATE_BUSINESS,
-  DELETE_BUSINESS
+  DELETE_BUSINESS,
+  CHANGE_BUSINESS_STATUS
 }

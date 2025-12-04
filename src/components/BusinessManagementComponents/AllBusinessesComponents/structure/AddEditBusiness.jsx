@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react'
 import { ArrowLeftOutlined, ArrowRightOutlined, EditFilled } from '@ant-design/icons'
-import { Button, Card, Col, Divider, Flex, Form, Row, Select, Typography } from 'antd'
+import { Button, Card, Col, Divider, Flex, Form, message, notification, Row, Select, Typography } from 'antd'
 import { BreadCrumbCard, BusinessChooseSubscriptionPlan, ConfirmModal, MyInput, SingleFileUpload } from '../../../../components'
 import { MySelect } from '../../../Forms'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BusinessTitle, toArabicDigits } from '../../../../shared'
+import { BusinessTitle, notifyError, notifySuccess } from '../../../../shared'
 import { GET_SUBSCRIBER_CUSTOMERS_LOOKUP } from '../../../../graphql/query'
 import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { CREATE_BUSINESS } from '../../../../graphql/mutation'
+import imageCompression from 'browser-image-compression';
 
 const { Title } = Typography
 const AddEditBusiness = () => {
 
     const [form] = Form.useForm();
     const {t,i18n} = useTranslation()
-    const isArabic = i18n?.language === 'ar'
     const title = BusinessTitle({t})
+    const [messageApi] = message.useMessage();
+    const [ api, contextHolder ] = notification.useNotification()
     const [ previewimage, setPreviewImage ] = useState(null)
     const [ confirmsubmit, setConfirmSubmit ] = useState(false)
     const navigate = useNavigate()
@@ -24,8 +26,16 @@ const AddEditBusiness = () => {
     const [createBusiness, { loading, error, success }] = useMutation(CREATE_BUSINESS, {
         onCompleted: () => {
             // getSubscriptionPlans()
-            navigate("/allbusiness")
-        }
+            notifySuccess(
+                api,
+                "Business Create",
+                "Business created successfully",
+                ()=> {navigate("/allbusiness")}
+            )
+        },
+        onError: (error) => {
+            notifyError(api, error);
+        },
     });
     const [getSubscriberCustomersLookup, { data }] = useLazyQuery(GET_SUBSCRIBER_CUSTOMERS_LOOKUP, {
         fetchPolicy: "network-only",
@@ -42,11 +52,50 @@ const AddEditBusiness = () => {
                     role: "SUBSCRIBER"
                 }
             })
+
     }, [getSubscriberCustomersLookup])
     useEffect(()=>{
         if(data?.getUsers?.users?.length)
             setSubscriberCustomersLookup(data?.getUsers?.users?.map(({id, firstName, lastName}) => ({id, name: lastName})))
     }, [data])
+
+     const uploadFileToServer = async (file) => {
+        try {
+            let compressedFile = file;
+    
+            // Compress only if image
+            if (file.type.startsWith("image/")) {
+                compressedFile = await imageCompression(file, {
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1024,
+                    useWebWorker: true,
+                });
+            }
+    
+            const formData = new FormData();
+            formData.append("file", compressedFile);
+    
+            const res = await fetch("https://backend.qloop.me/upload", {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (!res.ok) throw new Error("Upload failed");
+            const data = await res.json();
+            setPreviewImage(data.fileUrl);
+            return {
+                fileName: data.fileName,
+                fileType: data.fileType,
+                filePath: data.fileUrl,
+            };
+    
+        } catch (err) {
+            console.error("Upload error:", err);
+            message.error("Failed to upload file");
+            throw err;
+        }
+    };
+
     const handleChangeImage = () => {
         setPreviewImage(null);
     };
@@ -54,8 +103,13 @@ const AddEditBusiness = () => {
     const onFinish = async () => {
         let data = form.getFieldsValue()
         console.log("data:", data)
+        if (!previewimage) {
+            messageApi.error('Please upload an image');
+            return;
+        }
         data= {
             ...data,
+            image: previewimage,
             subscriberId: subscriberCustomersLookup?.find(subscriber => subscriber?.id === data?.subscriberId)?.id,
             subscriptionId: selectedSubscriptionPlan?.id,
             subscriptionType: selectedSubscriptionPlan?.type,
@@ -65,9 +119,10 @@ const AddEditBusiness = () => {
         delete data?.customPrice
         await createBusiness({ variables: { input: {...data} } })
     }
-console.log("subscriberCustomersLookup:", data)
+    console.log("subscriberCustomersLookup:", data)
     return (
         <>
+            {contextHolder}
             <Flex vertical gap={10}>
                 <BreadCrumbCard 
                     items={[
@@ -95,8 +150,10 @@ console.log("subscriberCustomersLookup:", data)
                                             name="image"
                                             title={t("Upload Logo")}
                                             form={form}
-                                            onUpload={(file) => console.log("uploading:", file)}
+                                            onUpload={uploadFileToServer}
                                             align="center"
+                                            width={100}
+                                            height={100}
                                         />
                                         :
                                         <Flex vertical gap={5} justify='center' align='center'>
@@ -221,6 +278,7 @@ console.log("subscriberCustomersLookup:", data)
                 subtitle={'Please confirm that all business details are correct and a subscription plan is assigned before proceeding.'}
                 onClose={()=>setConfirmSubmit(false)}
                 onConfirm={()=>{form.submit();setConfirmSubmit(false)}}
+                loading={loading}
             />
         </>
     )

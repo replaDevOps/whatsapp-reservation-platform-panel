@@ -1,7 +1,7 @@
 import { DownOutlined, HolderOutlined } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Flex, Tag, Tooltip, Typography } from "antd";
 import { NavLink } from "react-router-dom";
-import { toArabicDigits, utcDateTimeToLocal } from "../shared";
+import { capitalizeTranslated, toArabicDigits, utcDateTimeToLocal } from "../shared";
 import dayjs from "dayjs";
 
 const { Text } = Typography
@@ -29,13 +29,13 @@ const BookingDashboardColumn = ({t,i18n})=> [
     {
         title: t("Type"),
         dataIndex: 'type',
-        render: (totalBooking) => t(totalBooking)
+        render: (type) => capitalizeTranslated(t(type))
     },
     {
         title: t("Total Bookings"),
-        dataIndex: "totalBooking",
-        render: (totalBooking) =>
-            i18n.language === "ar" ? toArabicDigits(totalBooking) : totalBooking
+        dataIndex: "totalBookings",
+        render: (totalBookings) =>
+            i18n.language === "ar" ? toArabicDigits(totalBookings) : totalBookings
     },
 ];
 
@@ -53,10 +53,6 @@ const customerColumn = ({t,i18n})=> [
         dataIndex: 'email', 
     },
     {
-        title: t("Current Subscriptions"),
-        dataIndex: 'email', 
-    },
-    {
         title: t("Phone Number"),
         dataIndex: 'phone',
         render: (phoneNo) => {
@@ -71,7 +67,7 @@ const customerColumn = ({t,i18n})=> [
     {
         title: t("Joined At"),
         dataIndex: 'createdAt',
-        render: (joinedAt) => i18n.language === "ar" ? toArabicDigits(joinedAt) : dayjs.utc(joinedAt).local().format("YYYY-MM-DD hh:mm A")
+        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(createdAt) : utcDateTimeToLocal(createdAt)
     },
 ];
 
@@ -814,11 +810,11 @@ const discountactivityColumn = ({t,i18n})=> [
 ]
 
 
-const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) => [
+const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t }) => [
     {
         title: t("Business ID"),
         dataIndex: 'businessId',
-        render: ()=>  <Text>-</Text>
+        render: (businessId)=>  <Text>#{businessId}</Text>
     },
     {
         title: t("Business Logo"),
@@ -837,6 +833,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
     {
         title: t("Type"),
         dataIndex: 'businessType',
+        render: (businessType) => capitalizeTranslated(businessType)
     },
     {
         title: t("Customer Name"),
@@ -864,7 +861,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
         dataIndex: 'status',
         render: (status) => {
             return (
-                true ? (
+                status === 'ACTIVE' ? (
                     <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
                     <Text className='btnpill fs-12 inactive'>{t("Deactive")}</Text>
@@ -887,9 +884,8 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t,i18n }) =
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/allbusiness/viewbusiness/'+row?.key) }}>{t("View")}</NavLink>, key: '1' },
-                        row?.status === 'active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Inactive")}</NavLink>, key: '2' },
-                        row?.status === 'deactive' &&{ label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Active")}</NavLink>, key: '3' },
+                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/allbusiness/viewbusiness/'+row?.id) }}>{t("View")}</NavLink>, key: '1' },
+                        row?.status !== 'ACTIVE' ? { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange({id: row?.id, status: 'ACTIVE'})}}>{t("Active")}</NavLink>, key: '3' } : { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange({id: row?.id, status: 'INACTIVE'})}}>{t("Inactive")}</NavLink>, key: '2' },
                         { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(_?.id) }}>{t("Delete")}</NavLink>, key: '4' },
                     ],
                 }}

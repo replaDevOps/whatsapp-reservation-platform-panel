@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button, Card, Col, Dropdown, Flex,  Row, Space, Typography} from 'antd';
 import ReactApexChart from 'react-apexcharts';
 import { ModuleTopHeading } from '../../PageComponent';
@@ -6,34 +6,56 @@ import { DownOutlined } from '@ant-design/icons';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toArabicDigits } from '../../../shared';
+import { useQuery } from '@apollo/client/react';
+import { GET_REVENUE_STATS } from '../../../graphql/query';
 
 const { Title, Text } = Typography
 const RevenueBarChart = () => {
 
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
-    const [order, setOrder] = useState(0);
+    const [order, setOrder] = useState(2024);
     const items = [
         { label: <NavLink to={''}>{isArabic ? toArabicDigits(2024):2024}</NavLink>, key: 0 },
     ];
-
+    const { data, loading } = useQuery(GET_REVENUE_STATS, {
+      variables: { year: order },
+      fetchPolicy: "network-only",
+    });
     const onClick = ({ key }) => {
-        // key = parseInt(key) + 1;
-        setOrder(key);
-        // filter(key);
+      setOrder(Number(key));
     };
+    const chartResponse = data?.getRevenueChart;
+
+    const chartSeries = useMemo(() => {
+      if (!chartResponse) {
+        return [
+          { name: t("New Revenue"), data: [] },
+          { name: t("Old Revenue"), data: [] },
+        ];
+      }
+
+      const months = chartResponse.monthlyData;
+
+      return [
+        {
+          name: t("New Revenue"),
+          data: months.map(m => m.currentYearAmount),
+        },
+        {
+          name: t("Old Revenue"),
+          data: months.map(m => m.previousYearAmount),
+        }
+      ];
+    }, [chartResponse, t]);
+
+    const categories = chartResponse
+    ? chartResponse.monthlyData.map(m => t(m.label))
+    : [];
+
     let yAxisMax = 100;
     const chartData = {
-        series: [
-          {
-            name: t("New Customers Bookings"),
-            data: [200, 400, 0, 50, 90, 90, 55,30,43, 60, 44, 50],
-          },
-          {
-            name: t("Old Customers Bookings"),
-            data: [10, 30, 45, 205, 60, 75, 50,25,38, 55, 53, 40],
-          },
-        ],
+        series: chartSeries,
         options: {
           chart: {
             type: 'bar',
@@ -42,20 +64,7 @@ const RevenueBarChart = () => {
           dataLabels: { enabled: false },
           stroke: { curve: 'smooth', width: 2, },
           xaxis: {
-            categories: [
-            t("Jan"),
-            t("Feb"),
-            t("Mar"),
-            t("Apr"),
-            t("May"),
-            t("Jun"),
-            t("Jul"),
-            t("Aug"),
-            t("Sep"),
-            t("Oct"),
-            t("Nov"),
-            t("Dec"),
-          ],
+            categories: categories,
             labels: { style: { colors: '#000' } },
           },
           yaxis: {
@@ -96,17 +105,26 @@ const RevenueBarChart = () => {
             >
               <Button className='btncancel pad-x fs-13'>
                   <Space size={10}>
-                      {
-                          order == 0 ? isArabic ? toArabicDigits(2024):2024 : ''
-                      }  
+                      {isArabic ? toArabicDigits(order) : order} 
                       <DownOutlined className='fs-12' />
                   </Space>
               </Button>
             </Dropdown>
           </Flex>
         </Flex>
-        <Title level={4} className='fw-500 text-black m-0'>
-          {isArabic ? toArabicDigits(6820):6820} <span className='text-green fs-13 fw-400'>{i18n?.language === 'ar' ? '9%+':'+9%'} {t("then last year")} <img src='/assets/icons/up-ar.webp' width={12} alt='up arrow icon' fetchPriority="high" /></span>
+        <Title level={4} className="fw-500 text-black m-0">
+          {chartResponse
+            ? isArabic
+              ? toArabicDigits(chartResponse.totalRevenue)
+              : chartResponse.totalRevenue
+            : "--"}
+          {" "}
+          <span className="text-green fs-13 fw-400">
+            {chartResponse
+              ? `${chartResponse.percentageChange}%+`
+              : "0%"} {t("then last year")}
+            <img src="/assets/icons/up-ar.webp" width={12} alt="up arrow" />
+          </span>
         </Title>
       </Flex>
       

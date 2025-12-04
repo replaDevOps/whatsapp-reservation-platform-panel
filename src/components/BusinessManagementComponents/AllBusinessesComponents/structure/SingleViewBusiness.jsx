@@ -3,9 +3,11 @@ import { Avatar, Button, Card, Col, Flex, Image, Row, Tag, Typography } from 'an
 import { BreadCrumbCard, ModuleTopHeading, SingleBusinessViewTable, StatisticsCommonCards, SingleBusinessViewTab } from '../../../../components'
 import { useNavigate, useParams } from 'react-router-dom'
 import { allbusinessData } from '../../../../data'
-import { useState } from 'react'
-import { BusinessTitle } from '../../../../shared'
+import { use, useEffect, useState } from 'react'
+import { BusinessTitle, capitalizeTranslated, FieldMerger, utcDateToLocal } from '../../../../shared'
 import { useTranslation } from 'react-i18next'
+import { useLazyQuery, useQuery } from '@apollo/client/react'
+import { GET_BUSINESSES_BY_ID } from '../../../../graphql/query'
 
 const { Text, Title } = Typography
 const SingleViewBusiness = () => {
@@ -15,57 +17,39 @@ const SingleViewBusiness = () => {
     const title = BusinessTitle({t})
     const {id} = useParams()
     const [ viewitem, setViewItem ] = useState(false)
-    const singleview = allbusinessData?.find((items)=>items?.key === Number(id))
+    const { data, loading } = useQuery(GET_BUSINESSES_BY_ID, {
+        variables: { getBusinessId: id },
+        skip: !id,
+    });
+    const singleview = data?.getBusiness
+    console.log('single data',data)
 
     const condata = [
         {
             id: 1,
             icon: '/assets/icons/us.webp',
-            title: singleview?.customerName
+            title: <FieldMerger 
+                    object={singleview?.subscriber}
+                    fields={['firstName', 'lastName']}
+            />
         },
         {
             id: 2,
             icon: '/assets/icons/ph.webp',
-            title: '+123 456 789'
+            title: `+${singleview?.subscriber?.phone}`
         },
         {
             id: 3,
             icon: '/assets/icons/ml.webp',
-            title: singleview?.email
+            title: singleview?.subscriber?.email
         },
         {
             id: 4,
             icon: '/assets/icons/gl.webp',
-            title: 'www.acb.com'
+            title: singleview?.websiteLink
         }
     ] 
 
-    const cardsData = [
-        {
-            id: 1,
-            icon:'/assets/icons/total-booking.webp',
-            title: '50',
-            subtitle: 'Total Bookings',
-        },
-        {
-            id: 2,
-            icon:'/assets/icons/todays-booking.webp',
-            title: '8',
-            subtitle: 'Today’s Bookings',
-        },
-        {
-            id: 3,
-            icon:'/assets/icons/total-active-branch.webp',
-            title: '3',
-            subtitle: 'Total Active Branches',
-        },
-        {
-            id: 4,
-            icon:'/assets/icons/total-as.webp',
-            title: '16',
-            subtitle: 'Total Active Service Providers',
-        },
-    ];
 
     return (
         <>
@@ -78,18 +62,43 @@ const SingleViewBusiness = () => {
                 />
                 <Card className='card-bg card-cs radius-12 border-gray'>
                     <Flex gap={15} vertical>
-                        <Row gutter={[24,24]}>
+                        <Row gutter={[24,5]}>
                             <Col span={24} lg={{span: 12}}>
-                                <Flex gap={10} align="center" className='mb-2'>
+                                <Flex gap={10} align="center">
                                     <Button className="border-0 p-0 bg-transparent" onClick={() => navigate("/allbusiness")}>
                                         {i18n?.language === 'ar' ? <ArrowRightOutlined />:<ArrowLeftOutlined />}
                                     </Button>
-                                    <Avatar src={singleview?.businessLogo} size={40}  />
+                                    <Avatar src={singleview?.image} size={40}  />
                                     <Flex gap={10} align="center">
-                                        <ModuleTopHeading level={4} name={singleview?.businessName} />
-                                        <Tag className='px-3 py-1 radius-20'>{t(singleview?.type)}</Tag>
+                                        <ModuleTopHeading level={4} name={capitalizeTranslated(singleview?.name)} />
+                                        <Tag className='px-3 py-1 radius-20'>{capitalizeTranslated(t(singleview?.businessType))}</Tag>
                                     </Flex>
                                 </Flex>
+                            </Col>
+                            <Col span={24} lg={{span: 12}}>
+                                <Flex justify='end'>
+                                    <Flex vertical gap={3}>
+                                        <Flex align='center' gap={2}>
+                                            <Title level={5} className='m-0'>
+                                                {
+                                                    capitalizeTranslated(t(singleview?.subscription?.type))
+                                                } 
+                                                {/* {
+                                                    t(singleview?.subscriptionPlan
+                                                    ?.replace(/([a-z])([A-Z])/g, '$1 $2')
+                                                    ?.replace(/([a-z]+)(plan)$/i, '$1 Plan')
+                                                    ?.replace(/^./, (str) => str.toUpperCase()))
+                                                }  */}
+                                             </Title>
+                                            <Tag color='#34C759'>{t("Active")}</Tag>
+                                        </Flex>
+                                        <Text className='fs-13 text-gray'>
+                                            {t("Expire on")} {utcDateToLocal(singleview?.subscription?.createdAt)}
+                                        </Text>
+                                    </Flex>
+                                </Flex>
+                            </Col>
+                            <Col span={24}>
                                 <Flex gap={15} align='center' wrap className='ml-20'>
                                     {
                                         condata?.map((contact,i)=>
@@ -101,31 +110,11 @@ const SingleViewBusiness = () => {
                                     }
                                 </Flex>
                             </Col>
-                            <Col span={24} lg={{span: 12}}>
-                                <Flex justify='end'>
-                                    <Flex vertical gap={3}>
-                                        <Flex align='center' gap={2}>
-                                            <Title level={5} className='m-0'>
-                                                {
-                                                    t(singleview?.subscriptionPlan
-                                                    ?.replace(/([a-z])([A-Z])/g, '$1 $2')
-                                                    ?.replace(/([a-z]+)(plan)$/i, '$1 Plan')
-                                                    ?.replace(/^./, (str) => str.toUpperCase()))
-                                                } 
-                                             </Title>
-                                            <Tag color='#34C759'>{t("Active")}</Tag>
-                                        </Flex>
-                                        <Text className='fs-13 text-gray'>
-                                            {t("Expire on")} {singleview?.date}
-                                        </Text>
-                                    </Flex>
-                                </Flex>
-                            </Col>
                         </Row>
                     </Flex>
                 </Card>
                 <StatisticsCommonCards 
-                    data={cardsData}
+                    // data={cardsData}
                 />
                 {
                     viewitem ? 

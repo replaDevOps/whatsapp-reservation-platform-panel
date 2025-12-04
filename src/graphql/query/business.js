@@ -23,14 +23,16 @@ const GET_SUBSCRIPTIONS_STATS = gql`
   }
 `
 const GET_BUSINESSES = gql`
-  query GetBusinesses {
-    getBusinesses {
+  query GetBusinesses($limit: Int, $offSet: Int, $search: String, $status: BusinessStatus, $startDate: String, $endDate: String, $type: BusinessType) {
+    getBusinesses(limit: $limit, offSet: $offSet, search: $search, status: $status, startDate: $startDate, endDate: $endDate, type: $type){
       totalCount
       businesses {
         id
         image
         name
         businessType
+        status
+        businessId
         subscriber {
           firstName
           lastName
@@ -44,8 +46,36 @@ const GET_BUSINESSES = gql`
     }
   }
 `
+
+const GET_BUSINESSES_BY_ID = gql`
+  query GetBusiness($getBusinessId: ID!) {
+    getBusiness(id: $getBusinessId) {
+      id
+      image
+      name
+      subscriber {
+        id
+        firstName
+        lastName
+        email
+        phone
+      }
+      websiteLink
+      subscription {
+        id
+        type
+        createdAt
+      }
+      status
+      subscriptionValidity
+      businessType
+    }
+  }
+`
+
 export {
   GET_SUBSCRIBER_CUSTOMERS_LOOKUP,
   GET_SUBSCRIPTIONS_STATS,
-  GET_BUSINESSES
+  GET_BUSINESSES,
+  GET_BUSINESSES_BY_ID
 }

@@ -25,6 +25,24 @@ const GET_CUSTOMER_ANALYTICS_STATS = gql`
     }
 `
 
+const GET_REVENUE_STATS = gql`
+    query GetRevenueChart($year: Int!) {
+        getRevenueChart(year: $year) {
+            isPositiveTrend
+            percentageChange
+            totalRevenue
+            previousYearRevenue
+            monthlyData {
+                label
+                month
+                currentYearAmount
+                previousYearAmount
+            }
+            year
+        }
+    }
+`
+
 const GET_REGISTERED_BUSINESSES = gql`
     query GetBusinessTypeCount($startDate: String, $endDate: String) {
         getBusinessTypeCount(startDate: $startDate, endDate: $endDate) {
@@ -37,8 +55,21 @@ const GET_REGISTERED_BUSINESSES = gql`
     }
 `
 
+const GET_TOP_PERFORMING_BUSINESS = gql`
+    query GetTopPerformingBusinesses($limit: Int) {
+        getTopPerformingBusinesses(limit: $limit) {
+            businessName
+            type
+            totalBookings
+            logo
+        }
+    }
+`
+
 export {
     GET_DASHBOARD_STATS,
     GET_CUSTOMER_ANALYTICS_STATS,
     GET_REGISTERED_BUSINESSES,
+    GET_REVENUE_STATS,
+    GET_TOP_PERFORMING_BUSINESS,
 }

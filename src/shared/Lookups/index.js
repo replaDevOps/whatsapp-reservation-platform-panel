@@ -68,10 +68,10 @@ const statusItem = [
 
 const typeItems = [
     { key: '', label: 'All Type' },
-    { key: 'general', label: 'General' },
-    { key: 'barber', label: 'Barber' },
-    { key: 'clinic', label: 'Clinic' },
-    { key: 'spa', label: 'Spa' },
+    { key: 'GENERAL', label: 'General' },
+    { key: 'BARBER', label: 'Barber' },
+    { key: 'CLINIC', label: 'Clinic' },
+    { key: 'SPA', label: 'Spa' },
 ];
 
 const typeOp = [
@@ -168,6 +168,11 @@ const actionItems = [
     { key: 'MAINTENANCE_MODE', label: 'Maintenance Mode' },
 ];
 
+const statusbusinessItem = [
+    { key: "ACTIVE", label: 'Active' },
+    { key: "INACTIVE", label: 'Deactive' },
+];
+
 export { 
     rolestaffopt,
     languageopt, 
@@ -186,4 +191,5 @@ export {
     statusItems,
     servicetypeItems,
     actionItems,
+    statusbusinessItem,
 }

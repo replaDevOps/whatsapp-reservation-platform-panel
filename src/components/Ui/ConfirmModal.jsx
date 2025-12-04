@@ -2,7 +2,7 @@ import { Button, Divider, Flex, Image, Modal, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 
 const { Title, Text } = Typography
-const ConfirmModal = ({visible,onClose,title,subtitle,type,onConfirm}) => {
+const ConfirmModal = ({visible,onClose,title,subtitle,type,onConfirm,loading}) => {
     const {t} = useTranslation()
     return (
         <Modal
@@ -15,7 +15,7 @@ const ConfirmModal = ({visible,onClose,title,subtitle,type,onConfirm}) => {
                     <Button type='button' onClick={onClose} className='btncancel pad-filter text-black border-gray' >
                         {t("Cancel")}
                     </Button>
-                    <Button className={`btnsave pad-filter border-0 text-white ${type==='danger'? 'bg-delete':'brand-bg'}`} onClick={onConfirm} >
+                    <Button loading={loading} className={`btnsave pad-filter border-0 text-white ${type==='danger'? 'bg-delete':'brand-bg'}`} onClick={()=> onConfirm(visible)} >
                         {t("Confirm")}
                     </Button>
                 </Flex>

@@ -131,6 +131,15 @@ const revenueLookups = [
   },
 ];
 
+const statusItem = [
+  {
+    key: 'ACTIVE', label: "Active"
+  },
+  {
+    key: 'INACTIVE', label: "Deactive"
+  },
+]
+
 export {
   categoriesItems,
   revenueLookups,
@@ -145,4 +154,5 @@ export {
   useDistrictItem,
   yearOp,
   langItems,
+  statusItem,
 };

@@ -3,13 +3,13 @@ import { Button, Card, Flex, Table, Typography, Row, Col, Form, Image } from 'an
 import { PlusOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { CustomPagination } from '../../../Ui';
-import { customerColumn, customertableData } from '../../../../data';
-import { MyDatepicker, MySelect, SearchInput } from '../../../Forms';
+import { customerColumn } from '../../../../data';
+import { MyDatepicker, SearchInput } from '../../../Forms';
 import { AddCustomerModal } from '../modal';
-import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { GET_SUBSCRIBER_CUSTOMERS } from '../../../../graphql/query/subscriberCustomers';
 import { useLazyQuery } from '@apollo/client/react';
+import { TableLoader, useDebounce } from '../../../../shared';
 
 const { Text } = Typography;
 
@@ -20,30 +20,36 @@ const CustomerTable = () => {
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [ visible, setVisible ] = useState(false)
-    const [selectedYear, setSelectedYear] = useState(moment());
+    const [selectedYear, setSelectedYear] = useState(null);
+    const [ search, setSearch ] = useState('')
+    const debouncedSearch = useDebounce(search, 500);
+    const [subscriberCustomers, setSubscriberCustomers]= useState([])
     const handlePageChange = (page, size) => {
         setCurrent(page);
         setPageSize(size);
     }
-
     const [getSubscriberCustomers, { data, loading }] = useLazyQuery(GET_SUBSCRIBER_CUSTOMERS, {
         fetchPolicy: "network-only",
     })
-    const [subscriberCustomers, setSubscriberCustomers]= useState([])
+    const buildFilterObject = () => ({
+        search: debouncedSearch || null,
+        startDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
+        endDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
+    });
+
     useEffect(()=>{
         if(getSubscriberCustomers)
             getSubscriberCustomers({
                 variables: {
-                    limit: 20,
-                    offset: 0,
-                    role: "SUBSCRIBER"
+                    limit: pageSize,
+                    offset: (current - 1) * pageSize,
+                    filter: buildFilterObject()
                 }
             })
-    }, [getSubscriberCustomers])
+    }, [getSubscriberCustomers,debouncedSearch,selectedYear],current,pageSize)
 
     useEffect(()=>{
-        if(data?.getUsers?.users?.length)
-            setSubscriberCustomers(data?.getUsers?.users)
+            setSubscriberCustomers(data?.getSubscribers?.subscribers)
     }, [data])
     return (
         <>
@@ -60,25 +66,17 @@ const CustomerTable = () => {
                     </Flex>
                     <Form layout="vertical" form={form}>
                         <Row gutter={[16, 16]} justify={'space-between'}>
-                            <Col span={24} md={24} lg={12} >
-                                <Flex gap={10}>
-                                    <SearchInput
+                            <Col span={24} md={24} lg={7} xl={8} >
+                                <SearchInput
                                     name='name'
                                     placeholder={t("Search by Customer Name")}
-                                    // value={search}
-                                    // onChange={(e) => {
-                                    //     setSearch(e.target.value);
-                                    // }}
+                                    value={search}
+                                    onChange={(e) => {
+                                        setSearch(e.target.value);
+                                    }}
                                     prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                 />
-                                <MySelect
-                                    withoutForm
-                                    placeholder='...select'
-                                    options={[{id:"Active", name: 'Active'}, {id:'inActive', name: 'inActive'}]}
-                                    style={{width: '170px'}}
-                                />
-                                </Flex>
                             </Col>
                             <Col span={24} md={8} lg={12}>
                                 <Flex justify='end' gap={10}>         
@@ -110,14 +108,18 @@ const CustomerTable = () => {
                         scroll={{ x: 1000 }}
                         rowHoverable={false}
                         pagination={false}
-                        loading={loading}
+                        rowKey={(record)=>record?.id}
+                        loading={{
+                            ...TableLoader,
+                            spinning: loading
+                        }}
                     />
-                    {/* <CustomPagination 
-                        total={12}
+                    <CustomPagination 
+                        total={data?.getSubscribers?.totalCount}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
-                    /> */}
+                    />
                 </Flex>
             </Card>
 
