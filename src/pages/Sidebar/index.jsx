@@ -174,7 +174,7 @@ const Sidebar = () => {
                     alt='collapse icon' fetchPriority="high" 
                   />
                 </Button>  
-                <Flex gap={15} align='center' justify='end'> 
+                <Flex gap={15} align='center' justify='end' className='mbl-pt'>  
                   <LanguageChange />
                   <Notifications />
                   <UserDropdown />

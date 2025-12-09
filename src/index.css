@@ -1439,11 +1439,25 @@
 
 /* =================================================== media querry =============================================== */
 @media (max-width: 991px){
+    .mbl-pt{
+        padding-top: 10px !important;
+    }
     .width-drag{
         width: 90%;
     }
-    .ml-20{
-        margin-left: 0;
+    .flex-col-mbl{
+        flex-direction: column-reverse !important;
+        width: 100%;
+    }
+    .header-mbl-cs {
+        height: auto !important;
+    }
+    .mbl-space{
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .mbl-space .ant-space-item:nth-child(2){
+        width: 100% !important;
     }
 }
 
