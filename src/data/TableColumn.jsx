@@ -74,8 +74,8 @@ const customerColumn = ({t,i18n})=> [
 const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => [
     {
         title: t("Image"),
-        dataIndex: 'img',
-        render:(img) => <Avatar src={img} size={40} />,
+        dataIndex: 'imageUrl',
+        render:(imageUrl) => <Avatar src={imageUrl} size={40} />,
         width: 100
     },
     {

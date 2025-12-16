@@ -25,6 +25,7 @@ const AllBusinessPage = () => {
                 onClick={()=>navigate('/addbusiness')}
             />
             <StatisticsCommonCards 
+                lg={6}
             />
             <AllBusinessTable/>
         </Flex>

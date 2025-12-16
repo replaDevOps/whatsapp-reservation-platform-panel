@@ -7,6 +7,7 @@ import { MyInput } from "../../components";
 import { LanguageChange } from "../Sidebar/LanguageChange";
 import { useTranslation } from "react-i18next";
 import { LOGIN_USER } from "../../graphql/mutation";
+import { client } from "../../config/apolloClient";
 
 const { Title, Paragraph } = Typography;
 const LoginPage = () => {
@@ -20,22 +21,14 @@ const LoginPage = () => {
             const values = form.getFieldsValue()
              try {
               const { email, password } = values;
-            // const email = "platformpanel@gmail.com";
-            // const password = "test@123";
               const { data,error } = await loginUser({ variables: { email, password, role: 'SUPER_ADMIN'} });
-                // localStorage.setItem("email", email);
-                // localStorage.setItem("password", password);
-
-                // messageApi.success("Login successful!");
-                // navigate("/")
               if (data) {
-                // store token/id
                 localStorage.setItem("accessToken", data.loginUser.token);
                 localStorage.setItem("userId", data.loginUser.user.id);
                 localStorage.setItem("email", data.loginUser.user.email);
+                await client.resetStore();
                 messageApi.success("Login successful!");
                 navigate("/")
-                // compute destination safely (it could be a string or Location object)
               } else {
                 messageApi.error("Login failed: Invalid credentials");
               }

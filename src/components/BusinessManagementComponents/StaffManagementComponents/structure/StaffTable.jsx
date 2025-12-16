@@ -6,7 +6,7 @@ import { ConfirmModal, CustomPagination, DeleteModal } from '../../../Ui';
 import { stafftableColumn } from '../../../../data';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '../../../Forms';
-import { roleItems, statusitemsCust, TableLoader } from '../../../../shared';
+import { getUserId, roleItems, statusitemsCust, TableLoader, useDebounce } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
 import { GET_STAFFS } from '../../../../graphql/query';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
@@ -16,6 +16,7 @@ const { Text } = Typography;
 
 const StaffTable = () => {
 
+    const userId = localStorage.getItem("userId"); 
     const [form] = Form.useForm();
     const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
@@ -27,6 +28,7 @@ const StaffTable = () => {
     const [ deleteitem, setDeleteItem ] = useState(false)
     const [messageApi, contextHolder] = message.useMessage();
     const [ search, setSearch ] = useState('')
+    const searchdebounce = useDebounce(search,500);
     const [ getstaff, { data, loading, refetch }] = useLazyQuery(GET_STAFFS,{
         fetchPolicy: 'network-only'
     })
@@ -35,7 +37,7 @@ const StaffTable = () => {
 
     
     const buildFilterObject = () => ({
-        search: search || undefined,
+        search: searchdebounce || undefined,
         role: selectedRole || undefined,
         isActive: selectedStatus,
     });
@@ -60,13 +62,14 @@ const StaffTable = () => {
                 variables: {
                     limit: pageSize,
                     offset: (current - 1) * pageSize,
+                    superAdminId: userId,
                     filter: buildFilterObject(),
                 }
             })
         }
     },[
         getstaff,
-        search,
+        searchdebounce,
         selectedRole,
         selectedStatus,
         current,
@@ -74,8 +77,8 @@ const StaffTable = () => {
     ])
 
     useEffect(()=>{
-        if(data?.getStaffMembers?.users)
-            setStaffData(data?.getStaffMembers?.users)
+        if(data?.getSuperAdminPanelUsers?.users)
+            setStaffData(data?.getSuperAdminPanelUsers?.users)
     }, [data])
 
     const handleDelete = async () => {

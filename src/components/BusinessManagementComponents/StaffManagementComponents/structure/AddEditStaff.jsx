@@ -1,29 +1,54 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons'
-import { Button, Card, Col, Flex, Form, message, Row, Select, Spin, Typography } from 'antd'
+import { ArrowLeftOutlined, ArrowRightOutlined, EditFilled} from '@ant-design/icons'
+import { Button, Card, Col, Flex, Form, message, notification, Row, Select, Spin, Typography } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
-import { MyInput, MySelect} from '../../../Forms'
-import { BusinessTitle, rolestaffopt, TableLoader, toArabicDigits } from '../../../../shared'
+import { MyInput, MySelect, SingleFileUpload} from '../../../Forms'
+import { BusinessTitle, notifyError, notifySuccess, rolestaffopt, TableLoader, toArabicDigits } from '../../../../shared'
 import { BreadCrumbCard } from '../../../Ui'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from '@apollo/client/react'
 import { CREATE_STAFF, UPDATE_STAFF } from '../../../../graphql/mutation/mutations'
 import { GET_STAFFS_BY_ID } from '../../../../graphql/query'
+import imageCompression from 'browser-image-compression';
 
 const { Title } = Typography
 const AddEditStaff = () => {
 
+    
     const navigate = useNavigate()
-    const [messageApi, contextHolder] = message.useMessage();
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar';
     const title = BusinessTitle({t})
     const [form] = Form.useForm();
     const { id } = useParams()
-    // const editdetail = stafftableData?.find((list)=>list?.key === Number(id))
+    const [ api, contextHolder ] = notification.useNotification()
     const [ previewimage, setPreviewImage ] = useState(null)
-    const [createstaff, { loading: creating, error }] = useMutation(CREATE_STAFF);
-    const [updatestaff, {loading: updating}] = useMutation(UPDATE_STAFF);
+    const [createstaff, { loading: creating, error }] = useMutation(CREATE_STAFF,{
+        onCompleted:()=>{
+            notifySuccess(
+                api,
+                "Staff Create",
+                "Staff created successfully",
+                ()=> {navigate("/staff")}
+            )
+        },
+        onError: (error) => {
+            notifyError(api, error);
+        },
+    });
+    const [updatestaff, {loading: updating}] = useMutation(UPDATE_STAFF,{
+        onCompleted:()=>{
+            notifySuccess(
+                api,
+                "Staff Update",
+                "Staff updated successfully",
+                ()=>{navigate("/staff")}
+            )
+        },
+        onError: (error) => {
+            notifyError(api, error);
+        },
+    });
     const { data, loading } = useQuery(GET_STAFFS_BY_ID, {
         variables: { getUserId: id },
         skip: !id,
@@ -37,7 +62,7 @@ const AddEditStaff = () => {
                 email: data?.getUser?.email,
                 role: data?.getUser?.role,
             });
-            // setPreviewImage(staff.image);
+            setPreviewImage(data?.getUser?.imageUrl);
             console.log('staff single id',data?.getUser?.id)
         }
     }, [loading, data]);
@@ -45,29 +70,66 @@ const AddEditStaff = () => {
     const handleChangeImage = () => {
         setPreviewImage(null);
     };
-    const AddEditStaff = async () => {
-        const input = form.getFieldsValue();
+
+    const uploadFileToServer = async (file) => {
         try {
-            if (data?.getUser?.id) {
+            let compressedFile = file;
+    
+            // Compress only if image
+            if (file.type.startsWith("image/")) {
+                compressedFile = await imageCompression(file, {
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1024,
+                    useWebWorker: true,
+                });
+            }
+    
+            const formData = new FormData();
+            formData.append("file", compressedFile);
+    
+            const res = await fetch("https://backend.qloop.me/upload", {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (!res.ok) throw new Error("Upload failed");
+            const data = await res.json();
+            setPreviewImage(data.fileUrl);
+            return {
+                fileName: data.fileName,
+                fileType: data.fileType,
+                filePath: data.fileUrl,
+            };
+    
+        } catch (err) {
+            console.error("Upload error:", err);
+            message.error("Failed to upload file");
+            throw err;
+        }
+    };
+    const AddEditStaff = async () => {
+        const data = form.getFieldsValue();
+        const input = {
+            ...data,
+            imageUrl: previewimage,
+        }
+        try {
+            if (id) {
                 await updatestaff({
                     variables: {
                         input:{
-                            id: data?.getUser?.id,
+                            id,
                             ...input
                         }
                     }
                 });
-                messageApi.success("Staff updated successfully!");
             } else {
                 await createstaff({
                     variables: { input }
                 });
-                messageApi.success("Staff created successfully!");
             }
-            navigate('/staff')
         } catch (e) {
             console.error(e);
-            message.error(error);
         }
     };
 
@@ -115,21 +177,23 @@ const AddEditStaff = () => {
                                 requiredMark={false}
                             >
                                 <Row gutter={16}>
-                                    {/* <Col span={24} className='my-5'>
+                                    <Col span={24} className='my-5'>
                                         {
                                             !previewimage ?
                                             <SingleFileUpload
                                                 name="image"
                                                 title={t("Upload Image")}
                                                 form={form}
-                                                onUpload={(file) => console.log("uploading:", file)}
+                                                onUpload={uploadFileToServer}
                                                 align="center"
+                                                width={100}
+                                                height={100}
                                             />
                                             :
                                             <Flex vertical gap={5} justify='center' align='center'>
                                                 <img
                                                     src={previewimage}
-                                                    alt="Category"
+                                                    alt="staff-image"
                                                     className='radius-12 mxw-mxh'
                                                     fetchPriority="high"
                                                 />
@@ -141,7 +205,7 @@ const AddEditStaff = () => {
                                             </Flex>
 
                                         }
-                                    </Col> */}
+                                    </Col>
                                     <Col span={24} md={12}>
                                         <MyInput 
                                             label={t("First Name")} 
@@ -204,7 +268,7 @@ const AddEditStaff = () => {
                                             type='password'
                                             label={"Password"} 
                                             name="password" 
-                                            required 
+                                            required
                                             message={t("Please enter password")} 
                                             placeholder={t("Enter password")} 
                                         />

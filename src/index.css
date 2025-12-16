@@ -504,7 +504,7 @@
     border: 1px solid var(--brand-color);
 }
 .btncancel{
-    padding: 0.5rem 1.7rem;
+    padding: 0.6rem 1.7rem;
     height: auto !important; 
     color: var(--black-color) !important;
     box-shadow: none !important;
