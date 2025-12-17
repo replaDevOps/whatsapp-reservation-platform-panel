@@ -4,7 +4,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, } from '../../../Ui';
 import { revenueColumns } from '../../../../data';
 import { SearchInput } from '../../../Forms';
-import { subscriptionItems, TableLoader, servicetypeItems, exportToExcel } from '../../../../shared';
+import { subscriptionItems, TableLoader, servicetypeItems, exportToExcel, useDebounce } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery } from '@apollo/client/react';
 import { GET_REVENUE } from '../../../../graphql/query';
@@ -21,6 +21,7 @@ const RevenueTable = () => {
     // const [selectedYear, setSelectedYear] = useState(moment());
     const [revenueData, setRevenueData]= useState([])
     const [ search, setSearch ] = useState('')
+    const debouncedSearch = useDebounce(search, 500);
     const [ getRevenue, { data, loading }] = useLazyQuery(GET_REVENUE,{
         fetchPolicy: 'network-only'
     })
@@ -43,14 +44,14 @@ const RevenueTable = () => {
             variables: {
                 limit: pageSize,
                 offDet: (current - 1) * pageSize,
-                search: search || undefined,
+                search: debouncedSearch || undefined,
                 type: selectedType || undefined,
                 plan: selectedAction || undefined,
             }
         });
     }, [
         getRevenue,
-        search,
+        debouncedSearch,
         selectedType,
         selectedAction,
         current,

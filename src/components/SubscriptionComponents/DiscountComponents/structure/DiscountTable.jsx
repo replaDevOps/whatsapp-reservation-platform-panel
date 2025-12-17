@@ -4,13 +4,13 @@ import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, DeleteModal, } from '../../../Ui';
 import { discountColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
-import { subscriptionItems, TableLoader, typeamountItem, typeitemsCust } from '../../../../shared';
-import moment from 'moment';
+import { subscriptionItems, TableLoader, typeamountItem, typeitemsCust, useDebounce } from '../../../../shared';
 import { AddEditDiscount } from '../modal';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { GET_DISCOUNTS } from '../../../../graphql/query';
 import { EXPIRE_DISCOUNT } from '../../../../graphql/mutation';
+import dayjs from 'dayjs';
 
 
 const DiscountTable = ({visible,setVisible}) => {
@@ -20,25 +20,26 @@ const DiscountTable = ({visible,setVisible}) => {
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [search, setSearch] = useState('');
+    const searchdebounce = useDebounce(search,500)
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
     const [selectedgroup, setselectedGroup] = useState('');
-    const [selectedYear, setSelectedYear] = useState(moment());
+    const [selectedYear, setSelectedYear] = useState(dayjs());
     const [ edititem, setEditItem ] = useState(null)
     const [ expireitem, setExpireItem ] = useState(false)
     const [messageApi, contextHolder] = message.useMessage();
-    const [ getDiscounts, { data, loading, refetch  } ] = useLazyQuery(GET_DISCOUNTS,{
+    const [ getDiscounts, { data, loading } ] = useLazyQuery(GET_DISCOUNTS,{
         fetchPolicy: 'network-only'
     })
     const [expireStaffPackage] = useMutation(EXPIRE_DISCOUNT);
 
     const buildFilterObject = () => ({
-        search: search || undefined,
-        discountType: selectedType || undefined,
-        group: selectedgroup || undefined,
-        packageType: selectedAction || undefined,
-        startDate: selectedYear?.[0] ? moment(selectedYear[0]).toISOString() : undefined,
-        endDate: selectedYear?.[1] ? moment(selectedYear[1]).toISOString() : undefined,
+        search: searchdebounce || null,
+        discountType: selectedType || null,
+        group: selectedgroup || null,
+        packageType: selectedAction || null,
+        // startDate: selectedYear?.[0] ? dayjs(selectedYear[0]).toISOString() : undefined,
+        // endDate: selectedYear?.[1] ? dayjs(selectedYear[1]).toISOString() : undefined,
     });
 
     const handlePageChange = (page, size) => {
@@ -71,11 +72,11 @@ const DiscountTable = ({visible,setVisible}) => {
         }
     }, [
         getDiscounts,
-        search,
+        searchdebounce,
         selectedType,
         selectedgroup,
         selectedAction,
-        selectedYear,
+        // selectedYear,
         current,
         pageSize
     ]);
@@ -93,10 +94,12 @@ const DiscountTable = ({visible,setVisible}) => {
             });
             messageApi.success(t("Discount expired successfully"));
             setExpireItem(null);
-            refetch({
-                limit: 20,
-                offset: 0,
-                filter: buildFilterObject()
+            getDiscounts({
+                variables: {
+                    limit: pageSize,
+                    offset: (current - 1) * pageSize,
+                    filter: buildFilterObject()
+                }
             });
         } catch (err) {
             console.error(err);
@@ -225,12 +228,13 @@ const DiscountTable = ({visible,setVisible}) => {
             <AddEditDiscount 
                 visible={visible}
                 edititem={edititem}
-                messageApi={messageApi}
                 onClose={()=>{setVisible(false);setEditItem(null)}}
-                refetch={() => refetch({
-                    limit: 20,
-                    offset: 0,
-                    filter: buildFilterObject()
+                refetch={() => getDiscounts({
+                    variables: {
+                        limit: pageSize,
+                        offset: (current - 1) * pageSize,
+                        filter: buildFilterObject()
+                    }
                 })}
             />
             <DeleteModal 

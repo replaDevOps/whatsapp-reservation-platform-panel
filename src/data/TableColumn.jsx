@@ -41,12 +41,9 @@ const BookingDashboardColumn = ({t,i18n})=> [
 
 const customerColumn = ({t,i18n})=> [
     {
-        title: t("First Name"),
+        title: t("Name"),
         dataIndex: 'firstName',
-    },
-    {
-        title: t("Last Name"),
-        dataIndex: 'lastName',
+        render: (_,row)=> `${row?.firstName} ${row?.lastName}`
     },
     {
         title: t("Email Address"),
@@ -88,7 +85,7 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => 
         dataIndex: 'phone',
         render: (phone) => {
         if (!phone) return '';
-        const prefix = '+';
+        const prefix = '+996 ';
         return i18n.language === "ar" 
             ? `${prefix}${toArabicDigits(phone)}`
             : `${prefix}${phone}`;
@@ -616,10 +613,11 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
         width: 100,
         render: (_, row) => {
 
-            const now = new Date();
-            const startExpired = new Date(row.startDate) < now;
-            const endExpired = new Date(row.expiryDate) < now;
-            const allowActions = startExpired && endExpired;
+            // const now = new Date();
+            // const startExpired = new Date(row.startDate) < now;
+            // const endExpired = new Date(row.expiryDate) < now;
+            // const allowActions = startExpired && endExpired;
+            const allowActions = row?.status === 'ACTIVE'
 
             const items = allowActions
                 ? [
@@ -657,7 +655,7 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
                 <Dropdown
                     menu={{ items }}
                     trigger={['click']}
-                    disabled={!allowActions} // disable dropdown
+                    disabled={!allowActions}
                 >
                     <Button
                         disabled={!allowActions}
@@ -902,11 +900,11 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t }) => [
 const singleviewColumns = ({ setViewItem,t,i18n }) => [
     {
         title: t("Branch Name"),
-        dataIndex: 'branchName',
+        dataIndex: 'name',
     },
     {
         title: t("Phone Number"),
-        dataIndex: 'phoneNo',
+        dataIndex: 'phone',
     },
     {
         title: t("Location"),

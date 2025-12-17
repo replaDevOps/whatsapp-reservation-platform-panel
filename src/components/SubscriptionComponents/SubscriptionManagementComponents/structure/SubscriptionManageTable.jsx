@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { Button, Card, Dropdown, Flex, Table, Row, Col, Form } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, } from '../../../Ui';
-import { submanageColumns, submanageData } from '../../../../data';
+import { submanageColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
-import moment from 'moment';
-import { subscriptionItems, typeItems } from '../../../../shared';
+import { periodItems, subscriptionItems, TableLoader, typeItems, useDebounce } from '../../../../shared';
 import { EditSubscriptionPlanModal, RenewPlanModal, UpgradePlanModal } from '../modal';
 import { useTranslation } from 'react-i18next';
-import { GET_BUSINESSES, GET_SUBSCRIBERS_SUBSCRIPTIONS } from '../../../../graphql/query';
+import { GET_SUBSCRIBERS_SUBSCRIPTIONS } from '../../../../graphql/query';
 import { useLazyQuery } from '@apollo/client/react';
 
 
@@ -21,50 +20,44 @@ const SubscriptionManageTable = () => {
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
     const [selectedperiod, setselectedPeriod] = useState('');
-    const [selectedYear, setSelectedYear] = useState(moment());
+    const [selectedYear, setSelectedYear] = useState(null);
     const [ visible, setVisible ] = useState(false)
     const [ edititem, setEditItem ] = useState(null)
     const [ upgradeplan, setUpgradePlan ] = useState(false)
     const [ isrenew, setIsRenew ] = useState(false)
-    //filter
-    const [filters, setFilters]= useState({
-        search: null,
-        type: null,
-        validity: null,
-        plan: null,
-    })
-     const [ pagination, setPagination] = useState({ current: 1, pageSize: 10});
-  
-
-
-    const periodItems = [
-        { key: 'monthly', label: 'Monthly' },
-        { key: 'yearly', label: 'Yearly' }, 
-    ]
-
-
+    const [ search, setSearch ] = useState('')
+    const debouncedSearch = useDebounce(search, 500);
     const [subscriberSubscriptions, setSubscriberSubscriptions]= useState([])
-    const [getSubscriberSubscriptions, { data }] = useLazyQuery(GET_SUBSCRIBERS_SUBSCRIPTIONS, {
+    const [getSubscriberSubscriptions, { data, loading }] = useLazyQuery(GET_SUBSCRIBERS_SUBSCRIPTIONS, {
         fetchPolicy: "network-only",
     })
 
+    const buildFilterObject = () => ({
+        search: debouncedSearch || null,
+        type: selectedType || null,
+        plan: selectedAction || null,
+        validity: selectedperiod || null
+        // startDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
+        // endDate: selectedYear?.[1]?.format("YYYY-MM-DD") || null,
+    });
     useEffect(()=>{
         if(getSubscriberSubscriptions)
-            getSubscriberSubscriptions()
-    }, [getSubscriberSubscriptions])
+            getSubscriberSubscriptions({
+                variables:{
+                    limit: pageSize,
+                    offDet: (current - 1) * pageSize,
+                    ...buildFilterObject()
+                }
+            })
+    }, [getSubscriberSubscriptions,debouncedSearch,selectedAction,selectedType,selectedperiod])
     useEffect(()=>{
-        if(data?.getSubscriberSubscriptions?.totalCount)
+        if(data?.getSubscriberSubscriptions)
         {
             setSubscriberSubscriptions(data?.getSubscriberSubscriptions?.subscribersubscriptions)
             setUpgradePlan(false);setEditItem(null);
         }
     }, [data])
 
-
-    const _getSubscriberSubscriptions= (key, value)=>{
-
-        // getSubscriberSubscriptions({ variables: { limit:20, offDet: 0, } })
-    }
     const handlePageChange = (page, size) => {
         setCurrent(page);
         setPageSize(size);
@@ -78,6 +71,10 @@ const SubscriptionManageTable = () => {
     const handlePeriodClick = ({ key }) => {
         setselectedPeriod(key);
     };
+
+    const handleTypeClick = ({key}) => {
+        setselectedType(key);
+    }
     
     return (
         <>
@@ -90,14 +87,11 @@ const SubscriptionManageTable = () => {
                                     <SearchInput
                                         name='name'
                                         placeholder={t('Search by Business ID')}
-                                        // value={search}
-                                        // onChange={(e) => {
-                                        //     setSearch(e.target.value);
-                                        // }}
+                                        value={search}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                         onChange={(e)=>{
-                                            setFilters({...filters, search: e.target.value})
+                                            setSearch(e.target.value)
                                         }}
                                     />
                                 </Col>
@@ -105,15 +99,11 @@ const SubscriptionManageTable = () => {
                                     <Flex gap={5}>
                                         <Dropdown
                                             menu={{
-                                                items:[
-                                                    { key: 'GENERAL', label: 'General' },
-                                                    { key: 'BARBER', label: 'Barber' },
-                                                    { key: 'CLINIC', label: 'Clinic' },
-                                                    { key: 'SPA', label: 'Spa' }
-                                                ],
-                                                onClick: ({ key }) => {
-                                                    setFilters({...filters, type: key})
-                                                }
+                                                items: typeItems.map((item) => ({
+                                                    key: String(item.key),
+                                                    label: t(item.label)
+                                                })),
+                                                onClick: handleTypeClick
                                             }}
                                             trigger={['click']}
                                         >
@@ -186,10 +176,13 @@ const SubscriptionManageTable = () => {
                         scroll={{ x: 1600 }}
                         rowHoverable={false}
                         pagination={false}
-                        // loading={isLoading}
+                        loading={{
+                            ...TableLoader,
+                            spinning: loading
+                        }}
                     />
                     <CustomPagination 
-                        total={12}
+                        total={data?.getSubscriberSubscriptions?.totalCount}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}

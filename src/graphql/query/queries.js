@@ -1,93 +1,40 @@
 import { gql } from "@apollo/client";
 
-const GETARTICLES = gql`
-query GetArticles($search: String) {
-  getArticles(search: $search) {
-    totalCount
-    articles {
-      id
-      title
-      arabicTitle
-      image
-      arabicBody
-      body
-      isArabic
+const GET_TERMS = gql`
+    query GetTermsCondition {
+        getTermsCondition {
+            id
+            content
+        }
     }
-  }
-}
-`
-const GETARTICLE = gql`
-query GetArticle($getArticleId: ID!) {
-  getArticle(id: $getArticleId) {
-    id
-    title
-    arabicTitle
-    image
-    body
-    arabicBody
-    createdAt
-    isArabic
-  }
-}
-`
-const GETFAQ = gql`
-query GetFAQs($search: String) {
-  getFAQs(search: $search) {
-    totalCount
-    faqs {
-      id
-      question
-      answer
-    }
-  }
-}
-`
-const GETTERMSOFUSE = gql`
-query GetTerms {
-  getTerms {
-    id
-    term
-    arabicTerm
-    isArabic
-  }
-}
-`
-const GETENDATERMS = gql`
-query GetNDATerms {
-  getNDATerms {
-    id
-    ndaTerm
-    arabicNdaTerm
-    isArabic
-  }
-}
-`
-const GETDSATERMS = gql`
-query GetDSATerms {
-  getDSATerms {
-    id
-    dsaTerms
-    arabicDsaTerms
-    isArabic
-  }
-}
-`
+`;
+
 const GETPRIVACYPOLICY = gql`
-query GetPrivacyPolicy {
-  getPrivacyPolicy {
-    id
-    policy
-    arabicPolicy
-    isArabic
+  query GetPrivacyPolicy {
+    getPrivacyPolicy {
+      id
+      content
+    }
   }
-}
+`
+
+const GET_USERS_BY_ID = gql`
+  query GetUser($getUserId: ID) {
+    getUser(id: $getUserId) {
+      id
+      firstName
+      lastName
+      phone
+      email
+      fb
+      instagram
+      x
+      whatsapp
+    }
+  }
 `
 export {
-    GETARTICLES,
-    GETARTICLE,
-    GETFAQ,
-    GETTERMSOFUSE,
-    GETENDATERMS,
-    GETDSATERMS,
-    GETPRIVACYPOLICY
+  GET_TERMS,
+  GETPRIVACYPOLICY,
+  GET_USERS_BY_ID,
 }

@@ -49,21 +49,13 @@ const AllBusinessTable = () => {
     };
     const [changeBusinessStatus, { loading: statusChanging }] = useMutation(CHANGE_BUSINESS_STATUS,{
         onCompleted: ()=>{
-            notifySuccess(
-                api,
-                "Business status change",
-                "Business status changes successfully",
-                ()=> {
-                    fetchBusinesses()
-                    setStatusChange(null)
-                }
-            )
+            notifySuccess(api,"Business status change","Business status changes successfully", ()=> {fetchBusinesses(); setStatusChange(null)})
         },
         onError: (error) => {
             notifyError(api, error);
         }
     });
-     const [deleteBusiness] = useMutation(DELETE_BUSINESS, {
+     const [deleteBusiness, {loading: deleting}] = useMutation(DELETE_BUSINESS, {
         onCompleted: () => {
             notifySuccess(
                 api,
@@ -231,7 +223,7 @@ const AllBusinessTable = () => {
                 title={'Are you sure?'}
                 subtitle={'This action cannot be undone. Are you sure you want to delete this business?'}
                 onClose={()=>setDeleteItem(false)}
-                loading={loading}
+                loading={deleting}
                 onConfirm= {async (deleteBusinessId)=>{
                     await deleteBusiness({ variables: {deleteBusinessId, deletedBy: '1eb5f017-9245-4258-8c8f-94f613a4db15'}  })
                 }}

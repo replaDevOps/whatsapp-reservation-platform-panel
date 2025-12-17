@@ -2,24 +2,23 @@ import { useEffect, useState } from 'react'
 import { Button, Card, Col, Flex, Form, Row, Typography } from 'antd'
 import { EditGeneralSettings, MyInput } from '../../../../components'
 import { useTranslation } from 'react-i18next'
-import { toArabicDigits } from '../../../../shared'
+import { notifyError, notifySuccess, toArabicDigits } from '../../../../shared'
 import { useQuery } from '@apollo/client/react'
-import { GET_STAFFS_BY_ID } from '../../../../graphql/query'
+import { GET_USERS_BY_ID } from '../../../../graphql/query'
+import { getUserID } from '../../../../utils/auth'
 
 const { Title } = Typography
 const GeneralSetting = () => {
 
-    const userId = localStorage.getItem('userId');
     const [form] = Form.useForm();
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
     const [ visible, setVisible ] = useState(false)
     const [ edititem, setEditItem ] = useState(null)
-    const { data, loading } = useQuery(GET_STAFFS_BY_ID, {
-        variables: { getUserId: userId },
-        skip: !userId,
+    const { data, loading } = useQuery(GET_USERS_BY_ID, {
+        variables: { getUserId: getUserID() },
+        skip: !getUserID(),
     });
-
     useEffect(() => {
         if (!loading && data) {
             form.setFieldsValue({
@@ -27,9 +26,15 @@ const GeneralSetting = () => {
                 lastName: data?.getUser?.lastName,
                 phone: data?.getUser?.phone,
                 email: data?.getUser?.email,
+                facebook: data?.getUser?.fb,
+                instagram: data?.getUser?.instagram,
+                twitter: data?.getUser?.x,
+                whatsapp: data?.getUser?.whatsapp
             });
         }
     }, [loading, data]);
+
+    
 
     return (
         <>

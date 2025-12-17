@@ -101,6 +101,23 @@ const LOGIN_USER = gql`
     }
   }
 `
+
+const UPDATE_PRIVACY_POLICY = gql`
+  mutation UpdatePrivacyPolicy($input: UpdatePrivacyPolicyInput!) {
+    updatePrivacyPolicy(input: $input) {
+      id
+    }
+  }
+`
+
+const UPDATE_USER = gql`
+  mutation UpdateUser($input: UpdateUserInput!) {
+    updateUser(input: $input) {
+      id
+    }
+  }
+`
+
 export {
   CREATE_SUBSCRIBER_CUSTOMER,
   UPDATE_TERMS,
@@ -115,4 +132,6 @@ export {
   LOGIN_USER,
   UPDATE_FAQS,
   DELETE_FAQS,
+  UPDATE_PRIVACY_POLICY,
+  UPDATE_USER,
 }

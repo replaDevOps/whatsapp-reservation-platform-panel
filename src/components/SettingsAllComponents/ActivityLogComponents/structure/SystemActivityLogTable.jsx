@@ -6,9 +6,10 @@ import { activitylogColumn, activitylogtableData } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { actionItems, exportToExcel, roleItems, TableLoader } from '../../../../shared';
+import { actionItems, exportToExcel, roleItems, TableLoader, useDebounce } from '../../../../shared';
 import { useLazyQuery } from '@apollo/client/react';
 import { ACTIVITY_LOG } from '../../../../graphql/query';
+import dayjs from 'dayjs';
 
 const SystemActivityLogTable = () => {
 
@@ -18,21 +19,21 @@ const SystemActivityLogTable = () => {
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
     const [selectedRole, setselectedRole] = useState('');
-    const [selectedYear, setSelectedYear] = useState(moment());
+    const [selectedYear, setSelectedYear] = useState(dayjs());
     const [systemactivityData, setSystemActivityData]= useState([])
     const [ search, setSearch ] = useState('')
+    const debounce = useDebounce(search,500)
     const [ getSystemActivity, { data, loading } ] = useLazyQuery(ACTIVITY_LOG,{
         fetchPolicy: 'network-only'
     })
 
     const buildFilterObject = () => ({
-        search: search || undefined,
-        role: selectedRole || undefined,
-        action: selectedAction || undefined,
+        search: debounce || null,
+        role: selectedRole || null,
+        action: selectedAction || null,
+        startDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
+        endDate: selectedYear?.[1]?.format("YYYY-MM-DD") || null
     });
-
-    
-
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -58,7 +59,8 @@ const SystemActivityLogTable = () => {
         });
     }, [
         getSystemActivity,
-        search,
+        debounce,
+        selectedYear,
         selectedRole,
         selectedAction,
         current,
@@ -138,14 +140,14 @@ const SystemActivityLogTable = () => {
                                         <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export Data")}
                                     </Flex>
                                 </Button>
-                                {/* <MyDatepicker
+                                <MyDatepicker
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
                                     placeholder={[t("Start Year"),t("End Year")]}
                                     value={selectedYear}
                                     onChange={(year) => setSelectedYear(year)}
-                                /> */}
+                                />
                             </Flex>
                         </Col>
                     </Row>

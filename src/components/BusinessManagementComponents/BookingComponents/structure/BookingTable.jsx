@@ -6,7 +6,7 @@ import { CustomPagination } from '../../../Ui';
 import { bookingColumn, bookingData } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
-import { statusItem } from '../../../../shared';
+import { statusItem, useDebounce } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
 
 const { Text } = Typography;
@@ -20,7 +20,8 @@ const BookingTable = () => {
     const [selectedBusiness, setSelectedBusiness] = useState('');
     const [selectedbrnach, setSelectedBranch] = useState('');
     const [selectedYear, setSelectedYear] = useState(moment());
-
+    const [ search, setSearch ] = useState('');
+    const debouncedSearch = useDebounce(search, 500);
     const businessItems = [
         { key: 'business01', label: 'Mirava Spine Clinic' },
         { key: 'business02', label: 'Northrel Therapy Dept' },
@@ -77,10 +78,10 @@ const BookingTable = () => {
                                 <SearchInput
                                     name='name'
                                     placeholder={t("Search by Booking ID")}
-                                    // value={search}
-                                    // onChange={(e) => {
-                                    //     setSearch(e.target.value);
-                                    // }}
+                                    value={search}
+                                    onChange={(e) => {
+                                        setSearch(e.target.value);
+                                    }}
                                     prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                 />

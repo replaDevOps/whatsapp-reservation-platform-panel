@@ -9,7 +9,7 @@ import { AddCustomerModal } from '../modal';
 import { useTranslation } from 'react-i18next';
 import { GET_SUBSCRIBER_CUSTOMERS } from '../../../../graphql/query/subscriberCustomers';
 import { useLazyQuery } from '@apollo/client/react';
-import { TableLoader, useDebounce } from '../../../../shared';
+import { exportToExcel, TableLoader, useDebounce } from '../../../../shared';
 
 const { Text } = Typography;
 
@@ -20,7 +20,7 @@ const CustomerTable = () => {
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [ visible, setVisible ] = useState(false)
-    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedYear, setSelectedYear] = useState([null, null]);
     const [ search, setSearch ] = useState('')
     const debouncedSearch = useDebounce(search, 500);
     const [subscriberCustomers, setSubscriberCustomers]= useState([])
@@ -34,7 +34,7 @@ const CustomerTable = () => {
     const buildFilterObject = () => ({
         search: debouncedSearch || null,
         startDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
-        endDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
+        endDate: selectedYear?.[1]?.format("YYYY-MM-DD") || null,
     });
 
     useEffect(()=>{
@@ -46,10 +46,10 @@ const CustomerTable = () => {
                     filter: buildFilterObject()
                 }
             })
-    }, [getSubscriberCustomers,debouncedSearch,selectedYear],current,pageSize)
+    }, [getSubscriberCustomers,debouncedSearch,selectedYear,current,pageSize])
 
     useEffect(()=>{
-            setSubscriberCustomers(data?.getSubscribers?.subscribers)
+        setSubscriberCustomers(data?.getSubscribers?.subscribers)
     }, [data])
     return (
         <>
@@ -78,9 +78,9 @@ const CustomerTable = () => {
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                 />
                             </Col>
-                            <Col span={24} md={8} lg={12}>
+                            <Col span={24} md={24} lg={12}>
                                 <Flex justify='end' gap={10}>         
-                                    <Button className='btncancel'> 
+                                    <Button className='btncancel' onClick={() => exportToExcel(subscriberCustomers, 'SubscriberData')}> 
                                         <Flex align='center' gap={10}>
                                             <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export")}
                                         </Flex>
@@ -126,6 +126,15 @@ const CustomerTable = () => {
             
             <AddCustomerModal 
                 visible={visible}
+                refetch={() => {
+                    getSubscriberCustomers({
+                        variables: {
+                            limit: pageSize,
+                            offset: (current - 1) * pageSize,
+                            filter: buildFilterObject()
+                        }
+                    })
+                }}
                 onClose={()=>setVisible(false)}
             />
         </>

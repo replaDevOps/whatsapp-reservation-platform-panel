@@ -1,26 +1,22 @@
-import { Button, Card, Col, Flex, Form, message, Row, Typography } from 'antd'
+import { Button, Card, Col, Flex, Form, message, notification, Row, Typography } from 'antd'
 import { MyInput } from '../../../../components'
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useMutation } from '@apollo/client/react';
 import { CHANGE_PASSWORD_USER } from '../../../../graphql/mutation';
-import { GET_STAFFS } from '../../../../graphql/query';
+import { getUserID } from '../../../../utils/auth';
+import { notifySuccess } from '../../../../shared';
 
 const { Title } = Typography
 const ChangePasswordSetting = () => {
 
-    const userId = localStorage.getItem('userId');
     const [form] = Form.useForm();
-    const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi] = message.useMessage();
+    const [ api, contextHolder ] = notification.useNotification()
     const {t} = useTranslation()
 
     const [ changePassword, { loading } ] = useMutation(CHANGE_PASSWORD_USER,{
-        onCompleted: () => {
-            messageApi.success('Password changed successfully!');
-            form.resetFields();
-        },
-        onError: (err) => {
-            messageApi.error(err || 'Failed to change password.');
-        }
+        onCompleted:()=>{notifySuccess(api,"Password Change","Password changed successfully",()=> {form.resetFields()})},
+        onError: (error) => {notifyError(api, error);},
     });
 
     const onFinish = () => {
@@ -30,14 +26,14 @@ const ChangePasswordSetting = () => {
             return;
         }
 
-        if (!userId) {
+        if (!getUserID()) {
             messageApi.error("User ID not found.");
             return;
         }
 
         changePassword({
             variables: {
-                changedPasswordId: userId,
+                changedPasswordId: getUserID(),
                 oldPassword: values.oldPassword,
                 newPassword: values.newPassword
             }

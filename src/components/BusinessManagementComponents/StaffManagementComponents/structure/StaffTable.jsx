@@ -11,12 +11,12 @@ import { useTranslation } from 'react-i18next';
 import { GET_STAFFS } from '../../../../graphql/query';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { DELETE_STAFF } from '../../../../graphql/mutation/mutations';
+import { getUserID } from '../../../../utils/auth';
 
 const { Text } = Typography;
 
 const StaffTable = () => {
-
-    const userId = localStorage.getItem("userId"); 
+    
     const [form] = Form.useForm();
     const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
@@ -62,7 +62,7 @@ const StaffTable = () => {
                 variables: {
                     limit: pageSize,
                     offset: (current - 1) * pageSize,
-                    superAdminId: userId,
+                    superAdminId: getUserID(),
                     filter: buildFilterObject(),
                 }
             })

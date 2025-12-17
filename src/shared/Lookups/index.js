@@ -139,7 +139,7 @@ const roleItems = [
 ];
 
 const statusItems = [
-    { key: '', label: 'All' },
+    { key: '', label: 'All Status' },
     { key: 'PENDING', label: 'Pending' },
     { key: 'CONTACTED', label: 'Contacted' },
 ];
@@ -173,6 +173,12 @@ const statusbusinessItem = [
     { key: "INACTIVE", label: 'Deactive' },
 ];
 
+const periodItems = [
+    { key: '', label: 'All Periods' },
+    { key: 'MONTHLY', label: 'Monthly' },
+    { key: 'YEARLY', label: 'Yearly' }, 
+]
+
 export { 
     rolestaffopt,
     languageopt, 
@@ -192,4 +198,5 @@ export {
     servicetypeItems,
     actionItems,
     statusbusinessItem,
+    periodItems,
 }

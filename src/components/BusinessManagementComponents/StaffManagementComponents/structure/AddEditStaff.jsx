@@ -14,7 +14,6 @@ import imageCompression from 'browser-image-compression';
 const { Title } = Typography
 const AddEditStaff = () => {
 
-    
     const navigate = useNavigate()
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar';
@@ -24,17 +23,8 @@ const AddEditStaff = () => {
     const [ api, contextHolder ] = notification.useNotification()
     const [ previewimage, setPreviewImage ] = useState(null)
     const [createstaff, { loading: creating, error }] = useMutation(CREATE_STAFF,{
-        onCompleted:()=>{
-            notifySuccess(
-                api,
-                "Staff Create",
-                "Staff created successfully",
-                ()=> {navigate("/staff")}
-            )
-        },
-        onError: (error) => {
-            notifyError(api, error);
-        },
+        onCompleted:()=>{notifySuccess(api,"Staff Create","Staff created successfully",()=> {navigate("/staff")})},
+        onError: (error) => {notifyError(api, error);},
     });
     const [updatestaff, {loading: updating}] = useMutation(UPDATE_STAFF,{
         onCompleted:()=>{

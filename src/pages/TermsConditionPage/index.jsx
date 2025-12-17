@@ -1,30 +1,32 @@
-import { Button, Card, Divider, Flex, message, Spin } from 'antd'
+import { Button, Card, Divider, Flex, message, notification, Spin } from 'antd'
 import { BreadCrumbCard, EditorDescription, TitleCard } from '../../components'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { websitepagesTitle } from '../../shared'
+import { notifySuccess, websitepagesTitle } from '../../shared'
 import { useQuery, useMutation } from '@apollo/client/react'
-import { GET_TERMS } from '../../graphql/query'
 import { UPDATE_TERMS } from '../../graphql/mutation'
+import { GET_TERMS } from '../../graphql/query'
 
 const TermsConditionPage = () => {
 
     const [ descriptionData, setDescriptionData ] = useState('')
     const {t} = useTranslation()
     const title = websitepagesTitle({t})
-    const [messageApi, contextHolder] = message.useMessage();
-
-    const { data } = useQuery(GET_TERMS)
-    const [updateTermsCondition, { loading: updating }] = useMutation(UPDATE_TERMS)
+    const [messageApi] = message.useMessage();
+    const [ api, contextHolder ] = notification.useNotification()
+    const { data, refetch, loading } = useQuery(GET_TERMS)
+    const [updateTermsCondition, { loading: updating }] = useMutation(UPDATE_TERMS,{
+      onCompleted:()=>{notifySuccess(api,"Terms & Condition Update","Terms & Condition updated successfully",()=>refetch())},
+      onError: (error) => {notifyError(api, error)},
+    })
 
     useEffect(() => {
-        if (data?.getTermsCondition?.content) {
+        if (!loading && data?.getTermsCondition?.content) {
           setDescriptionData(data.getTermsCondition.content)
         }
-    }, [data])
-    
+    }, [loading])
     const handleDescriptionChange = (value) =>{
-        setDescriptionData(value)
+      setDescriptionData(value)
     }
 
     const onFinish = async () => {
@@ -33,7 +35,7 @@ const TermsConditionPage = () => {
             messageApi.error("Please add terms content")
             return
           }
-
+          
           if (data?.getTermsCondition?.id) {
             await updateTermsCondition({
               variables: {
@@ -43,12 +45,9 @@ const TermsConditionPage = () => {
                 }
               }
             })
-            messageApi.success("Terms updated successfully!")
           }
-
         } catch (err) {
           console.error(err)
-          messageApi.error("Failed to save terms")
         }
     }
 
@@ -70,17 +69,16 @@ const TermsConditionPage = () => {
             <Card className='card-bg card-cs radius-12 border-gray'>    
                 <Flex vertical gap={20}>
                     <EditorDescription
-                        label={t('Page Body')}
-                        descriptionData={descriptionData}
-                        onChange={handleDescriptionChange}
+                      label={t('Page Body')}
+                      descriptionData={descriptionData}
+                      onChange={handleDescriptionChange}
                     />
                     <Divider className='my-2 bg-divider' />
 
                     <Flex justify='end' gap={5}>
-                        <Button type='button' className='btncancel text-black border-gray'>
-                            {t("Cancel")}
+                        <Button type='button' onClick={()=>setDescriptionData(null)} className='btncancel text-black border-gray'>
+                          {t("Cancel")}
                         </Button>
-
                         <Button 
                             type="primary"
                             loading={updating}

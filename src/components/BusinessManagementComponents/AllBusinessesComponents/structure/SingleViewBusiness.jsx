@@ -73,9 +73,9 @@ const SingleViewBusiness = () => {
                                             <Button className="border-0 p-0 bg-transparent" onClick={() => navigate("/allbusiness")}>
                                                 {i18n?.language === 'ar' ? <ArrowRightOutlined />:<ArrowLeftOutlined />}
                                             </Button>
-                                            <Avatar src={singleview?.image} size={40}  />
+                                            <Avatar src={singleview?.image} size={40} className='shrink-0'  />
                                             <Flex gap={10} align="center">
-                                                <ModuleTopHeading level={4} name={capitalizeTranslated(singleview?.name)} />
+                                                <ModuleTopHeading level={5} name={capitalizeTranslated(singleview?.name)} />
                                                 <Tag className='px-3 py-1 radius-20'>{capitalizeTranslated(t(singleview?.businessType))}</Tag>
                                             </Flex>
                                         </Flex>
@@ -84,7 +84,7 @@ const SingleViewBusiness = () => {
                                         <Flex justify='end'>
                                             <Flex vertical gap={3}>
                                                 <Flex align='center' gap={2}>
-                                                    <Title level={5} className='m-0'>
+                                                    <Text strong className='m-0 fs-15'>
                                                         {
                                                             capitalizeTranslated(t(singleview?.subscription?.type))
                                                         } 
@@ -94,10 +94,10 @@ const SingleViewBusiness = () => {
                                                             ?.replace(/([a-z]+)(plan)$/i, '$1 Plan')
                                                             ?.replace(/^./, (str) => str.toUpperCase()))
                                                         }  */}
-                                                    </Title>
+                                                    </Text>
                                                     <Tag color='#34C759'>{t("Active")}</Tag>
                                                 </Flex>
-                                                <Text className='fs-13 text-gray'>
+                                                <Text className='fs-10 text-gray'>
                                                     {t("Expire on")} {utcDateToLocal(singleview?.subscription?.createdAt)}
                                                 </Text>
                                             </Flex>
@@ -118,9 +118,7 @@ const SingleViewBusiness = () => {
                                 </Row>
                             </Flex>
                         </Card>
-                        <StatisticsCommonCards 
-                            // data={cardsData}
-                        />
+                        <StatisticsCommonCards />
                         {
                             viewitem ? 
                             <SingleBusinessViewTab setViewItem={setViewItem} />
