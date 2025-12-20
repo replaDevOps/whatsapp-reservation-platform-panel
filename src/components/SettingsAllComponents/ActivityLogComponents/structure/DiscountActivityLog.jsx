@@ -5,9 +5,9 @@ import { CustomPagination } from '../../../Ui';
 import { discountactivityColumn } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import { useTranslation } from 'react-i18next';
-import { exportToExcel, TableLoader, useDebounce } from '../../../../shared';
-import { GET_DISCOUNT_LOG } from '../../../../graphql/query';
-import { useLazyQuery } from '@apollo/client/react';
+import { exportToExcel, groupItem, TableLoader, useDebounce } from '../../../../shared';
+import { GET_DISCOUNT_LOG, GET_DISCOUNT_LOOKUP } from '../../../../graphql/query';
+import { useLazyQuery, useQuery } from '@apollo/client/react';
 
 const DiscountActivityLog = () => {
 
@@ -24,6 +24,14 @@ const DiscountActivityLog = () => {
     const [ getDiscountLog, { data, loading } ] = useLazyQuery(GET_DISCOUNT_LOG,{
         fetchPolicy: 'network-only'
     })
+    const { data:discountLookups } = useQuery(GET_DISCOUNT_LOOKUP,{
+        variables:{
+            limit: 100,
+            offset: 0
+        }
+    })
+
+    const discountLookup = discountLookups?.getDiscounts?.discounts
 
     const fetchDiscountFilter = () => {
         const startDate = selectedYear?.[0]?.format("YYYY-MM-DD") || null;
@@ -51,18 +59,7 @@ const DiscountActivityLog = () => {
         selecteddiscount,
         current,
         pageSize
-    ]);
-
-    const discountItem = [
-        { key: '1', label: 'Sale 12' },
-        { key: '2', label: 'Deal 0101' },
-    ];
-
-     const groupItem = [
-        { key: '', label: 'All Group' },
-        { key: 'NEW', label: 'New' },
-        { key: 'OLD', label: 'Old' },
-    ];
+    ]);    
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -74,7 +71,9 @@ const DiscountActivityLog = () => {
     };
 
     const handleDiscountClick = ({ key }) => {
-        setselectedDiscount(key);
+        const found = discountLookup?.find((i) => String(i.id) === String(key));
+        const code = found?.code ?? null;
+        setselectedDiscount(code);
     };
 
     useEffect(()=>{
@@ -106,9 +105,9 @@ const DiscountActivityLog = () => {
                                     <Flex gap={5}>
                                         <Dropdown
                                             menu={{
-                                                items: discountItem.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: item.label
+                                                items: discountLookup?.map((item) => ({
+                                                    key: String(item.id),
+                                                    label: item.code
                                                 })),
                                                 onClick: handleDiscountClick
                                             }}
@@ -116,7 +115,7 @@ const DiscountActivityLog = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(discountItem.find((i) => i.key === selecteddiscount)?.label || "Discount Code")}
+                                                    {t(discountLookup?.find((i) => String(i.id) === selecteddiscount)?.label || "Discount Code")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>

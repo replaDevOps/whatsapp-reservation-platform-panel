@@ -44,8 +44,15 @@ const GET_DISCOUNT_LOG = gql`
     }
 `
 
-// const GET_DISCOUNT_LOOKUP =gql`
-    
-// `
+const GET_DISCOUNT_LOOKUP =gql`
+    query Discounts($limit: Int!, $offset: Int!) {
+        getDiscounts(limit: $limit, offset: $offset) {
+            discounts {
+                id
+                code
+            }
+        }
+    }
+`
 
-export { ACTIVITY_LOG, GET_DISCOUNT_LOG }
+export { ACTIVITY_LOG, GET_DISCOUNT_LOG, GET_DISCOUNT_LOOKUP }

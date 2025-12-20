@@ -181,6 +181,12 @@ const periodItems = [
     { key: 'YEARLY', label: 'Yearly' }, 
 ]
 
+ const groupItem = [
+    { key: '', label: 'All Group' },
+    { key: 'NEW', label: 'New' },
+    { key: 'OLD', label: 'Old' },
+];
+
 export { 
     rolestaffopt,
     languageopt, 
@@ -201,4 +207,5 @@ export {
     actionItems,
     statusbusinessItem,
     periodItems,
+    groupItem,
 }

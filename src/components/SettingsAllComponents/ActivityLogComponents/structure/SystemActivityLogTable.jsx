@@ -163,6 +163,7 @@ const SystemActivityLogTable = () => {
                     scroll={{ x: 1200 }}
                     rowHoverable={false}
                     pagination={false}
+                    rowKey={(record)=>record?.id}
                     loading={
                         {
                             ...TableLoader,
