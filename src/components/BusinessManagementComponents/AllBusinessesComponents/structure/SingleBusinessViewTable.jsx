@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Row, Col, Form } from 'antd';
+import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, notification } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { ConfirmModal, CustomPagination } from '../../../Ui';
 import { singleviewColumns, singleviewData } from '../../../../data';
 import { SearchInput } from '../../../Forms';
-import { statusitemsCust, TableLoader } from '../../../../shared';
+import { notifyError, notifySuccess, statusitemsCust, TableLoader, useDebounce } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
-import { useLazyQuery } from '@apollo/client/react';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { GET_BRANCH_BY_BUSINESS } from '../../../../graphql/query';
+import { CHANGE_BUSINESS_STATUS } from '../../../../graphql/mutation';
+import { useNavigate } from 'react-router-dom';
 
 
 const SingleBusinessViewTable = ({setViewItem,id}) => {
@@ -16,23 +18,41 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
     const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
-    const [selectedstatus, setselectedStatus] = useState('');
-    const [ statuschange, setStatusChange ] = useState(false)
+    const [selectedstatus, setselectedStatus] = useState(null);
+    const [ statuschange, setStatusChange ] = useState(null)
+    const navigate = useNavigate()
     const [ search, setSearch ] = useState(null)
+    const debouncedSearch = useDebounce(search,500)
+    const [ api, contextHolder ] = notification.useNotification()
     const [ branchBusinessData, setBranchBusinessData ] = useState([])
+    const [changeBusinessStatus, { loading: statusChanging }] = useMutation(CHANGE_BUSINESS_STATUS,{
+        onCompleted: ()=>{
+            notifySuccess(api,"Business status change","Business status changes successfully",()=>{setStatusChange(null);navigate('/allbusiness')} )
+        },
+        onError: (error) => {
+            notifyError(api, error);
+        }
+    });
     const [ getBranchesByBusiness, {data,loading} ] = useLazyQuery(GET_BRANCH_BY_BUSINESS,{
         fetchPolicy:'network-only'
     })
+    const buildFilterObject = () => ({
+        search: debouncedSearch || null,
+        status: selectedstatus,
+    });
 
     useEffect(()=>{
         if(id) {
             getBranchesByBusiness({
                 variables:{
-                    businessId: id 
+                    limit: pageSize,
+                    offSet: (current - 1) * pageSize,
+                    businessId: id, 
+                    filter: buildFilterObject(),
                 }
             })
         }
-    },[id])
+    },[id,debouncedSearch,selectedstatus,current,pageSize])
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -40,16 +60,20 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
     };
 
     const handleStatusClick = ({ key }) => {
-        setselectedStatus(key);
-    };
+        // treat empty key ('') as All -> clear the status filter
+        if (key === '') {
+            setselectedStatus(null);
+        } else {
+            setselectedStatus(key === 'true');
+        }
+    }; 
     
     useEffect(()=>{
-        setBranchBusinessData(data?.getBusinessBranches)
+        setBranchBusinessData(data?.getBusinessBranches?.branches)
     },[data])
-
-    console.log('branch business data',data?.getBusinessBranches)
     return (
         <>
+            {contextHolder}
             <Card className='radius-12 card-cs border-gray h-100'>
                 <Form layout="vertical" form={form} className='mb-3'>
                     <Row gutter={[16, 16]} justify="space-between" align="middle">
@@ -68,7 +92,7 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
                                 <Dropdown
                                     menu={{
                                         items: statusitemsCust.map((item) => ({
-                                            key: String(item.key),
+                                            key: item.key,
                                             label: t(item.label)
                                         })),
                                         onClick: handleStatusClick
@@ -77,7 +101,7 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
                                 >
                                     <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                         <Flex justify="space-between" align="center" gap={30}>
-                                            {t(statusitemsCust.find((i) => i.key === selectedstatus)?.label || "Status")}
+                                            {t(statusitemsCust.find((i) => (i.key === '' ? selectedstatus === null : i.key === selectedstatus))?.label || "Status")}
                                             <DownOutlined />
                                         </Flex>
                                     </Button>
@@ -86,7 +110,7 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
                         </Col>
                         <Col span={24} md={24} xl={8}>
                             <Flex justify='end' gap={10}>
-                                <Button onClick={()=>setStatusChange(true)} className='btnsave border-0 bg-red text-white fs-13'>
+                                <Button onClick={()=>setStatusChange({id:id, status: 'INACTIVE'})} className='btnsave border-0 bg-red text-white fs-13'>
                                     {t("Deactivate business")}
                                 </Button>
                             </Flex>
@@ -103,6 +127,7 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
                         scroll={{ x: 1000 }}
                         rowHoverable={false}
                         pagination={false}
+                        rowKey={(record)=>record?.id}
                         loading={{
                             ...TableLoader,
                             spinning: loading
@@ -122,7 +147,18 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
                 visible={statuschange}
                 title={'Are you sure?'}
                 subtitle={'This action cannot be undone. Are you sure you want to inactivate this Business?'}
-                onClose={()=>setStatusChange(false)}
+                onClose={()=>setStatusChange(null)}
+                loading={statusChanging}
+                onConfirm={async ({id, status})=>{
+                    await changeBusinessStatus({
+                        variables: {
+                            input:{
+                                id,
+                                status
+                            }
+                        }
+                    })
+                }}
             />
         </>
     );

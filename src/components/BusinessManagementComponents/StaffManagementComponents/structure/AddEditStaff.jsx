@@ -258,7 +258,7 @@ const AddEditStaff = () => {
                                             type='password'
                                             label={"Password"} 
                                             name="password" 
-                                            required
+                                            required={!data}
                                             message={t("Please enter password")} 
                                             placeholder={t("Enter password")} 
                                         />

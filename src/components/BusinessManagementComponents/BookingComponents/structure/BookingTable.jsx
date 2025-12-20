@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col, Form } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { CustomPagination } from '../../../Ui';
-import { bookingColumn, bookingData } from '../../../../data';
+import { bookingColumn } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import moment from 'moment';
-import { statusItem, useDebounce } from '../../../../shared';
+import { statusItem, TableLoader, useDebounce } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
+import { useLazyQuery, useQuery } from '@apollo/client/react';
+import { BRACH_LOOKUP, BUSINESS_LOOKUP, GET_BOOKING } from '../../../../graphql/query';
 
 const { Text } = Typography;
 const BookingTable = () => {
@@ -16,21 +18,49 @@ const BookingTable = () => {
     const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
-    const [selectedstatus, setselectedStatus] = useState('');
-    const [selectedBusiness, setSelectedBusiness] = useState('');
-    const [selectedbrnach, setSelectedBranch] = useState('');
-    const [selectedYear, setSelectedYear] = useState(moment());
-    const [ search, setSearch ] = useState('');
+    const [selectedstatus, setselectedStatus] = useState(null);
+    const [selectedBusiness, setSelectedBusiness] = useState(null);
+    const [selectedbrnach, setSelectedBranch] = useState(null);
+    const [selectedYear, setSelectedYear] = useState([]);
+    const [ search, setSearch ] = useState(null);
     const debouncedSearch = useDebounce(search, 500);
-    const businessItems = [
-        { key: 'business01', label: 'Mirava Spine Clinic' },
-        { key: 'business02', label: 'Northrel Therapy Dept' },
-    ];
+    const [ bookingData, setBookingData ] = useState([])
+    const [ getBooking, {data,loading} ] = useLazyQuery(GET_BOOKING,{
+        fetchPolicy:'network-only'
+    })
+    const { data:branchLookups } = useQuery(BRACH_LOOKUP,{
+        fetchPolicy:'network-only'
+    })
+    const { data:businessLookups } = useQuery(BUSINESS_LOOKUP,{
+        fetchPolicy:'network-only'
+    })
+    const branchitem = branchLookups?.getBranches?.branches
+    const businessItems = businessLookups?.getBusinesses?.businesses
 
-    const branchItems = [
-        { key: 'branch01', label: 'Branch name 01' },
-        { key: 'branch02', label: 'Branch name 02' },
-    ];
+    const fetchFilters = () => {
+        const startDate = selectedYear?.[0]?.format("YYYY-MM-DD") || null;
+        const endDate = selectedYear?.[1]?.format("YYYY-MM-DD") || null;
+
+        getBooking({
+            variables: {
+                limit: pageSize,
+                offset: (current - 1) * pageSize,
+                search: debouncedSearch || null,
+                branchId: selectedbrnach || null,
+                businessId: selectedBusiness || null,
+                startDate,
+                endDate,
+                status: selectedstatus || null
+            }
+        });
+    };
+
+
+    useEffect(()=>{
+        if(getBooking){
+            fetchFilters()
+        }
+    },[getBooking,debouncedSearch,selectedbrnach,selectedBusiness,selectedYear,selectedstatus,pageSize,current])
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -43,14 +73,18 @@ const BookingTable = () => {
     };
 
     const handleBranchClick = ({ key }) => {
-        setSelectedBranch(key);
-    };
+        setSelectedBranch(key === 'all' ? null : key);
+    }; 
 
     const handleStatusClick = ({ key }) => {
         setselectedStatus(key);
     };
 
-    
+    useEffect(()=>{
+        if(data?.getAppointments){
+            setBookingData(data?.getAppointments?.appointments)
+        }
+    },[data])
     
     return (
         <>
@@ -90,34 +124,40 @@ const BookingTable = () => {
                                 <Flex gap={5} wrap>
                                     <Dropdown
                                         menu={{
-                                            items: businessItems.map((item) => ({
-                                                key: String(item.key),
-                                                label: item.label
-                                            })),
+                                            items: [
+                                                { key: '', label: t("All Business") },
+                                                ...(businessItems?.map((item) => ({
+                                                    key: String(item.id),
+                                                    label: item.name
+                                                })) || [])
+                                            ],
                                             onClick: handleBusinessClick
                                         }}
                                         trigger={['click']}
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {t(businessItems.find((i) => i.key === selectedBusiness)?.label || "Business Name")}
+                                                {selectedBusiness ? businessItems?.find((i) => String(i.id) === selectedBusiness)?.name : t("All Business")}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>
                                     </Dropdown>
                                     <Dropdown
                                         menu={{
-                                            items: branchItems.map((item) => ({
-                                                key: String(item.key),
-                                                label: item.label
-                                            })),
+                                            items: [
+                                                { key: '', label: t("All Branches") },
+                                                ...(branchitem?.map((item) => ({
+                                                    key: String(item.id),
+                                                    label: item.name
+                                                })) || [])
+                                            ],
                                             onClick: handleBranchClick
                                         }}
                                         trigger={['click']}
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {t(branchItems.find((i) => i.key === selectedbrnach)?.label || "Branch Name")}
+                                                {selectedbrnach ? branchitem?.find((i) => String(i.id) === selectedbrnach)?.name : t("All Branches")}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>
@@ -134,7 +174,7 @@ const BookingTable = () => {
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {t(statusItem.find((i) => i.key === selectedstatus)?.label || "Status")}
+                                                {t(statusItem.find((i) => i.key === selectedstatus)?.label || "All Status")}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>
@@ -155,10 +195,14 @@ const BookingTable = () => {
                         scroll={{ x: 1400 }}
                         rowHoverable={false}
                         pagination={false}
-                        // loading={isLoading}
+                        rowKey={(record)=> record?.id}
+                        loading={{
+                            ...TableLoader,
+                            spinning:loading
+                        }}
                     />
                     <CustomPagination 
-                        total={12}
+                        total={data?.getAppointments?.totalCount}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}

@@ -70,10 +70,8 @@ const AllBusinessTable = () => {
     });
 
     useEffect(()=>{
-        if(getBusinesses)
-            fetchBusinesses()
+        fetchBusinesses()
     }, [
-        getBusinesses,
         debouncedSearch,
         selectedstatus,
         selectedAction,

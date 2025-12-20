@@ -54,16 +54,18 @@ const typeitemsCust = [
 ];
 
 const statusitemsCust = [
+    { key: '', label: 'All Status' },
     { key: true, label: 'Active' },
     { key: false, label: 'Inactive' },
 ];
 
 const statusItem = [
-    { key: 'completed', label: 'Completed' },
-    { key: 'noshow', label: 'No-Show' },
-    { key: 'pending', label: 'Pending' },
-    { key: 'inprogress', label: 'In-Progress' },
-    { key: 'cancelled', label: 'Cancelled' },
+    { key: '', label: 'All Status' },
+    { key: 'COMPLETED', label: 'Completed' },
+    { key: 'NO_SHOW', label: 'No-Show' },
+    { key: 'PENDING', label: 'Pending' },
+    { key: 'SCHEDULED', label: 'In-Progress' },
+    { key: 'CANCELLED', label: 'Cancelled' },
 ]
 
 const typeItems = [

@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
-import { Button, Col, Divider, Flex, Form, message, Modal, notification, Row, Typography } from 'antd'
+import { Button, Col, Divider, Flex, Form, Modal, notification, Row, Typography } from 'antd'
 import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
 import { customertypeOp, notifyError, notifySuccess, promoType, subscriptionplanOp } from '../../../../shared'
 import { useTranslation } from 'react-i18next'
-import { useLazyQuery, useMutation } from '@apollo/client/react'
+import { useMutation } from '@apollo/client/react'
 import { CREATE_DISCOUNTS, UPDATE_DISCOUNTS } from '../../../../graphql/mutation/mutations'
 import dayjs from 'dayjs'
 

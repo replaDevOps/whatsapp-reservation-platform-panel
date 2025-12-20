@@ -69,14 +69,6 @@ const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscript
                     />
                 </Col>
             }
-            <Col span={24}>
-                <MyInput
-                    label={t("Discount Code")}
-                    name="discountCode"
-                    placeholder={t("Enter discount code (if any)")}
-                    className="w-100"
-                />
-            </Col>
         </Row>
     );
 };

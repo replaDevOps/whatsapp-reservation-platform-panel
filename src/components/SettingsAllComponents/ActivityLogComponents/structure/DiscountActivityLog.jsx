@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Dropdown, Flex, Table, Row, Col, Form, Image } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination } from '../../../Ui';
-import { discountactivityColumn, discountactivityData } from '../../../../data';
+import { discountactivityColumn } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
-import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { exportToExcel } from '../../../../shared';
+import { exportToExcel, TableLoader, useDebounce } from '../../../../shared';
+import { GET_DISCOUNT_LOG } from '../../../../graphql/query';
+import { useLazyQuery } from '@apollo/client/react';
 
 const DiscountActivityLog = () => {
 
@@ -16,8 +17,41 @@ const DiscountActivityLog = () => {
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
     const [selecteddiscount, setselectedDiscount] = useState('');
-    const [selectedYear, setSelectedYear] = useState(moment());
+    const [selectedYear, setSelectedYear] = useState([]);
+    const [ search, setSearch ] = useState('')
+    const debounce = useDebounce(search,500)
+    const [ discountlogdata, setDiscountLogData ] = useState([])
+    const [ getDiscountLog, { data, loading } ] = useLazyQuery(GET_DISCOUNT_LOG,{
+        fetchPolicy: 'network-only'
+    })
 
+    const fetchDiscountFilter = () => {
+        const startDate = selectedYear?.[0]?.format("YYYY-MM-DD") || null;
+        const endDate = selectedYear?.[1]?.format("YYYY-MM-DD") || null;
+
+        getDiscountLog({
+            variables: {
+                limit: pageSize,
+                offSet: (current - 1) * pageSize,
+                search: debounce || null,
+                group: selectedAction || null,
+                code: selecteddiscount || null,
+                startDate,
+                endDate
+            }
+        });
+    };
+
+     useEffect(() => {
+        fetchDiscountFilter()
+    }, [
+        debounce,
+        selectedYear,
+        selectedAction,
+        selecteddiscount,
+        current,
+        pageSize
+    ]);
 
     const discountItem = [
         { key: '1', label: 'Sale 12' },
@@ -25,9 +59,9 @@ const DiscountActivityLog = () => {
     ];
 
      const groupItem = [
-        { key: 'new', label: 'New' },
-        { key: 'old', label: 'Old' },
-        { key: 'both', label: 'Both' },
+        { key: '', label: 'All Group' },
+        { key: 'NEW', label: 'New' },
+        { key: 'OLD', label: 'Old' },
     ];
 
     const handlePageChange = (page, size) => {
@@ -42,7 +76,12 @@ const DiscountActivityLog = () => {
     const handleDiscountClick = ({ key }) => {
         setselectedDiscount(key);
     };
-    
+
+    useEffect(()=>{
+        if(data?.getAllSubscriptionDiscountLogs)
+            setDiscountLogData(data?.getAllSubscriptionDiscountLogs?.discountlogs)
+    }, [data])
+
     return (
         <>
             
@@ -55,10 +94,10 @@ const DiscountActivityLog = () => {
                                     <SearchInput
                                         name='name'
                                         placeholder={t('Search by Customer Name')}
-                                        // value={search}
-                                        // onChange={(e) => {
-                                        //     setSearch(e.target.value);
-                                        // }}
+                                        value={search}
+                                        onChange={(e) => {
+                                            setSearch(e.target.value);
+                                        }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                     />
@@ -94,7 +133,7 @@ const DiscountActivityLog = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(groupItem.find((i) => i.key === selectedAction)?.label || "Group")}
+                                                    {t(groupItem.find((i) => i.key === selectedAction)?.label || "All Group")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -127,16 +166,20 @@ const DiscountActivityLog = () => {
                 <Table
                     size='large'
                     columns={discountactivityColumn({t,i18n})}
-                    dataSource={discountactivityData}
+                    dataSource={discountlogdata}
                     className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                     showSorterTooltip={false}
                     scroll={{ x: 1200 }}
                     rowHoverable={false}
                     pagination={false}
-                    // loading={isLoading}
+                    rowKey={(record)=>record?.id}
+                    loading={{
+                        ...TableLoader,
+                        spinning: loading
+                    }}
                 />
                 <CustomPagination 
-                    total={12}
+                    total={data?.getAllSubscriptionDiscountLogs?.totalCount}
                     current={current}
                     pageSize={pageSize}
                     onPageChange={handlePageChange}

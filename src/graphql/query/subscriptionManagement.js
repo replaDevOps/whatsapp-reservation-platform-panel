@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client"
 
 const GET_SUBSCRIBERS_SUBSCRIPTIONS = gql`
-  query GetSubscriberSubscriptions($search: String, $type: BusinessType, $plan: SubscriptionType, $validity: SubscriptionValidity, $limit: Int, $offDet: Int) {
-    getSubscriberSubscriptions(search: $search, type: $type, plan: $plan, validity: $validity, limit: $limit, offDet: $offDet) {
+  query GetSubscriberSubscriptions($search: String, $type: BusinessType, $plan: SubscriptionType, $validity: SubscriptionValidity, $limit: Int, $offDet: Int, $startDate: DateTime, $endDate: DateTime) {
+    getSubscriberSubscriptions(search: $search, type: $type, plan: $plan, validity: $validity, limit: $limit, offDet: $offDet, startDate: $startDate, endDate: $endDate) {
       totalCount
       subscribersubscriptions {
         id

@@ -22,7 +22,7 @@ const StaffTable = () => {
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [selectedRole, setselectedRole] = useState('');
-    const [selectedStatus, setSelectedStatus] = useState(true);
+    const [selectedStatus, setSelectedStatus] = useState(null);
     const navigate = useNavigate();
     const [ statuschange, setStatusChange ] = useState(false)
     const [ deleteitem, setDeleteItem ] = useState(false)
@@ -35,10 +35,9 @@ const StaffTable = () => {
     const [staffData, setStaffData]= useState([])
     const [deleteStaff, { loading: deleting }] = useMutation(DELETE_STAFF);
 
-    
     const buildFilterObject = () => ({
-        search: searchdebounce || undefined,
-        role: selectedRole || undefined,
+        search: searchdebounce || null,
+        role: selectedRole || null,
         isActive: selectedStatus,
     });
 
@@ -53,8 +52,12 @@ const StaffTable = () => {
     };
 
     const handleStatusClick = ({ key }) => {
-        setSelectedStatus(key === "true");
-    };
+        if (key === '') {
+            setSelectedStatus(null);
+        } else {
+            setSelectedStatus(key === 'true');
+        }
+    }; 
 
     useEffect(()=>{
         if(getstaff){
@@ -77,7 +80,7 @@ const StaffTable = () => {
     ])
 
     useEffect(()=>{
-        if(data?.getSuperAdminPanelUsers?.users)
+        if(data?.getSuperAdminPanelUsers)
             setStaffData(data?.getSuperAdminPanelUsers?.users)
     }, [data])
 
@@ -158,7 +161,7 @@ const StaffTable = () => {
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {t(statusitemsCust.find((i) => i.key === selectedStatus)?.label || "Status")}
+                                                {t(statusitemsCust.find((i) => (i.key === '' ? selectedStatus === null : i.key === selectedStatus))?.label || "All Status")}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>

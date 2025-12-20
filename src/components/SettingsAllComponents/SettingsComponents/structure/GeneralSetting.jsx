@@ -15,7 +15,7 @@ const GeneralSetting = () => {
     const isArabic = i18n?.language === 'ar'
     const [ visible, setVisible ] = useState(false)
     const [ edititem, setEditItem ] = useState(null)
-    const { data, loading } = useQuery(GET_USERS_BY_ID, {
+    const { data, loading,refetch } = useQuery(GET_USERS_BY_ID, {
         variables: { getUserId: getUserID() },
         skip: !getUserID(),
     });
@@ -28,7 +28,7 @@ const GeneralSetting = () => {
                 email: data?.getUser?.email,
                 facebook: data?.getUser?.fb,
                 instagram: data?.getUser?.instagram,
-                twitter: data?.getUser?.x,
+                x: data?.getUser?.x,
                 whatsapp: data?.getUser?.whatsapp
             });
         }
@@ -108,7 +108,7 @@ const GeneralSetting = () => {
                             <Col span={24} md={12}>
                                 <MyInput 
                                     label={t("X (twitter)")} 
-                                    name="twitter" 
+                                    name="x" 
                                     placeholder={t("Enter X (twitter) link")} 
                                     disabled
                                 />
@@ -128,6 +128,7 @@ const GeneralSetting = () => {
             <EditGeneralSettings 
                 visible={visible}
                 edititem={edititem}
+                refetch={refetch}
                 onClose={()=>{ setVisible(false); setEditItem(null) }}
             />
         </>

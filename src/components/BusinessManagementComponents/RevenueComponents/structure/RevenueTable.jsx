@@ -3,7 +3,7 @@ import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, Image } from 'antd
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, } from '../../../Ui';
 import { revenueColumns } from '../../../../data';
-import { SearchInput } from '../../../Forms';
+import { MyDatepicker, SearchInput } from '../../../Forms';
 import { subscriptionItems, TableLoader, servicetypeItems, exportToExcel, useDebounce } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery } from '@apollo/client/react';
@@ -18,7 +18,7 @@ const RevenueTable = () => {
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
-    // const [selectedYear, setSelectedYear] = useState(moment());
+    const [selectedYear, setSelectedYear] = useState([]);
     const [revenueData, setRevenueData]= useState([])
     const [ search, setSearch ] = useState('')
     const debouncedSearch = useDebounce(search, 500);
@@ -26,6 +26,22 @@ const RevenueTable = () => {
         fetchPolicy: 'network-only'
     })
 
+    const fetchFilters = () => {
+        const startDate = selectedYear?.[0]?.format("YYYY-MM-DD") || null;
+        const endDate = selectedYear?.[1]?.format("YYYY-MM-DD") || null;
+
+        getRevenue({
+            variables: {
+                limit: pageSize,
+                offDet: (current - 1) * pageSize,
+                search: debouncedSearch || null,
+                type: selectedType || null,
+                plan: selectedAction || null,
+                startDate,
+                endDate,
+            }
+        });
+    };
     const handlePageChange = (page, size) => {
         setCurrent(page);
         setPageSize(size);
@@ -40,18 +56,11 @@ const RevenueTable = () => {
     };
 
     useEffect(() => {
-        getRevenue({
-            variables: {
-                limit: pageSize,
-                offDet: (current - 1) * pageSize,
-                search: debouncedSearch || undefined,
-                type: selectedType || undefined,
-                plan: selectedAction || undefined,
-            }
-        });
+        fetchFilters()
     }, [
         getRevenue,
         debouncedSearch,
+        selectedYear,
         selectedType,
         selectedAction,
         current,
@@ -130,14 +139,14 @@ const RevenueTable = () => {
                                         <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export")}
                                     </Flex>
                                 </Button>
-                                {/* <MyDatepicker
+                                <MyDatepicker
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
                                     placeholder={[t("Start Year"),t("End Year")]}
                                     value={selectedYear}
                                     onChange={(year) => setSelectedYear(year)}
-                                /> */}
+                                />
                             </Flex>
                         </Col>
                     </Row>

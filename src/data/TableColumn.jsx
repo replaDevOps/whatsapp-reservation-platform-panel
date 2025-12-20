@@ -1,7 +1,7 @@
 import { DownOutlined, HolderOutlined } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Flex, Tag, Tooltip, Typography } from "antd";
 import { NavLink } from "react-router-dom";
-import { capitalizeTranslated, toArabicDigits, utcDateTimeToLocal } from "../shared";
+import { capitalizeTranslated, FieldMerger, toArabicDigits, utcDateTimeToLocal } from "../shared";
 import dayjs from "dayjs";
 
 const { Text } = Typography
@@ -153,25 +153,27 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => 
 const bookingColumn = ({t,i18n})=> [
     {
         title: t("Bookings ID"),
-        dataIndex: 'bookingId',
+        dataIndex: 'appointmentNumber',
     },
     {
         title: t("Business Name"),
-        dataIndex: 'businessName',
+        dataIndex: 'branch',
+        render: (branch) => branch?.business?.name
     },
     {
         title: t("Branch Name"),
-        dataIndex: 'branchName',
+        dataIndex: 'branch',
+        render: (branch)=> branch?.name
     },
     {
         title: t("Customer Name"),
-        dataIndex: 'customer',
-        render: (customer) => {
-            const phone = customer?.phone || "";
-
+        dataIndex: 'consumer',
+        render: (consumer) => {
+            const phone = consumer?.phone || "";
+            const name = consumer?.firstName + ' ' + consumer?.lastName || ""
             return (
                 <Flex align="center" gap={5}>
-                {customer?.name}
+                {name}
                 <img src="/assets/icons/cr.webp" alt="circle" width={4} height={4} />
                 {i18n.language === "ar"
                     ?toArabicDigits(`+966 ${phone}`)
@@ -182,32 +184,33 @@ const bookingColumn = ({t,i18n})=> [
     },
     {
         title: t("Services"),
-        dataIndex: 'services',
-        render: (services) => {
+        dataIndex: 'service',
+        render: (service) => {
             return(
-               <Tag className="sm-pill radius-20 fs-12">{services}</Tag>
+               <Tag className="sm-pill radius-20 fs-12">{service?.name}</Tag>
             )
         } 
     },
     {
         title: t("Service Provider"),
         dataIndex: 'serviceProvider',
+        render: (serviceProvider)=> serviceProvider?.firstName + ' ' + serviceProvider?.lastName
     },
     {
         title: t("Date & Time"),
-        dataIndex: 'dateTime',
-        render: (dateTime) => {
-            if (!dateTime) return '';
+        dataIndex: 'appointmentDate',
+        render: (appointmentDate) => {
+            if (!appointmentDate) return '';
 
-            if (i18n?.language === 'ar') {
-            let arabicDate = toArabicDigits(dateTime)
-                .replace('AM', 'ص')
-                .replace('PM', 'م')
-                .replace('am', 'ص')
-                .replace('pm', 'م');
-                return arabicDate;
-            }
-            return dateTime;
+            // if (i18n?.language === 'ar') {
+            // let arabicDate = toArabicDigits(appointmentDate)
+            //     .replace('AM', 'ص')
+            //     .replace('PM', 'م')
+            //     .replace('am', 'ص')
+            //     .replace('pm', 'م');
+            //     return arabicDate;
+            // }
+            return utcDateTimeToLocal(appointmentDate);
         }
     },
     {
@@ -215,16 +218,16 @@ const bookingColumn = ({t,i18n})=> [
         dataIndex: 'status',
         render: (status) => {
             return (
-                status === 'completed' ? (
+                status === 'COMPLETED' ? (
                     <Text className='btnpill fs-12 success'>{t("Completed")}</Text>
-                ) : status === 'cancelled' ? (
+                ) : status === 'CANCELLED' ? (
                     <Text className='btnpill fs-12 inactive'>{t("Cancelled")}</Text>
-                ) : status === 'pending' ? (
+                ) : status === 'PENDING' ? (
                     <Text className='btnpill fs-12 pending-brown'>{t("Pending")}</Text>
-                ) : status === 'in-progress' ? (
+                ) : status === 'SCHEDULED' ? (
                     <Text className='btnpill fs-12 dsasellerpending'>{t("In-Progress")}</Text>
                 ) : (
-                    <Text className='btnpill fs-12 branded'>{t("No Show")}</Text>
+                    <Text className='btnpill fs-12 branded'>{t("No Show")}</Text> //NO_SHOW
                 )
             );
         }
@@ -777,32 +780,37 @@ const discountactivityColumn = ({t,i18n})=> [
     },
     {
         title: t('Customer Name'),
-        dataIndex: 'customerName',
+        dataIndex: 'subscriberSubscription',
+        render: (subscriberSubscription) => <FieldMerger 
+                object={subscriberSubscription?.subscriber}
+                fields={['firstName', 'lastName']}
+        />
     },
     {
         title: t('Business Name'),
-        dataIndex: 'businessName',
+        dataIndex: 'subscriberSubscription',
+        render: (subscriberSubscription) => subscriberSubscription?.business?.name
     },
     {
         title: t('Group'),
-        dataIndex: 'group',
-        render:(group) => t(group)
+        dataIndex: 'discount',
+        render:(discount) => t(discount?.group)
     },
     {
         title: 'Date & Time',
-        dataIndex: 'dateTime',
-        render: (dateTime) => {
-            if (!dateTime) return '';
+        dataIndex: 'appliedAt',
+        render: (appliedAt) => {
+            if (!appliedAt) return '';
 
             if (i18n?.language === 'ar') {
-            let arabicDate = toArabicDigits(dateTime)
+            let arabicDate = toArabicDigits(appliedAt)
                 .replace('AM', 'ص')
                 .replace('PM', 'م')
                 .replace('am', 'ص')
                 .replace('pm', 'م');
                 return arabicDate;
             }
-            return dateTime;
+            return utcDateTimeToLocal(appliedAt);
         }
     },
 ]
@@ -882,7 +890,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t }) => [
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/allbusiness/viewbusiness/'+row?.id) }}>{t("View")}</NavLink>, key: '1' },
+                        row?.status === 'ACTIVE' && {label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/allbusiness/viewbusiness/'+row?.id) }}>{t("View")}</NavLink>, key: '1' },
                         row?.status !== 'ACTIVE' ? { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange({id: row?.id, status: 'ACTIVE'})}}>{t("Active")}</NavLink>, key: '3' } : { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange({id: row?.id, status: 'INACTIVE'})}}>{t("Inactive")}</NavLink>, key: '2' },
                         { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(_?.id) }}>{t("Delete")}</NavLink>, key: '4' },
                     ],
@@ -912,16 +920,18 @@ const singleviewColumns = ({ setViewItem,t,i18n }) => [
     },
     {
         title: t("Total Bookings"),
-        dataIndex: 'totalBooking',
-        render: (totalBooking) =>
-            i18n.language === "ar" ? toArabicDigits(totalBooking) : totalBooking
+        dataIndex: 'appointments',
+        render: (appointments) => {
+            const count = appointments?.length ?? 0;
+            return i18n.language === "ar" ? toArabicDigits(count) : count;
+        }
     },
     {
         title: t("Status"),
         dataIndex: 'status',
         render: (status) => {
             return (
-                status === 'active' ? (
+                status === true ? (
                     <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
                     <Text className='btnpill fs-12 inactive'>{t("Inactive")}</Text>
@@ -938,7 +948,7 @@ const singleviewColumns = ({ setViewItem,t,i18n }) => [
             <Dropdown
                 menu={{
                     items: [
-                        { label: <NavLink onClick={(e) => {e.preventDefault();setViewItem(true)}}>{t("View")}</NavLink>, key: '1' }
+                        { label: <NavLink onClick={(e) => {e.preventDefault();setViewItem(row)}}>{t("View")}</NavLink>, key: '1' }
                     ],
                 }}
                 trigger={['click']}
@@ -954,7 +964,7 @@ const singleviewColumns = ({ setViewItem,t,i18n }) => [
 const businessserviceColumns = ({t,i18n}) => [
     {
         title: t("Service Name"),
-        dataIndex: 'serviceName',
+        dataIndex: 'name',
     },
     {
         title: t("Duration (min)"),
@@ -979,7 +989,7 @@ const businessserviceColumns = ({t,i18n}) => [
         dataIndex: 'status',
         render: (status) => {
             return (
-                status === 'active' ? (
+                status === true ? (
                     <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
                     <Text className='btnpill fs-12 inactive'>{t("Inactive")}</Text>
@@ -992,17 +1002,21 @@ const businessserviceColumns = ({t,i18n}) => [
 const businessstaffColumns = ({t})=> [
     {
         title: t("Image"),
-        dataIndex: 'image',
-        render:(image) => <Avatar src={image} size={40} />,
+        dataIndex: 'imageUrl',
+        render:(imageUrl) => <Avatar src={imageUrl} size={40} />,
         width: 100
     },
     {
         title: t("Staff Name"),
-        dataIndex: 'staffName',
+        dataIndex: 'firstName',
+        render: (_,row)=> <FieldMerger 
+                    object={row}
+                    fields={['firstName', 'lastName']}
+            />
     },
     {
         title: t("Phone Number"),
-        dataIndex: 'phoneNo',
+        dataIndex: 'phone',
     },
     {
         title: t("Role"),
@@ -1016,7 +1030,7 @@ const businessstaffColumns = ({t})=> [
                 <Flex gap={5} wrap>
                     {
                         services?.map((items,index)=>
-                            <Tag key={index} className="sm-pill radius-20 fs-12">{items}</Tag>
+                            <Tag key={index} className="sm-pill radius-20 fs-12">{items?.name}</Tag>
                         )
                     }
                 </Flex>

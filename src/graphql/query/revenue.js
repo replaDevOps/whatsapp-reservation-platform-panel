@@ -1,28 +1,39 @@
 import { gql } from "@apollo/client";
 
 const GET_REVENUE = gql`
-    query GetSubscriberSubscriptions($search: String, $type: BusinessType, $plan: SubscriptionType, $limit: Int, $offDet: Int) {
-  getSubscriberSubscriptions(search: $search, type: $type, plan: $plan, limit: $limit, offDet: $offDet) {
-    totalCount
-    subscribersubscriptions {
-      id
-      businessId
-      business {
+  query GetSubscriberSubscriptions($search: String, $type: BusinessType, $plan: SubscriptionType, $limit: Int, $offDet: Int, $startDate: DateTime, $endDate: DateTime) {
+    getSubscriberSubscriptions(search: $search, type: $type, plan: $plan, limit: $limit, offDet: $offDet, startDate: $startDate, endDate: $endDate) {
+      totalCount
+      thisMonthRevenue
+      totalRevenue
+      subscribersubscriptions {
         id
-        image
-        name
-        businessType
-      }
-      price
-      type
-      subscription {
+        businessId
+        business {
+          id
+          image
+          name
+          businessType
+        }
+        price
         type
+        subscription {
+          type
+        }
+        validity
+        createdAt
       }
-      validity
-      createdAt
     }
   }
-}
 `
 
-export {GET_REVENUE}
+const GET_REVENUE_COUNT = gql`
+  query GetSubscriberSubscriptions {
+    getSubscriberSubscriptions {
+      thisMonthRevenue
+      totalRevenue
+    }
+  }
+`
+
+export {GET_REVENUE,GET_REVENUE_COUNT}

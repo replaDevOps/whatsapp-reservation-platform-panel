@@ -48,10 +48,10 @@ const CREATE_STAFF = gql`
 
 const UPDATE_STAFF = gql`
   mutation UpdateUser($input: UpdateUserInput!) {
-  updateUser(input: $input) {
-    id
+    updateUser(input: $input) {
+      id
+    }
   }
-}
 `
 const DELETE_STAFF = gql`
   mutation DeleteUser($deleteUserId: ID!) {

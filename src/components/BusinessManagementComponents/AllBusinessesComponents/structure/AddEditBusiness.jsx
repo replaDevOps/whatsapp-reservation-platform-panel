@@ -244,6 +244,14 @@ const AddEditBusiness = () => {
                                     />
                                 </Col>
                                 <Col span={24}>
+                                    <MyInput
+                                        label={t("Discount Code")}
+                                        name="discountCode"
+                                        placeholder={t("Enter discount code")}
+                                        className="w-100"
+                                    />
+                                </Col>
+                                <Col span={24}>
                                     <Title level={5} className='fw-500 my-3'>{t("Choose Subscription Plan")}</Title>
                                 </Col> 
                                 <Col span={24}>

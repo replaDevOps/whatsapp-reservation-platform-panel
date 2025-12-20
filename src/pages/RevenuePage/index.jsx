@@ -2,23 +2,29 @@ import { Flex } from 'antd'
 import { BreadCrumbCard, RevenueTable, StatisticsCommonCards, TitleCard } from '../../components'
 import { BusinessTitle, toArabicDigits } from '../../shared'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from '@apollo/client/react'
+import { GET_REVENUE_COUNT } from '../../graphql/query'
 
 const RevenuePage = () => {
 
     const {t,i18n} = useTranslation()
     const title = BusinessTitle({t})
     const isArabic = i18n?.language === 'ar'
+    const { data, loading } = useQuery(GET_REVENUE_COUNT,{
+        fetchPolicy: 'network-only'
+    })
+    const revenueCount = data?.getSubscriberSubscriptions
     const cardsData = [
         {
             id: 1,
             icon:'/assets/icons/rev-icon.webp',
-            title: `${t("SAR")} ${isArabic ? toArabicDigits("30,000"):"30,000"}`,
+            title: `${t("SAR")} ${isArabic ? toArabicDigits(revenueCount?.totalRevenue): revenueCount?.totalRevenue}`,
             subtitle: 'Total Revenue',
         },
         {
             id: 2,
             icon:'/assets/icons/rev-icon.webp',
-            title: `${t("SAR")} ${isArabic ? toArabicDigits("10,000"):"10,000"}`,
+            title: `${t("SAR")} ${isArabic ? toArabicDigits(revenueCount?.thisMonthRevenue):revenueCount?.thisMonthRevenue}`,
             subtitle: 'This Month Revenue',
         },
     ];
@@ -38,6 +44,8 @@ const RevenuePage = () => {
             />
             <StatisticsCommonCards 
                 data={cardsData}
+                arr={2}
+                loading={loading}
                 lg={12}
             />
             <RevenueTable />

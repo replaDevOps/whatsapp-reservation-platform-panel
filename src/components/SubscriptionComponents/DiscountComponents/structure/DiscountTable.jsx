@@ -24,7 +24,7 @@ const DiscountTable = ({visible,setVisible}) => {
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
     const [selectedgroup, setselectedGroup] = useState('');
-    const [selectedYear, setSelectedYear] = useState(dayjs());
+    const [selectedYear, setSelectedYear] = useState([null]);
     const [ edititem, setEditItem ] = useState(null)
     const [ expireitem, setExpireItem ] = useState(false)
     const [messageApi, contextHolder] = message.useMessage();
@@ -38,8 +38,8 @@ const DiscountTable = ({visible,setVisible}) => {
         discountType: selectedType || null,
         group: selectedgroup || null,
         packageType: selectedAction || null,
-        // startDate: selectedYear?.[0] ? dayjs(selectedYear[0]).toISOString() : undefined,
-        // endDate: selectedYear?.[1] ? dayjs(selectedYear[1]).toISOString() : undefined,
+        startDate: selectedYear?.[0] ? dayjs(selectedYear[0]).toISOString() : null,
+        endDate: selectedYear?.[1] ? dayjs(selectedYear[1]).toISOString() : null,
     });
 
     const handlePageChange = (page, size) => {
@@ -76,7 +76,7 @@ const DiscountTable = ({visible,setVisible}) => {
         selectedType,
         selectedgroup,
         selectedAction,
-        // selectedYear,
+        selectedYear,
         current,
         pageSize
     ]);

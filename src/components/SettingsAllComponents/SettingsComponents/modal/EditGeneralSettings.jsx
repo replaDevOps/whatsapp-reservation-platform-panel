@@ -3,13 +3,13 @@ import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, notification, Row, Typography } from 'antd'
 import { MyInput } from '../../../Forms'
 import { useTranslation } from 'react-i18next'
-import { notifyError, toArabicDigits } from '../../../../shared'
+import { notifyError, notifySuccess, toArabicDigits } from '../../../../shared'
 import { getUserID } from '../../../../utils/auth'
 import { UPDATE_USER } from '../../../../graphql/mutation'
 import { useMutation } from '@apollo/client/react'
 
 const { Title } = Typography
-const EditGeneralSettings = ({visible,onClose,edititem}) => {
+const EditGeneralSettings = ({visible,onClose,edititem,refetch}) => {
 
     const [form] = Form.useForm();
     const {t,i18n} = useTranslation()
@@ -26,9 +26,9 @@ const EditGeneralSettings = ({visible,onClose,edititem}) => {
                 lastName: edititem?.getUser?.lastName,
                 phone: edititem?.getUser?.phone,
                 email: edititem?.getUser?.email,
-                facebook: edititem?.getUser?.fb,
+                fb: edititem?.getUser?.fb,
                 instagram: edititem?.getUser?.instagram,
-                twitter: edititem?.getUser?.x,
+                x: edititem?.getUser?.x,
                 whatsapp: edititem?.getUser?.whatsapp
             })
         }
@@ -37,7 +37,7 @@ const EditGeneralSettings = ({visible,onClose,edititem}) => {
     const EditGeneralInfo = async () => {
         const input = form.getFieldsValue();
         try {
-            if (edititem?.getUser?.id) {
+            if (getUserID()) {
                 await updateUser({
                     variables: { 
                         input: { id: getUserID(), ...input }
@@ -125,7 +125,7 @@ const EditGeneralSettings = ({visible,onClose,edititem}) => {
                             <Col span={24}>
                                 <MyInput 
                                     label={t("Facebook")} 
-                                    name="facebook" 
+                                    name="fb" 
                                     required 
                                     message={t("Please enter facebook link")} 
                                     placeholder={t("Enter facebook link")} 
@@ -143,7 +143,7 @@ const EditGeneralSettings = ({visible,onClose,edititem}) => {
                             <Col span={24}>
                                 <MyInput 
                                     label={t("X (twitter)")} 
-                                    name="twitter"
+                                    name="x"
                                     required 
                                     message={t("Please enter X (twitter) link")} 
                                     placeholder={t("Enter X (twitter) link")} 

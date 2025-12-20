@@ -53,6 +53,10 @@ const GET_BUSINESSES_BY_ID = gql`
       id
       image
       name
+      totalBookingsCount
+      todayBookingsCount
+      totalActiveBranches
+      totalActiveServiceProviders
       subscriber {
         id
         firstName
@@ -74,13 +78,56 @@ const GET_BUSINESSES_BY_ID = gql`
 `
 
 const GET_BRANCH_BY_BUSINESS = gql`
-  query GetBusinessBranches($businessId: ID!) {
-    getBusinessBranches(businessId: $businessId) {
-      id
-      name
-      phone
-      location
-      status
+  query GetBusinessBranches($businessId: ID!, $limit: Int, $offset: Int, $filter: BranchFilter) {
+    getBusinessBranches(businessId: $businessId, limit: $limit, offset: $offset, filter: $filter) {
+      totalCount
+      branches {
+        id
+        name
+        phone
+        location
+        status
+        appointments {
+          id
+        }
+      }
+      
+    }
+  }
+`
+
+const GET_SERVICES_BY_BRANCHID = gql`
+  query GetServicesByBranch($branchId: ID!, $limit: Int, $offset: Int) {
+    getServicesByBranch(branchId: $branchId, limit: $limit, offset: $offset) {
+      totalCount
+      services {
+        id
+        name
+        duration
+        bufferTime
+        price
+        status
+      }
+    }
+  }
+`
+
+const GET_STAFF_BY_BRANCHID = gql`
+  query GetStaffByBranch($branchId: ID!, $limit: Int, $offset: Int) {
+    getStaffByBranch(branchId: $branchId, limit: $limit, offset: $offset) {
+      totalCount
+      users {
+        id
+        imageUrl
+        firstName
+        lastName
+        phone
+        role
+        services {
+          id
+          name
+        }
+      }
     }
   }
 `
@@ -90,5 +137,7 @@ export {
   GET_SUBSCRIPTIONS_STATS,
   GET_BUSINESSES,
   GET_BUSINESSES_BY_ID,
-  GET_BRANCH_BY_BUSINESS
+  GET_BRANCH_BY_BUSINESS,
+  GET_SERVICES_BY_BRANCHID,
+  GET_STAFF_BY_BRANCHID,
 }

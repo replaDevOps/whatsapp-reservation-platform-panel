@@ -1,66 +1,15 @@
-import { useLazyQuery } from '@apollo/client/react'
 import { Card, Col, Flex, Row, Skeleton, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { GET_SUBSCRIPTIONS_STATS } from '../../graphql/query'
-import { useEffect, useState } from 'react'
 
 const { Title, Text } = Typography
-const StatisticsCommonCards = ({lg = 6,  md = 12, sm = 24, cardClass = ''}) => {
+const StatisticsCommonCards = ({data=[], loading, arr=4, lg = 6,  md = 12, sm = 24, cardClass = ''}) => {
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
-    const [subscriptionsStats, setSubscriptionsStats]= useState(null)
-
-    const [getSubscriptionsStats, { data, loading }] = useLazyQuery(GET_SUBSCRIPTIONS_STATS, {
-        fetchPolicy: "network-only",
-    })
-    useEffect(()=>{
-        if(getSubscriptionsStats)
-            getSubscriptionsStats()
-    }, [getSubscriptionsStats])
-    useEffect(()=>{
-        if(data?.getBusinesses){
-            const {basicPlanCount, standardPlanCount, proPlanCount, enterprisePlanCount}= data?.getBusinesses
-            setSubscriptionsStats({
-                basicPlanCount,
-                standardPlanCount,
-                proPlanCount,
-                enterprisePlanCount,
-            })
-        }
-    }, [data])
-
-    const cardsData = [
-        {
-            id: 1,
-            icon: '/assets/icons/plan-business.webp',
-            title: subscriptionsStats?.basicPlanCount || 0,
-            subtitle: t("Basic Plan Business"),
-        },
-        {
-            id: 2,
-            icon: '/assets/icons/plan-business.webp',
-            title: subscriptionsStats?.standardPlanCount || 0,
-            subtitle: t("Standard Plan Business"),
-        },
-        {
-            id: 3,
-            icon: '/assets/icons/plan-business.webp',
-            title: subscriptionsStats?.proPlanCount || 0,
-            subtitle: t("Pro Plan Business"),
-        },
-        {
-            id: 4,
-            icon: '/assets/icons/plan-business.webp',
-            title: subscriptionsStats?.enterprisePlanCount || 0,
-            subtitle: t("Enterprise Plan Business"),
-        },
-    ]
-
     return (
         <Row gutter={[14, 24]} className="h-100">
             {
                 loading ?
-                    new Array(4)?.fill(null)?.map((_, index)=>
+                    new Array(arr)?.fill(null)?.map((_, index)=>
                     <Col 
                         xs={24}
                         sm={sm}
@@ -78,7 +27,7 @@ const StatisticsCommonCards = ({lg = 6,  md = 12, sm = 24, cardClass = ''}) => {
                     </Col>
                 )
                 :
-                cardsData?.map((list, index)=>
+                data?.map((list, index)=>
                     <Col span={24} sm={sm} md={md} lg={lg} key={index}>
                         <Card className={`card-bg h-100 border-gray card-cs ${cardClass}`}>
                             <Flex gap={8} vertical align="start">

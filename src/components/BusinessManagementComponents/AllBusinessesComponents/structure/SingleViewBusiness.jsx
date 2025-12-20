@@ -15,7 +15,7 @@ const SingleViewBusiness = () => {
     const {t,i18n} = useTranslation()
     const title = BusinessTitle({t})
     const {id} = useParams()
-    const [ viewitem, setViewItem ] = useState(false)
+    const [ viewitem, setViewItem ] = useState(null)
     const { data, loading } = useQuery(GET_BUSINESSES_BY_ID, {
         variables: { getBusinessId: id },
         skip: !id,
@@ -47,7 +47,34 @@ const SingleViewBusiness = () => {
             title: singleview?.websiteLink
         }
     ] 
-
+    
+    const cardsData = [
+        {
+            id: 1,
+            icon: '/assets/icons/total-booking.webp',
+            title:  singleview?.totalBookingsCount || 0,
+            subtitle: t("Total Bookings"),
+        },
+        {
+            id: 2,
+            icon: '/assets/icons/todays-booking.webp',
+            title:   singleview?.todayBookingsCount || 0,
+            subtitle: t("Today’s Bookings"),
+        },
+        {
+            id: 3,
+            icon: '/assets/icons/total-active-branch.webp',
+            title:   singleview?.totalActiveBranches || 0,
+            subtitle: t("Total Active Branches"),
+        },
+        {
+            id: 4,
+            icon: '/assets/icons/total-as.webp',
+            title:   singleview?.totalActiveServiceProviders || 0,
+            subtitle: t("Total Active Service Providers"),
+        },
+    ]
+    
 
     return (
         <>
@@ -118,10 +145,14 @@ const SingleViewBusiness = () => {
                                 </Row>
                             </Flex>
                         </Card>
-                        <StatisticsCommonCards />
+                        <StatisticsCommonCards 
+                            data={cardsData}
+                            loading={loading}
+                            lg={6}
+                        />
                         {
                             viewitem ? 
-                            <SingleBusinessViewTab setViewItem={setViewItem} />
+                            <SingleBusinessViewTab viewitem={viewitem} setViewItem={setViewItem} />
                             :
                             <SingleBusinessViewTable setViewItem={setViewItem} id={singleview?.id}  />
                         }
