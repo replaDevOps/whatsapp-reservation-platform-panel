@@ -90,18 +90,6 @@ const CHANGE_PASSWORD_USER =  gql`
   }
 `
 
-const LOGIN_USER = gql`
-  mutation LoginUser($email: String, $password: String, $role: UserRole!) {
-    loginUser(email: $email, password: $password, role: $role) {
-      token
-      user {
-        id
-        email
-      }
-    }
-  }
-`
-
 const UPDATE_PRIVACY_POLICY = gql`
   mutation UpdatePrivacyPolicy($input: UpdatePrivacyPolicyInput!) {
     updatePrivacyPolicy(input: $input) {
@@ -118,6 +106,14 @@ const UPDATE_USER = gql`
   }
 `
 
+const IS_MAINTENANCE_ALLOW = gql`
+  mutation UpdateMaintenanceStatus($input: UpdateMaintenanceInput!) {
+    updateMaintenanceStatus(input: $input) {
+      id
+    }
+  }
+`
+
 export {
   CREATE_SUBSCRIBER_CUSTOMER,
   UPDATE_TERMS,
@@ -129,9 +125,9 @@ export {
   EXPIRE_DISCOUNT,
   CREATE_FAQS,
   CHANGE_PASSWORD_USER,
-  LOGIN_USER,
   UPDATE_FAQS,
   DELETE_FAQS,
   UPDATE_PRIVACY_POLICY,
   UPDATE_USER,
+  IS_MAINTENANCE_ALLOW,
 }

@@ -12,12 +12,15 @@ const GET_SUBSCRIBERS_SUBSCRIPTIONS = gql`
           name
           businessType
         }
-        subscription {
-          type
-        }
+        type
         validity
         startDate
         endDate
+        isActive
+        subscriber {
+          email
+        }
+        features
       }
     }
   }

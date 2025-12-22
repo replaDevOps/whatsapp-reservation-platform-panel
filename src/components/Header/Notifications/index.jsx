@@ -1,24 +1,23 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { Avatar, Badge, Button, Card, Divider, Dropdown, Flex, Image, List, Typography } from "antd"
-import NotificationsDrawer from "./NotificationsDrawer"
 import { NavLink } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { toArabicDigits } from "../../../shared"
-// import {GET_NOTIFICATIONS} from '../../../graphql/query'
-// import {NEW_NOTIFICATION_SUBSCRIPTION} from '../../../graphql/subscription'
-// import { useQuery,useSubscription } from '@apollo/client';
+import { NEW_NOTIFICATION_SUBSCRIPTION, SUBSCRIPTION_EXPIRY_NOTIFICATION, USER_CREATED_NOTIFICATION } from "../../../graphql/subscription/notification"
+import { useSubscription } from "@apollo/client/react"
 
 const { Text } = Typography
 export const Notifications = () => {
     const userId = localStorage.getItem("userId"); 
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
-     // State to keep track of notifications
     const [notifications, setNotifications] = useState([]);
     const [visible, setVisible] = useState(false);
+    const { data: userData } = useSubscription(USER_CREATED_NOTIFICATION);
+    const { data: expiryData } = useSubscription(SUBSCRIPTION_EXPIRY_NOTIFICATION);
 
     // Fetch existing notifications
-    // const { data, loading: isLoading, refetch } = useQuery(GET_NOTIFICATIONS, {
+    // const { data:notification, loading: isLoading, refetch } = useQuery(GET_NOTIFICATIONS, {
     //     variables: { userId },
     //     skip: !userId,
     //     fetchPolicy: "network-only",
@@ -30,16 +29,16 @@ export const Notifications = () => {
     // });
 
     // Subscribe to new notifications
-    // const { data: subscriptionData } = useSubscription(NEW_NOTIFICATION_SUBSCRIPTION, {
-    //     onSubscriptionData: ({ subscriptionData }) => {
-    //         const newNotif = subscriptionData.data?.newNotification;
-    //         if (newNotif) {
-    //             setNotifications((prev) => [newNotif, ...prev]);
-    //         }
-    //     }
-    // });
+    const { data: subscriptionData } = useSubscription(NEW_NOTIFICATION_SUBSCRIPTION, {
+        onSubscriptionData: ({ subscriptionData }) => {
+            const newNotif = subscriptionData.data?.newNotification;
+            if (newNotif) {
+                setNotifications((prev) => [newNotif, ...prev]);
+            }
+        }
+    });
     // Count unread notifications
-    // const count = data?.getNotifications?.count
+    // const count = data?.getAlert?.
 
     const data = [
         {

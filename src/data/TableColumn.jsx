@@ -287,9 +287,12 @@ const revenueColumns = ({t,i18n})=> [
     },
     {
         title: t("Discount"),
-        dataIndex: 'discount',
-        render: (discount) => discount === null ? '--' : discount
-    },
+        dataIndex: 'subscriptionDiscountLog',
+        render: (subscriptionDiscountLog) =>
+            subscriptionDiscountLog?.discount?.value != null
+                ? `SAR ${subscriptionDiscountLog.discount.value}`
+                : '--'
+                },
     {
         title: t("Price"),
         dataIndex: 'price',
@@ -427,11 +430,6 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
 
 
 const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew, t, i18n  }) => [
-    // {
-    //     title: t('Business ID'),
-    //     dataIndex: 'business',
-    //     render:(business)=> '-'
-    // },
     {
         title: t('Business Logo'),
         dataIndex: 'business',
@@ -450,18 +448,18 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
     {
         title: t('Type'),
         dataIndex: 'business',
-        render:(business)=> business?.businessType
+        render:(business)=> capitalizeTranslated(business?.businessType)
     },
     {
         title: t("Subscription Plan"),
-        dataIndex: 'subscription',
-        render: (subscription) => {
+        dataIndex: 'type',
+        render: (type) => {
             return (
-                subscription?.type === 'BASIC' ? 
+                type === 'BASIC' ? 
                     <Text className='sm-pill text-white fs-12 bg-basic-color'>{t("BP")}</Text>
-                : subscription?.type === 'STANDARD' ? 
-                   <Text className='sm-pill text-white fs-12 bg-red'>{t("SP")}</Text>
-                : subscription?.type === 'PRO' ? 
+                : type === 'STANDARD' ? 
+                   <Text className='sm-pill text-white fs-12 bg-violet'>{t("SP")}</Text>
+                : type === 'PRO' ? 
                      <Text className='sm-pill text-white fs-12 bg-red'>{t("PP")}</Text>
                 :   <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("EP")}</Text>
                 
@@ -471,7 +469,7 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
     {
         title: t('Period'),
         dataIndex: 'validity',
-        render:(validity)=> t(validity)
+        render:(validity)=> capitalizeTranslated(t(validity))
     },
     {
         title: t('Start Date'),
@@ -487,10 +485,10 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
     },
     {
         title: t('Status'),
-        dataIndex: 'status',
-        render: (status) => {
+        dataIndex: 'isActive',
+        render: (isActive) => {
             return (
-                true ? (
+                isActive === true ? (
                     <Text className='btnpill fs-12 success'>{t("Active")}</Text>
                 ) : (
                     <Text className='btnpill fs-12 inactive'>{t("Expires")}</Text>
@@ -507,11 +505,11 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
             <Dropdown
                 menu={{
                     items: [
-                        row?.status === 'Active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>{t("Edit Package")}</NavLink>, key: '1' },
+                        row?.isActive === true && { label: <NavLink onClick={(e) => {e.preventDefault(); setVisible(true); setEditItem(row) }}>{t("Edit Package")}</NavLink>, key: '1' },
                         { label: <NavLink onClick={(e) => {e.preventDefault(); setIsRenew(true); setEditItem(row)}}>{t("Renew Package")}</NavLink>, key: '2' },
                         { label: <NavLink onClick={(e) => {e.preventDefault(); setUpgradePlan(true); setEditItem(row) }}>{t("Upgrade Package")}</NavLink>, key: '3' },
                         { label: <NavLink onClick={(e) => {e.preventDefault();  }}>{t("Download Invoice")}</NavLink>, key: '4' },
-                        { label: <NavLink onClick={(e) => {e.preventDefault(); }}>{t("Send Reminder")}</NavLink>, key: '5' },
+                        // { label: <NavLink onClick={(e) => {e.preventDefault(); }}>{t("Send Reminder")}</NavLink>, key: '5' },
                     ],
                 }}
                 trigger={['click']}
@@ -558,20 +556,19 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
     },
     {
         title: t('Subscription Plan'),
-        dataIndex: 'packageType',
-        render: (subscriptionPlan) => {
+        dataIndex: 'applicableSubscriptions',
+        render: (applicableSubscriptions) => {
             return (
                 <Flex gap={5} wrap>
-                    {/* {
-                        subscriptionPlan?.map((items,index)=>
-                            
+                    {
+                        applicableSubscriptions?.map((items)=>
+                            <Tag className="sm-pill radius-20 fs-12" key={items?.id}>
+                                {t(
+                                    items?.type?.charAt(0)?.toUpperCase() + items?.type?.slice(1).toLowerCase()
+                                )}
+                            </Tag>       
                         )
-                    } */}
-                    <Tag className="sm-pill radius-20 fs-12">
-                        {t(
-                            subscriptionPlan?.charAt(0)?.toUpperCase() + subscriptionPlan?.slice(1).toLowerCase()
-                        )}
-                    </Tag>
+                    }
                 </Flex>
             );
         }

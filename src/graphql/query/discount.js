@@ -10,7 +10,10 @@ const GET_DISCOUNTS = gql`
                 group
                 discountType
                 value
-                packageType
+                applicableSubscriptions {
+                    id
+                    type
+                }
                 usageLimit
                 remainingLimit
                 startDate
@@ -22,4 +25,13 @@ const GET_DISCOUNTS = gql`
     }
 `;
 
-export {GET_DISCOUNTS}
+const GET_PLANS_LOOKUPS = gql`
+    query GetSubscriptions {
+        getSubscriptions {
+            id
+            type
+        }
+    }
+`
+
+export {GET_DISCOUNTS,GET_PLANS_LOOKUPS}

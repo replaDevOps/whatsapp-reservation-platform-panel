@@ -66,7 +66,7 @@ const SingleBusinessViewTab = ({setViewItem,viewitem}) => {
                                     )}
                                 > 
                                     <Flex align='center' gap={10}>
-                                        <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> 
+                                        <Image src='/assets/icons/export.webp' width={16} preview={false} alt='export icons' fetchPriority="high" /> 
                                         {t("Export Data")}
                                     </Flex>
                                 </Button>

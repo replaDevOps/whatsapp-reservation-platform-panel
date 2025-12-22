@@ -20,7 +20,7 @@ const SubscriptionManageTable = () => {
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
     const [selectedperiod, setselectedPeriod] = useState('');
-    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedYear, setSelectedYear] = useState([]);
     const [ visible, setVisible ] = useState(false)
     const [ edititem, setEditItem ] = useState(null)
     const [ upgradeplan, setUpgradePlan ] = useState(false)
@@ -36,9 +36,9 @@ const SubscriptionManageTable = () => {
         search: debouncedSearch || null,
         type: selectedType || null,
         plan: selectedAction || null,
-        validity: selectedperiod || null
-        // startDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
-        // endDate: selectedYear?.[1]?.format("YYYY-MM-DD") || null,
+        validity: selectedperiod || null,
+        startDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
+        endDate: selectedYear?.[1]?.format("YYYY-MM-DD") || null,
     });
     useEffect(()=>{
         if(getSubscriberSubscriptions)
@@ -49,7 +49,7 @@ const SubscriptionManageTable = () => {
                     ...buildFilterObject()
                 }
             })
-    }, [getSubscriberSubscriptions,debouncedSearch,selectedAction,selectedType,selectedperiod])
+    }, [getSubscriberSubscriptions,debouncedSearch,selectedAction,selectedType,selectedperiod, selectedYear, pageSize, current])
     useEffect(()=>{
         if(data?.getSubscriberSubscriptions)
         {
@@ -176,6 +176,7 @@ const SubscriptionManageTable = () => {
                         scroll={{ x: 1600 }}
                         rowHoverable={false}
                         pagination={false}
+                        rowKey={(record)=>record?.id}
                         loading={{
                             ...TableLoader,
                             spinning: loading
@@ -191,6 +192,7 @@ const SubscriptionManageTable = () => {
             </Card>
             <EditSubscriptionPlanModal 
                 visible={visible}
+                edititem={edititem}
                 onClose={()=>{setVisible(false)}}
             />
             <UpgradePlanModal 

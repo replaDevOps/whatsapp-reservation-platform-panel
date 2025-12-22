@@ -60,7 +60,6 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
     };
 
     const handleStatusClick = ({ key }) => {
-        // treat empty key ('') as All -> clear the status filter
         if (key === '') {
             setselectedStatus(null);
         } else {

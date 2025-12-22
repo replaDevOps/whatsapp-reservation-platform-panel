@@ -82,7 +82,7 @@ const CustomerTable = () => {
                                 <Flex justify='end' gap={10}>         
                                     <Button className='btncancel' onClick={() => exportToExcel(subscriberCustomers, 'SubscriberData')}> 
                                         <Flex align='center' gap={10}>
-                                            <Image src='/assets/icons/export.webp' width={20} preview={false} alt='export icons' fetchPriority="high" /> {t("Export")}
+                                            <Image src='/assets/icons/export.webp' width={16} preview={false} alt='export icons' fetchPriority="high" /> {t("Export")}
                                         </Flex>
                                     </Button>
                                     <MyDatepicker

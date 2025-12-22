@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 const UPDATE_SUBSCRIBER_SUBSCRIPTION = gql`
-    mutation UpdateSubscriberSubscription($updateSubscriberSubscriptionId: ID!, $input: UpdateSubscriberSubscriptionInput!) {
-        updateSubscriberSubscription(id: $updateSubscriberSubscriptionId, input: $input) {
+    mutation UpdateSubscriberSubscription($input: UpdateSubscriberSubscriptionInput!, $updateSubscriberSubscriptionId: ID!) {
+        updateSubscriberSubscription(input: $input, id: $updateSubscriberSubscriptionId) {
             id
         }
     }

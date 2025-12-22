@@ -33,9 +33,6 @@ const GeneralSetting = () => {
             });
         }
     }, [loading, data]);
-
-    
-
     return (
         <>
             <Card className='card-bg card-cs radius-12 border-gray'>

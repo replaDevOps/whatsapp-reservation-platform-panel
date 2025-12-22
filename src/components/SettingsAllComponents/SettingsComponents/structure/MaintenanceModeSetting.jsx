@@ -1,14 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, Flex, Switch, Typography, Button } from 'antd'
 import { MaintenanceModal } from '../modal'
 import { useTranslation } from 'react-i18next'
+import { GET_MAINTENANCE_STATUS } from '../../../../graphql/query'
+import { useQuery } from '@apollo/client/react'
 
 const { Title, Text } = Typography
 
 const MaintenanceModeSetting = () => {
-    const [isChecked, setIsChecked] = useState(true)
+    const [isChecked, setIsChecked] = useState(false)
     const {t} = useTranslation()
     const [visible, setVisible] = useState(false)
+    const { data, refetch } = useQuery(GET_MAINTENANCE_STATUS);
+
+    useEffect(() => {
+        if (data?.getMaintenanceStatus?.isEnabled !== undefined) {
+            setIsChecked(Boolean(data.getMaintenanceStatus.isEnabled))
+        }
+    }, [data]);
     const handleEdit = () => {
         setVisible(true)
     }
@@ -49,6 +58,7 @@ const MaintenanceModeSetting = () => {
 
             <MaintenanceModal
                 visible={visible}
+                refetch={refetch}
                 initialChecked={isChecked}
                 onClose={handleModalClose}
             />

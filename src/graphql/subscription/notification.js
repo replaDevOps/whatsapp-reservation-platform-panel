@@ -1,21 +1,51 @@
-import { useSubscription, gql } from "@apollo/client";
+import { gql } from "@apollo/client";
 
 const NEW_NOTIFICATION_SUBSCRIPTION = gql`
-  subscription OnNewNotification {
-    newNotification {
-      id
-      name
-      message
-      createdAt
-      isRead
-      user {
+  subscription AlertCreated {
+    alertCreated {
+      alert {
         id
-        name
+        updatedAt
+        action
+        activity
+        createdAt
+        isRead
+        userId
+        userName
+        userRole
       }
+      message
     }
   }
 `;
 
+const USER_CREATED_NOTIFICATION = gql`
+  subscription UserCreated {
+    userCreated {
+      message
+      user {
+        id
+        firstName
+        lastName
+        createdAt
+      }
+    }
+  }
+`
+
+const SUBSCRIPTION_EXPIRY_NOTIFICATION = gql`
+  subscription SubscriptionExpiryNotification {
+    subscriptionExpiryNotification {
+      expiresAt
+      message
+      subscriberId
+      subscriptionId
+    }
+  }
+`
+
 export {
-    NEW_NOTIFICATION_SUBSCRIPTION
+    NEW_NOTIFICATION_SUBSCRIPTION,
+    USER_CREATED_NOTIFICATION,
+    SUBSCRIPTION_EXPIRY_NOTIFICATION,
 }

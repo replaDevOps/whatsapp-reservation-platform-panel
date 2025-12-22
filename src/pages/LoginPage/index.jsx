@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { MyInput } from "../../components";
 import { LanguageChange } from "../Sidebar/LanguageChange";
 import { useTranslation } from "react-i18next";
-import { LOGIN_USER } from "../../graphql/mutation";
 import { client } from "../../config/apolloClient";
+import { LOGIN_USER } from "../../graphql/mutation";
 
 const { Title, Paragraph } = Typography;
 const LoginPage = () => {
@@ -18,26 +18,24 @@ const LoginPage = () => {
     const [form] = Form.useForm();
 
     const handleFinish = async () => {
-            const values = form.getFieldsValue()
-             try {
-              const { email, password } = values;
-              const { data,error } = await loginUser({ variables: { email, password, role: 'SUPER_ADMIN'} });
-              if (data) {
+        const values = form.getFieldsValue()
+        try {
+            const { email, password } = values;
+            const { data,error } = await loginUser({ variables: { email, password, role: 'SUPER_ADMIN'} });
+            if (data) {
                 localStorage.setItem("accessToken", data.loginUser.token);
-                localStorage.setItem("userId", data.loginUser.user.id);
-                localStorage.setItem("email", data.loginUser.user.email);
+                localStorage.setItem("user", JSON.stringify(data.loginUser.user));
                 await client.resetStore();
                 messageApi.success("Login successful!");
                 navigate("/")
-              } else {
+            } else {
                 messageApi.error("Login failed: Invalid credentials");
-              }
-            } catch (error) {
+            }
+        } catch (error) {
             console.error("Login error:", error);
             messageApi.error("Login failed: Something went wrong");
-            }
-       
-      };
+        }
+    };
 
     return (
         <>

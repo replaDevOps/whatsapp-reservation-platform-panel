@@ -8,8 +8,6 @@ import { refreshAccessToken } from "../shared/tokenRefreshService";
 
 const API_URL = "https://backend.qloop.me/graphql";
 
-
-
 let isRefreshing = false;
 let pendingRequests = [];
 
@@ -23,7 +21,7 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
 //   const token = getAccessToken();
 // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxZWI1ZjAxNy05MjQ1LTQyNTgtOGM4Zi05NGY2MTNhNGRiMTUiLCJlbWFpbCI6InN1cGVyYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJmaXJzdE5hbWUiOiJEZWZhdWx0IiwibGFzdE5hbWUiOiJTdXBlckFkbWluIiwiaWF0IjoxNzYzOTA3NDAwLCJleHAiOjE3NjY0OTk0MDB9.7KOutW2mRbVHhdjNpxf7_8dA6aJ0uPdaZ_p1XNTZFO8'
-  const token = localStorage.getItem('accessToken')  
+const token = localStorage.getItem('accessToken')  
 return {
     headers: {
       ...headers,
@@ -34,7 +32,7 @@ return {
 
 // WebSocket link for subscriptions
 const wsLink = new WebSocketLink({
-  uri: "wss://verify.jusoor-sa.co/subscriptions",
+  uri: "wss://backend.qloop.me/graphql",
   options: {
     reconnect: true,
     connectionParams: () => {

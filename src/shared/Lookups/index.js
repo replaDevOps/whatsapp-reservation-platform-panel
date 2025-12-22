@@ -187,6 +187,13 @@ const periodItems = [
     { key: 'OLD', label: 'Old' },
 ];
 
+const typeOps = [
+    {id: 'SPA',  name: 'Spa'},
+    {id: 'CLINIC',  name: 'Clinic'},
+    {id: 'BARBER',  name: 'Barber'},
+    {id: 'GENERAL',  name: 'General'},
+];
+
 export { 
     rolestaffopt,
     languageopt, 
@@ -208,4 +215,5 @@ export {
     statusbusinessItem,
     periodItems,
     groupItem,
+    typeOps,
 }

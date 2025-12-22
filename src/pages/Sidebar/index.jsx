@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Route, Routes, useLocation } from 'react-router-dom';
 import './index.css';
-import { Layout, Menu, Image, Space, Divider, Flex, Typography, Button } from 'antd';
+import { Layout, Menu, Image, Space, Divider, Flex, Typography, Button, Avatar } from 'antd';
 import { Notifications, UserDropdown } from '../../components/Header';
 import { Dashboard } from '../Dashboard';
 import { SearchInput } from '../../components/Forms';
@@ -23,6 +23,7 @@ import { ActivityLogPage } from '../ActivityLogPage';
 import { AllBusinessPage } from '../AllBusinessPage';
 import { LanguageChange } from './LanguageChange';
 import { useTranslation } from 'react-i18next';
+import { getUserFirstName, getUserImage, getUserLastName, getUserName } from '../../utils/auth';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography
@@ -124,15 +125,15 @@ const Sidebar = () => {
           setCollapsed(broken)
         }} trigger={null} collapsible collapsed={collapsed} className={collapsed ? 'addclass overflowstyle h-100vh overflowy-auto border-right-side' :'overflowstyle h-100vh overflowy-auto border-right-side'}>
         <Flex className="logo" align='center' gap={10}>
-          <Image
-            style={{ width: collapsed ? "40px" : '40px' }}
-            height={'auto'}
-            src="/assets/images/logo.webp"
-            alt='logo image'
-            preview={false}
-            fetchPriority="high"
-          />
-          <Text strong className='fs-14'>Qloop</Text>
+          {
+            getUserImage() ?
+            <Avatar size={collapsed ? 40 : 40} src={getUserImage()} alt='logo image' fetchPriority="high" />
+            :
+            <Avatar size={40} className='fs-14 text-white fw-bold brand-bg'>
+              {getUserFirstName()?.charAt(0).toUpperCase() + getUserLastName()?.charAt(0).toUpperCase()}
+            </Avatar>
+          }
+          <Text strong className='fs-14'>{getUserName()}</Text>
         </Flex>
         <Divider className='m-0 bg-divider' />
         <Menu

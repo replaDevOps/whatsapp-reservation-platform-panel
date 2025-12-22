@@ -5,7 +5,7 @@ import { BreadCrumbCard, BusinessChooseSubscriptionPlan, ConfirmModal, MyInput, 
 import { MySelect } from '../../../Forms'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BusinessTitle, notifyError, notifySuccess } from '../../../../shared'
+import { BusinessTitle, notifyError, notifySuccess, typeOps } from '../../../../shared'
 import { GET_SUBSCRIBER_CUSTOMERS_LOOKUP } from '../../../../graphql/query'
 import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { CREATE_BUSINESS } from '../../../../graphql/mutation'
@@ -199,12 +199,7 @@ const AddEditBusiness = () => {
                                         required 
                                         message={t("Please choose business type")} 
                                         placeholder={t("Select business type")} 
-                                        options={[
-                                            {id: 'SPA',  name: 'SPA'},
-                                            {id: 'CLINIC',  name: 'CLINIC'},
-                                            {id: 'BARBER',  name: 'BARBER'},
-                                            {id: 'GENERAL',  name: 'GENERAL'},
-                                        ]}
+                                        options={typeOps}
                                     />
                                 </Col>
                                 <Col span={24} md={12}>

@@ -2,11 +2,12 @@ import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, notification, Row, Typography } from 'antd'
 import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
-import { customertypeOp, notifyError, notifySuccess, promoType, subscriptionplanOp } from '../../../../shared'
+import { capitalizeTranslated, customertypeOp, notifyError, notifySuccess, promoType } from '../../../../shared'
 import { useTranslation } from 'react-i18next'
-import { useMutation } from '@apollo/client/react'
+import { useMutation, useQuery } from '@apollo/client/react'
 import { CREATE_DISCOUNTS, UPDATE_DISCOUNTS } from '../../../../graphql/mutation/mutations'
 import dayjs from 'dayjs'
+import { GET_PLANS_LOOKUPS } from '../../../../graphql/query'
 
 const { Title, Text } = Typography
 const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
@@ -14,6 +15,9 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
     const [form] = Form.useForm();
     const {t} = useTranslation()
     const [ api, contextHolder ] = notification.useNotification()
+    const {data} = useQuery(GET_PLANS_LOOKUPS,{
+        fetchPolicy:'network-only'
+    })
     const [ updateDiscounts, {loading: updating} ] = useMutation(UPDATE_DISCOUNTS,{
         onCompleted: () => {notifySuccess(api,"Discount Update","Discount updated successfully",()=> {refetch(); onClose()})},
         onError: (error) => {notifyError(api, error);},
@@ -49,7 +53,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
             group: data.group?.toUpperCase() || null,
             discountType: data.discountType?.toUpperCase() || null,
             value: data.value ? Number(data.value) : 0,
-            packageType: data.packageType?.toUpperCase() || "",
+            subscriptionIds: data.subscriptionIds || [],
             usageLimit: data.usageLimit ? Number(data.usageLimit) : 0,
             startDate: data.startDate,
             expiryDate: data.expiryDate
@@ -137,12 +141,15 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                             </Col>
                             <Col span={24}>
                                 <MySelect 
-                                    // mode={'multiple'}
+                                    mode={'multiple'}
                                     label={t("Subscription Plan Type")} 
-                                    name="packageType" 
+                                    name="subscriptionIds" 
                                     required
                                     message={t('Choose subscription plan type')}
-                                    options={subscriptionplanOp}
+                                    options={data?.getSubscriptions?.map((items)=>({
+                                        id: items?.id,
+                                        name: capitalizeTranslated(items?.type)
+                                    }))}
                                     placeholder={t('Choose plan type')}
                                 />
                             </Col>

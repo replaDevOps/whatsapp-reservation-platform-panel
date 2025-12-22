@@ -33,8 +33,23 @@ const GET_USERS_BY_ID = gql`
     }
   }
 `
+
+const GET_MAINTENANCE_STATUS = gql`
+  query GetMaintenanceStatus {
+    getMaintenanceStatus {
+      id
+      isEnabled
+    }
+  }
+`
+
+// const GET_NOTIFICATIONS = gql`
+
+// `
+
 export {
   GET_TERMS,
   GETPRIVACYPOLICY,
   GET_USERS_BY_ID,
+  GET_MAINTENANCE_STATUS,
 }

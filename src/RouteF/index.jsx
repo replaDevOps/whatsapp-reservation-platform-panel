@@ -4,7 +4,7 @@ import { Sidebar } from '../pages/Sidebar';
 import { ForgotPassword, LoginPage } from '../pages';
 import { Fallback } from './Fallback';
 
-const isLoggedIn = () => !!localStorage.getItem('email')
+const isLoggedIn = () => !!localStorage.getItem('accessToken')
 
 const ProtectedRoute = ({ children }) => {
   const location = useLocation()
