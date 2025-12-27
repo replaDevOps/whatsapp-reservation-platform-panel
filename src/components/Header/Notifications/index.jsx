@@ -1,105 +1,191 @@
-import { useState } from "react"
-import { Avatar, Badge, Button, Card, Divider, Dropdown, Flex, Image, List, Typography } from "antd"
-import { NavLink } from "react-router-dom"
-import { useTranslation } from "react-i18next"
-import { toArabicDigits } from "../../../shared"
-import { NEW_NOTIFICATION_SUBSCRIPTION, SUBSCRIPTION_EXPIRY_NOTIFICATION, USER_CREATED_NOTIFICATION } from "../../../graphql/subscription/notification"
-import { useSubscription } from "@apollo/client/react"
+import { useEffect, useMemo, useState } from "react";
+import {
+    Avatar,
+    Badge,
+    Button,
+    Card,
+    Divider,
+    Dropdown,
+    Flex,
+    Image,
+    List,
+    Typography,
+} from "antd";
+import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useMutation, useQuery, useSubscription } from "@apollo/client/react";
+import { utcDateTimeToLocal } from "../../../shared";
+import {
+    NEW_NOTIFICATION_SUBSCRIPTION,
+    USER_CREATED_NOTIFICATION,
+    SUBSCRIPTION_EXPIRY_NOTIFICATION,
+} from "../../../graphql/subscription/notification";
 
-const { Text } = Typography
-export const Notifications = () => {
-    const userId = localStorage.getItem("userId"); 
-    const {t,i18n} = useTranslation()
-    const isArabic = i18n?.language === 'ar'
-    const [notifications, setNotifications] = useState([]);
-    const [visible, setVisible] = useState(false);
-    const { data: userData } = useSubscription(USER_CREATED_NOTIFICATION);
-    const { data: expiryData } = useSubscription(SUBSCRIPTION_EXPIRY_NOTIFICATION);
+import { GET_NOTIFICATIONS } from "../../../graphql/query";
+import {
+    MARK_AS_READ,
+    MARK_AS_ALLREAD,
+} from "../../../graphql/mutation/mutations";
+import { getUserID } from "../../../utils/auth";
+const { Text } = Typography;
 
-    // Fetch existing notifications
-    // const { data:notification, loading: isLoading, refetch } = useQuery(GET_NOTIFICATIONS, {
-    //     variables: { userId },
-    //     skip: !userId,
-    //     fetchPolicy: "network-only",
-    //     onCompleted: (fetchedData) => {
-    //         if (fetchedData?.getNotifications?.notifications) {
-    //             setNotifications(fetchedData.getNotifications.notifications);
-    //         }
-    //     }
-    // });
+const addUniqueAlert = (prev, alert) => {
+    const exists = prev.alerts.find(a => a.id === alert.id);
+    if (exists) return prev;
 
-    // Subscribe to new notifications
-    const { data: subscriptionData } = useSubscription(NEW_NOTIFICATION_SUBSCRIPTION, {
-        onSubscriptionData: ({ subscriptionData }) => {
-            const newNotif = subscriptionData.data?.newNotification;
-            if (newNotif) {
-                setNotifications((prev) => [newNotif, ...prev]);
-            }
-        }
+    return {
+        ...prev,
+        totalCount: (prev.totalCount || 0) + 1,
+        unreadCount: (prev.unreadCount || 0) + (alert.isRead ? 0 : 1),
+        alerts: [alert, ...prev.alerts],
+    };
+};
+
+const Notifications = () => {
+    const { t } = useTranslation();
+
+    const [notifications, setNotifications] = useState({
+        totalCount: 0,
+        unreadCount: 0,
+        alerts: [],
     });
-    // Count unread notifications
-    // const count = data?.getAlert?.
 
-    const data = [
-        {
-            title: 'You’ve received a Requested Proposal for your service from CreativeBuyer93!',
+    const { data, refetch } = useQuery(GET_NOTIFICATIONS, {
+        variables: { limit: 100, offset: 0 },
+        fetchPolicy: "network-only",
+    });
+
+    useEffect(() => {
+        if (data) {
+            setNotifications(data.getAlerts);
+        }
+    }, [data]);
+
+    console.log('alerts',notifications?.alerts)
+
+    useSubscription(NEW_NOTIFICATION_SUBSCRIPTION, {
+        onData: ({ data }) => {
+            const alert = data?.data?.alertCreated?.alert;
+            if (!alert) return;
+            setNotifications(prev => addUniqueAlert(prev, alert));
         },
-        {
-            title: 'Your service received a 5-star review from CreativeBuyer93!',
+    });
+
+    useSubscription(USER_CREATED_NOTIFICATION, {
+        onData: ({ data }) => {
+            const user = data?.data?.userCreated?.user;
+            if (!user) return;
+
+            setNotifications(prev =>
+                addUniqueAlert(prev, {
+                    id: getUserID(),
+                    activity: `${user.firstName} ${user.lastName} ${t("created")}`,
+                    action: "user.created",
+                    isRead: false,
+                    createdAt: user.createdAt,
+                    userId: user.id,
+                    userName: `${user.firstName} ${user.lastName}`,
+                    userRole: "user",
+                })
+            );
         },
-        {
-            title: 'Your service received a 5-star review from CreativeBuyer93!',
+    });
+
+    useSubscription(SUBSCRIPTION_EXPIRY_NOTIFICATION, {
+        onData: ({ data }) => {
+            const payload = data?.data?.subscriptionExpiryNotification;
+            if (!payload) return;
+
+            setNotifications(prev =>
+                addUniqueAlert(prev, {
+                    id: getUserID(),
+                    activity: payload.message || t("Subscription will expire"),
+                    action: "subscription.expiry",
+                    isRead: false,
+                    createdAt: payload.expiresAt,
+                    userId: payload.subscriberId,
+                    userRole: "subscriber",
+                })
+            );
         },
-        {
-            title: 'Your service received a 5-star review from CreativeBuyer93!',
-        },
-    ];
+    });
+
+    const [markAsRead] = useMutation(MARK_AS_READ);
+    const [markAllRead] = useMutation(MARK_AS_ALLREAD);
+
+    const handleMarkAsRead = async (id) => {
+        await markAsRead({ variables: { markAlertAsReadId: id } });
+        refetch();
+    };
+
+    const handleMarkAllRead = async () => {
+        await markAllRead();
+        refetch();
+    };
+
+    const badgeCount = useMemo(() => notifications.unreadCount, [notifications]);
 
     const dropdownContent = (
-        <Card className='radius-12 shadow-c card-cs size-notify'>
-            <Text>{t("Notification")} ({isArabic ? toArabicDigits(10):10})</Text>
-            <Divider className="bg-divider my-3" />
+        <Card className="radius-12 shadow-c card-cs size-notify">
+            <Flex justify="space-between" align="center">
+                <Text>
+                    {t("Notification")} ({notifications.totalCount})
+                </Text>
+                <Button className="fs-10" type="link" size="small" onClick={handleMarkAllRead}>
+                    {t("Mark all read")}
+                </Button>
+            </Flex>
+            <Divider />
             <List
-                itemLayout="horizontal"
-                dataSource={data}
+                dataSource={notifications?.alerts}
                 className="overflowstyle overflow-scroll"
-                renderItem={(item, index) => (
-                <List.Item key={index}>
-                    <List.Item.Meta
-                        avatar={<Avatar src={`/assets/icons/notify-ic.webp`} size={30} />}
-                        title={<NavLink to={''} className={'fw-500'}>{item.title}</NavLink>}
-                        description={<Flex gap={5} align="center">
-                            <Text className="fs-12 text-gray">1 hour ago</Text>
-                            <Text className="fs-12 text-gray">12:24 AM</Text>
-                        </Flex>}
-                    />
-                </List.Item>
+                renderItem={(item) => (
+                    <List.Item key={item.id}>
+                        <List.Item.Meta
+                            avatar={<Avatar src="/assets/icons/notify-ic.webp" />}
+                            title={<NavLink className={!item.isRead ? 'fw-500':'fw-400'} to="">{item.activity}</NavLink>}
+                            description={
+                                <Flex justify="space-between">
+                                    <Text className="fs-12 text-gray">
+                                        {utcDateTimeToLocal(item.createdAt)}
+                                    </Text>
+                                    {!item.isRead && (
+                                        <Button
+                                            type="text"
+                                            size="small"
+                                            className="fs-10"
+                                            onClick={() => handleMarkAsRead(item.id)}
+                                        >
+                                            {t("Mark read")}
+                                        </Button>
+                                    )}
+                                </Flex>
+                            }
+                        />
+                    </List.Item>
                 )}
             />
         </Card>
     );
 
     return (
-        <>
+        <Dropdown
+            popupRender={() => dropdownContent}
+            trigger={["click"]}
+            onOpenChange={(open) => open && refetch()}
+        >
+            <Badge count={badgeCount} overflowCount={99}>
+                <Button shape="circle" size="large" className="bg-transparent p-0">
+                    <Image
+                        src="/assets/icons/notify.webp"
+                        width={20}
+                        preview={false}
+                        alt="notification"
+                    />
+                </Button>
+            </Badge>
+        </Dropdown>
+    );
+};
 
-            <Dropdown
-                popupRender={()=>dropdownContent}
-                trigger={['click']}
-                className='p-0'
-            >
-                <Badge count={9} overflowCount={9} className="">
-                    <Button shape='circle' size='large' className='bg-transparent p-0' onClick={()=> setVisible(true)}>
-                        <Image 
-                            src='/assets/icons/notify.webp' 
-                            width={'20px'} 
-                            preview={false}
-                            alt="notification icon" 
-                            className="up"
-                            fetchPriority="high"
-                        />
-                    </Button>
-                </Badge>
-            </Dropdown>
-        </>
-    )
-}
+export {Notifications}

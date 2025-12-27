@@ -1,12 +1,14 @@
 import { ApolloClient, InMemoryCache, createHttpLink, from, split } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
-import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { getAccessToken, clearAuthTokens } from "../shared/tokenManager";
 import { refreshAccessToken } from "../shared/tokenRefreshService";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 
 const API_URL = "https://backend.qloop.me/graphql";
+const WS_URL = "wss://backend.qloop.me/graphql";
 
 let isRefreshing = false;
 let pendingRequests = [];
@@ -31,18 +33,15 @@ return {
 });
 
 // WebSocket link for subscriptions
-const wsLink = new WebSocketLink({
-  uri: "wss://backend.qloop.me/graphql",
-  options: {
-    reconnect: true,
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: WS_URL,
     connectionParams: () => {
-      const token = getAccessToken();
-      return {
-        authorization: token ? `Bearer ${token}` : "",
-      };
+      const token = localStorage.getItem('accessToken');
+      return { authorization: token ? `Bearer ${token}` : "" };
     },
-  },
-});
+  })
+);
 
 // Split links: send subscriptions to wsLink, others to httpLink
 const splitLink = split(

@@ -113,6 +113,19 @@ const IS_MAINTENANCE_ALLOW = gql`
     }
   }
 `
+const MARK_AS_READ = gql`
+  mutation MarkAlertAsRead($markAlertAsReadId: ID!) {
+    markAlertAsRead(id: $markAlertAsReadId) {
+      id
+    }
+  }
+`
+
+const MARK_AS_ALLREAD = gql`
+  mutation Mutation {
+    markAllAlertsAsRead
+  }
+`
 
 export {
   CREATE_SUBSCRIBER_CUSTOMER,
@@ -130,4 +143,6 @@ export {
   UPDATE_PRIVACY_POLICY,
   UPDATE_USER,
   IS_MAINTENANCE_ALLOW,
+  MARK_AS_READ,
+  MARK_AS_ALLREAD,
 }

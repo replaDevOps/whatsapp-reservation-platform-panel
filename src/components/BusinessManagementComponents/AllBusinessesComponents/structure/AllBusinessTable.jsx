@@ -20,7 +20,7 @@ const AllBusinessTable = () => {
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
     const [selectedstatus, setselectedStatus] = useState('');
-    const [selectedYear, setSelectedYear] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState(null);
     const [ deleteitem, setDeleteItem ] = useState(false)
     const [ statuschange, setStatusChange ] = useState(null)
     const navigate = useNavigate()
@@ -32,8 +32,8 @@ const AllBusinessTable = () => {
         fetchPolicy: "network-only",
     })
     const fetchBusinesses = () => {
-        const startDate = selectedYear?.[0]?.format("YYYY-MM-DD") || null;
-        const endDate = selectedYear?.[1]?.format("YYYY-MM-DD") || null;
+        const startDate = selectedMonth?.[0]?.format("YYYY-MM-DD") || null;
+        const endDate = selectedMonth?.[1]?.format("YYYY-MM-DD") || null;
 
         getBusinesses({
             variables: {
@@ -77,7 +77,7 @@ const AllBusinessTable = () => {
         selectedAction,
         current,
         pageSize,
-        selectedYear
+        selectedMonth
     ])
     useEffect(()=>{
         setBusinesses(data?.getBusinesses?.businesses || []);
@@ -165,9 +165,9 @@ const AllBusinessTable = () => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder={[t("Start Year"),t("End Year")]}
-                                    value={selectedYear}
-                                    onChange={(year) => setSelectedYear(year)}
+                                    placeholder={[t("Start Month"),t("End Month")]}
+                                    value={selectedMonth}
+                                    onChange={(month) => setSelectedMonth(month)}
                                 />
                             </Flex>
                         </Col>
