@@ -18,7 +18,7 @@ const RevenueTable = () => {
     const [current, setCurrent] = useState(1);
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
-    const [selectedYear, setSelectedYear] = useState([]);
+    const [selectedDate, setselectedDate] = useState([]);
     const [revenueData, setRevenueData]= useState([])
     const [ search, setSearch ] = useState('')
     const debouncedSearch = useDebounce(search, 500);
@@ -27,8 +27,8 @@ const RevenueTable = () => {
     })
 
     const fetchFilters = () => {
-        const startDate = selectedYear?.[0]?.format("YYYY-MM-DD") || null;
-        const endDate = selectedYear?.[1]?.format("YYYY-MM-DD") || null;
+        const startDate = selectedDate?.[0]?.format("YYYY-MM-DD") || null;
+        const endDate = selectedDate?.[1]?.format("YYYY-MM-DD") || null;
 
         getRevenue({
             variables: {
@@ -60,7 +60,7 @@ const RevenueTable = () => {
     }, [
         getRevenue,
         debouncedSearch,
-        selectedYear,
+        selectedDate,
         selectedType,
         selectedAction,
         current,
@@ -83,7 +83,7 @@ const RevenueTable = () => {
                                 <Col span={24} md={24} lg={12}>
                                     <SearchInput
                                         name='name'
-                                        placeholder='Search by Business Name'
+                                        placeholder={t('Search by Business Name')}
                                         value={search}
                                         onChange={(e) => {
                                             setSearch(e.target.value);
@@ -106,7 +106,7 @@ const RevenueTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(servicetypeItems.find((i) => i.key === selectedType)?.label || "Type")}
+                                                    {t(servicetypeItems.find((i) => i.key === selectedType)?.label || "All Types")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -143,9 +143,9 @@ const RevenueTable = () => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder={[t("Start Year"),t("End Year")]}
-                                    value={selectedYear}
-                                    onChange={(year) => setSelectedYear(year)}
+                                    placeholder={[t("Start Date"),t("End Date")]}
+                                    value={selectedDate}
+                                    onChange={(date) => setselectedDate(date)}
                                 />
                             </Flex>
                         </Col>

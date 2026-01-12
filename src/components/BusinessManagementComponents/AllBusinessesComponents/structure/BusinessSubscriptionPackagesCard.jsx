@@ -18,7 +18,7 @@ const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscript
                                     <Card
                                         hoverable
                                         className={`border-gray bg-transparent card-cs ${
-                                            plan?.type === selectedSubscriptionPlan?.type ? 'active-radio' : ''
+                                            (plan?.type) === selectedSubscriptionPlan?.type ? 'active-radio' : ''
                                         }`}
                                         onClick={() => setSelectedSubscriptionPlan(plan)}
                                     >

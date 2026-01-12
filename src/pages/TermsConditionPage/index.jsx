@@ -1,4 +1,4 @@
-import { Button, Card, Divider, Flex, message, notification, Spin } from 'antd'
+import { Button, Card, Divider, Flex, notification } from 'antd'
 import { BreadCrumbCard, EditorDescription, TitleCard } from '../../components'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -12,11 +12,10 @@ const TermsConditionPage = () => {
     const [ descriptionData, setDescriptionData ] = useState('')
     const {t} = useTranslation()
     const title = websitepagesTitle({t})
-    const [messageApi] = message.useMessage();
     const [ api, contextHolder ] = notification.useNotification()
     const { data, refetch, loading } = useQuery(GET_TERMS)
     const [updateTermsCondition, { loading: updating }] = useMutation(UPDATE_TERMS,{
-      onCompleted:()=>{notifySuccess(api,"Terms & Condition Update","Terms & Condition updated successfully",()=>refetch())},
+      onCompleted:()=>{notifySuccess(api,t("Terms & Condition Update"),t("Terms & Condition has been updated successfully"),()=>refetch())},
       onError: (error) => {notifyError(api, error)},
     })
 
@@ -32,7 +31,7 @@ const TermsConditionPage = () => {
     const onFinish = async () => {
         try {
           if (!descriptionData) {
-            messageApi.error("Please add terms content")
+            notifyError(api, t("Please add terms content"))
             return
           }
           

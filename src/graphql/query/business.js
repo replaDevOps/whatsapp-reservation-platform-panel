@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client"
 
 const GET_SUBSCRIBER_CUSTOMERS_LOOKUP = gql`
-  query GetUsers($limit: Int!, $offset: Int!, $role: UserRole) {
-    getUsers(limit: $limit, offset: $offset, role: $role) {
+  query GetUsers($limit: Int!, $offset: Int!, $roles: [UserRole!], ) {
+    getUsers(limit: $limit, offset: $offset, roles: $roles, ) {
       totalCount
       users {
         id

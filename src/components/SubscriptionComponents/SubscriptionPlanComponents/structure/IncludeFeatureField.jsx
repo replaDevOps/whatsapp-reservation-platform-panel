@@ -41,7 +41,7 @@ export const IncludeFeatureField = ({
         if(featureValues)
             setLocalValues(featureValues)
     }, [featureValues])
-console.log("localValues:", localValues)
+    console.log("localValues:", localValues)
     
     const handleRowSwitchChange = (key, checked) => {
         const updated = {

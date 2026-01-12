@@ -19,12 +19,7 @@ const EditSubscriptionPlanModal = ({visible,onClose,edititem}) => {
     })
     const [updateSubscriptionPlan, { loading}] = useMutation(UPDATE_SUBSCRIBER_SUBSCRIPTION,{
         onCompleted: () => {
-            notifySuccess(
-                api,
-                "Subscription Plan Updated",
-                "Subscription plan Updated successfully",
-                ()=> {getSubscriberSubscriptions();onClose()}
-            )
+            notifySuccess(api,t("Subscription Plan Update"),t("Subscription plan has been Updated successfully"),()=> {getSubscriberSubscriptions();onClose()})
         },
         onError: (error) => {
             notifyError(api, error);
@@ -97,7 +92,6 @@ const EditSubscriptionPlanModal = ({visible,onClose,edititem}) => {
         };
 
         console.log("submit form", payload);
-
         await updateSubscriptionPlan({
             variables: {
                 updateSubscriberSubscriptionId: edititem.id,  
@@ -172,84 +166,84 @@ const EditSubscriptionPlanModal = ({visible,onClose,edititem}) => {
                                     {
                                         key: "noOfBranches",
                                         selectOptions: [
-                                            { label: "Branch", value: "branch" },
-                                            { label: "Branches", value: "branches" },
+                                            { label: t("Branch"), value: "branch" },
+                                            { label: t("Branches"), value: "branches" },
                                         ],
                                     },
                                     {
                                         key: "noOfAdmins",
                                         selectOptions: [
-                                            { label: "Admin", value: "admin" },
-                                            { label: "Admins", value: "admins" },
+                                            { label: t("Admin"), value: "admin" },
+                                            { label: t("Admins"), value: "admins" },
                                         ],
                                     },
                                     {
                                         key: "noOfStaffManagers",
                                         selectOptions: [
-                                            { label: "Staff Manager", value: "staff manager" },
-                                            { label: "Staff Managers", value: "staff managers" },
+                                            { label: t("Staff Manager"), value: "staff manager" },
+                                            { label: t("Staff Managers"), value: "staff managers" },
                                         ],
                                     },
                                     {
                                         key: "noOfServiceProviders",
                                         selectOptions: [
-                                            { label: "Service Provider", value: "service provider" },
-                                            { label: "Service Provider", value: "service providers" },
+                                            { label: t("Service Provider"), value: "service provider" },
+                                            { label: t("Service Providers"), value: "service providers" },
                                         ],
                                     },
                                     {
                                         key: "noOfReceptionists",
                                         selectOptions: [
-                                            { label: "Receptionist", value: "receptionist" },
-                                            { label: "Receptionists", value: "receptionists" },
+                                            { label: t("Receptionist"), value: "receptionist" },
+                                            { label: t("Receptionists"), value: "receptionists" },
                                         ],
                                     },
                                     {
                                         key: "whatsappBot",
                                         selectOptions: [
-                                            { label: "WhatsApp Bot", value: "whatsApp bot" },
+                                            { label: t("WhatsApp Bot"), value: "whatsApp bot" },
                                         ],
                                     },
                                     {
                                         key: "manualReminder",
                                         selectOptions: [
-                                            { label: "Manual Reminders", value: "manual reminders" },
+                                            { label: t("Manual Reminders"), value: "manual reminders" },
                                         ],
                                     },
                                     {
                                         key: "automatedReminder",
                                         selectOptions: [
-                                            { label: "Automated Reminders", value: "automated reminders" },
+                                            { label: t("Automated Reminders"), value: "automated reminders" },
                                         ],
                                     },
                                     {
                                         key: "googleReviewLink",
                                         selectOptions: [
-                                            { label: "Google Review Link", value: "Google link" },
+                                            { label: t("Google Review Link"), value: "Google link" },
                                         ],
                                     },
                                     {
                                         key: "promotions",
                                         selectOptions: [
-                                            { label: "Promotions", value: "promotion" },
+                                            { label: t("Promotions"), value: "promotion" },
                                         ],
                                     },
                                     {
                                         key: "selfServiceTablet",
                                         selectOptions: [
-                                            { label: "Self Service Tablet", value: "self service tablet" },
+                                            { label: t("Self Service Tablet"), value: "self service tablet" },
                                         ],
                                     },
                                     {
                                         key: "basicDashboard",
                                         selectOptions: [
-                                            { label: "Basic Dashboard", value: "basic dashboard" },
+                                            { label: t("Basic Dashboard"), value: "basic dashboard" },
                                         ],
                                     },
                                     {
                                         key: "fullAccessDashboard",
                                         selectOptions: [
-                                            { label: "Full Access Dashboard", value: "full access dashboard" },
+                                            { label: t("Full Access Dashboard"), value: "full access dashboard" },
                                         ],
                                     },
                                 ]}

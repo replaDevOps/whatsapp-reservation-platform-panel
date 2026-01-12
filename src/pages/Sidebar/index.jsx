@@ -11,7 +11,7 @@ import { BookingPage } from '../BookingPage';
 import { RevenuePage } from '../RevenuePage';
 import { DemoRequestPage } from '../DemoRequestPage';
 import { StaffPage } from '../StaffPage';
-import { AddEditBusiness, AddEditStaff, SingleViewBusiness } from '../../components';
+import { AddEditBusiness, AddEditStaff, LanguageChange, SingleViewBusiness } from '../../components';
 import { SubscriptionPlanPage } from '../SubscriptionPlanPage';
 import { SubscriptionManagementPage } from '../SubscriptionManagementPage';
 import { DiscountPage } from '../DiscountPage';
@@ -21,7 +21,6 @@ import { PrivacyPolicyPage } from '../PrivacyPolicyPage';
 import { SettingsPage } from '../SettingsPage';
 import { ActivityLogPage } from '../ActivityLogPage';
 import { AllBusinessPage } from '../AllBusinessPage';
-import { LanguageChange } from './LanguageChange';
 import { useTranslation } from 'react-i18next';
 import { getUserFirstName, getUserImage, getUserLastName, getUserName } from '../../utils/auth';
 
@@ -213,4 +212,4 @@ const Sidebar = () => {
   );
 };
 
-export {Sidebar};
+export default Sidebar;

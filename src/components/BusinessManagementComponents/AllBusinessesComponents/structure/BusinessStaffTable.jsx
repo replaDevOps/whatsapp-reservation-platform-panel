@@ -35,8 +35,8 @@ const BusinessStaffTable = ({id,setStaffTableData}) => {
     };
 
     useEffect(()=>{
-        setStaffBranchData(data?.getStaffByBranch?.user);
-        setStaffTableData(data?.getStaffByBranch?.user)
+        setStaffBranchData(data?.getStaffByBranch?.users);
+        setStaffTableData(data?.getStaffByBranch?.users)
     },[data])
     return (
         <Flex vertical gap={20}>

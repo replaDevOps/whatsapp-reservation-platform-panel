@@ -1,11 +1,11 @@
 const rolestaffopt = [
     {
         id: 'SUPER_ADMIN',
-        name: 'Supper Admin'
+        name: 'Super Admin'
     },
     {
         id: 'TECHNICAL_ADMIN',
-        name: 'Techincal Admin'
+        name: 'Technical Admin'
     },
     {
         id: 'DEMO_ADMIN',
@@ -69,7 +69,7 @@ const statusItem = [
 ]
 
 const typeItems = [
-    { key: '', label: 'All Type' },
+    { key: '', label: 'All Types' },
     { key: 'GENERAL', label: 'General' },
     { key: 'BARBER', label: 'Barber' },
     { key: 'CLINIC', label: 'Clinic' },
@@ -84,7 +84,7 @@ const typeOp = [
 ];
 
 const subscriptionItems = [
-    { key: '', label: 'All' },
+    { key: '', label: 'All Subscription Plans' },
     { key: 'BASIC', label: 'BP' },
     { key: 'STANDARD', label: 'SP' },
     { key: 'PRO', label: 'PP' },
@@ -134,7 +134,7 @@ const typeamountItem = [
 ]
 
 const roleItems = [
-    { key: '', label: 'All' },
+    { key: '', label: 'All Roles' },
     { key: 'SUPER_ADMIN', label: "Super Admin" },
     { key: 'TECHNICAL_ADMIN', label: "Technical Admin" },
     { key: 'DEMO_ADMIN', label: "Demo Admin" },
@@ -147,7 +147,7 @@ const statusItems = [
 ];
 
 const servicetypeItems = [
-    { key: '', label: 'All Type' },
+    { key: '', label: 'All Types' },
     { key: 'GENERAL', label: 'General' },
     { key: 'BARBER', label: 'Barber' },
     { key: 'CLINIC', label: 'Clinic' },
@@ -171,6 +171,7 @@ const actionItems = [
 ];
 
 const statusbusinessItem = [
+    { key: "", label: 'All Status' },
     { key: "ACTIVE", label: 'Active' },
     { key: "INACTIVE", label: 'Deactive' },
 ];

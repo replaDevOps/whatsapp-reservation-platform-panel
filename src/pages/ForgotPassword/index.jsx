@@ -1,10 +1,9 @@
 import { Form, Button, Typography, Row, Col, Image, Flex } from "antd";
-import { MyInput } from "../../components";
+import { LanguageChange, MyInput } from "../../components";
 import { NavLink } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { LanguageChange } from "../Sidebar/LanguageChange";
 
 const { Title, Paragraph } = Typography;
 
@@ -34,7 +33,7 @@ const ForgotPassword = () => {
 
     return (
         <Row className="signup-page">
-            <Col xs={24} sm={24} md={12} lg={14} className="signup-form-container">
+            <Col xs={24} sm={24} md={12} lg={10} className="signup-form-container">
                 <div className="form-inner">
                     <NavLink to={'/'}>
                       <div className="logo">
@@ -161,7 +160,7 @@ const ForgotPassword = () => {
                         </Col>
                         <Col span={24}>
                             <Paragraph className="text-center mt-2">
-                                {requestState === 'request' && <>{t("Remember Password?")} <NavLink to={'/login'}>{t("Sign In")}</NavLink></>}
+                                {requestState === 'request' && <>{t("Remember Password?")} <NavLink className={'text-brand'} to={'/login'}>{t("Sign In")}</NavLink></>}
                                 {requestState === 'otp' && <>{t("Didn’t receive code?")} <NavLink to={''}>{t("Resend")}</NavLink></>}
                                 {requestState === 'reset' && null}
                             </Paragraph>
@@ -171,7 +170,7 @@ const ForgotPassword = () => {
                 </div>
             </Col>
 
-            <Col xs={0} md={12} lg={10} className="signup-visual-container">
+            <Col xs={0} md={12} lg={14} className="signup-visual-container">
                 <Flex justify="end">
                     <LanguageChange />
                 </Flex>

@@ -3,8 +3,7 @@ import { NavLink } from "react-router-dom";
 import { message } from "antd";
 import { useMutation } from "@apollo/client/react";
 import { useNavigate } from "react-router-dom";
-import { MyInput } from "../../components";
-import { LanguageChange } from "../Sidebar/LanguageChange";
+import { LanguageChange, MyInput } from "../../components";
 import { useTranslation } from "react-i18next";
 import { client } from "../../config/apolloClient";
 import { LOGIN_USER } from "../../graphql/mutation";
@@ -87,7 +86,7 @@ const LoginPage = () => {
                                 {t("Sign In")}
                             </Button>
                             <Paragraph className="text-center mt-3">
-                                {t("For tablet based self-booking?")} <NavLink className={'text-brand'} to={'/signintablet'}>{t("Sign In")}</NavLink>
+                                {t("For tablet based self-booking?")} <NavLink className={'text-brand'} to={''}>{t("Sign In")}</NavLink>
                             </Paragraph>
                         </Form>
                     </div>

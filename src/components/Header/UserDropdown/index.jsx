@@ -25,14 +25,11 @@ const UserDropdown = ()=> {
   // });
   
   const handleLogout = () => {
-    setLoaing(true)
     localStorage.removeItem('user');
-    localStorage.removeItem('accessToken')
-    setInterval(() => {
-      setLoaing(false)
-      window.location.href = "/login";
-    }, 2000);
+    localStorage.removeItem('accessToken');
+    window.location.href = "/login";
   };
+
 
   const dropdownContent = (
     <Card className='radius-12 shadow-c card-cs'>

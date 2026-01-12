@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col, Form, message } from 'antd';
+import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col, Form, message, notification } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { ConfirmModal, CustomPagination, DeleteModal } from '../../../Ui';
 import { stafftableColumn } from '../../../../data';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '../../../Forms';
-import { getUserId, roleItems, statusitemsCust, TableLoader, useDebounce } from '../../../../shared';
+import { notifyError, notifySuccess, roleItems, statusitemsCust, TableLoader, useDebounce } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
 import { GET_STAFFS } from '../../../../graphql/query';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
@@ -25,20 +25,35 @@ const StaffTable = () => {
     const [selectedStatus, setSelectedStatus] = useState(null);
     const navigate = useNavigate();
     const [ statuschange, setStatusChange ] = useState(false)
-    const [ deleteitem, setDeleteItem ] = useState(false)
-    const [messageApi, contextHolder] = message.useMessage();
+    const [ deleteitem, setDeleteItem ] = useState(null)
+    const [api, contextHolder] = notification.useNotification();
     const [ search, setSearch ] = useState('')
     const searchdebounce = useDebounce(search,500);
-    const [ getstaff, { data, loading, refetch }] = useLazyQuery(GET_STAFFS,{
+    const [staffData, setStaffData]= useState([])
+    const [ getstaff, { data, loading }] = useLazyQuery(GET_STAFFS,{
         fetchPolicy: 'network-only'
     })
-    const [staffData, setStaffData]= useState([])
-    const [deleteStaff, { loading: deleting }] = useMutation(DELETE_STAFF);
-
-    const buildFilterObject = () => ({
-        search: searchdebounce || null,
-        role: selectedRole || null,
-        isActive: selectedStatus,
+    const fetchStaffs = () => {
+        getstaff({
+            variables: {
+                limit: pageSize,
+                offset: (current - 1) * pageSize,
+                superAdminId: getUserID(),
+                filter: {
+                    search: searchdebounce || null,
+                    role: selectedRole || null,
+                    isActive: selectedStatus,
+                }
+            }
+        })
+    }
+    const [deleteStaff, { loading: deleting }] = useMutation(DELETE_STAFF,{
+        onCompleted: ()=>{
+            notifySuccess(api,t("Staff Delete"),t("Staff has been deleted successfully."), ()=> {fetchStaffs(); setDeleteItem(null)})
+        },
+        onError: (error) => {
+            notifyError(api, error);
+        }
     });
 
 
@@ -61,14 +76,7 @@ const StaffTable = () => {
 
     useEffect(()=>{
         if(getstaff){
-            getstaff({
-                variables: {
-                    limit: pageSize,
-                    offset: (current - 1) * pageSize,
-                    superAdminId: getUserID(),
-                    filter: buildFilterObject(),
-                }
-            })
+            fetchStaffs();
         }
     },[
         getstaff,
@@ -83,24 +91,6 @@ const StaffTable = () => {
         if(data?.getSuperAdminPanelUsers)
             setStaffData(data?.getSuperAdminPanelUsers?.users)
     }, [data])
-
-    const handleDelete = async () => {
-        if (!deleteitem) return;
-        try {
-            await deleteStaff({ variables: { deleteUserId: deleteitem } });
-            messageApi.success('Staff deleted successfully');
-            setDeleteItem(null);
-            refetch({
-                limit: 20,
-                offset: 0,
-                filter: buildFilterObject()
-            });
-        } catch (err) {
-            console.error(err);
-            messageApi.error('Failed to delete staff');
-        }
-    };
-
 
     return (
         <>
@@ -144,7 +134,7 @@ const StaffTable = () => {
                                     >
                                         <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                             <Flex justify="space-between" align="center" gap={30}>
-                                                {t(roleItems.find((i) => i.key === selectedRole)?.label || "Role")}
+                                                {t(roleItems.find((i) => i.key === selectedRole)?.label || "All Roles")}
                                                 <DownOutlined />
                                             </Flex>
                                         </Button>
@@ -208,8 +198,11 @@ const StaffTable = () => {
                 visible={deleteitem}
                 title={'Are you sure?'}
                 subtitle={'This action cannot be undone. Are you sure you want to delete this Staff?'}
-                onClose={()=>setDeleteItem(false)}
-                onConfirm={handleDelete} 
+                onClose={()=>setDeleteItem(null)}
+                onConfirm={ async()=>{
+                    if (!deleteitem) return;
+                    await deleteStaff({ variables: { deleteUserId: deleteitem } });
+                }} 
                 loading={deleting}
             />
         </>

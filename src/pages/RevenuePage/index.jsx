@@ -19,13 +19,13 @@ const RevenuePage = () => {
             id: 1,
             icon:'/assets/icons/rev-icon.webp',
             title: `${t("SAR")} ${isArabic ? toArabicDigits(revenueCount?.totalRevenue): revenueCount?.totalRevenue}`,
-            subtitle: 'Total Revenue',
+            subtitle: t('Total Revenue'),
         },
         {
             id: 2,
             icon:'/assets/icons/rev-icon.webp',
             title: `${t("SAR")} ${isArabic ? toArabicDigits(revenueCount?.thisMonthRevenue):revenueCount?.thisMonthRevenue}`,
-            subtitle: 'This Month Revenue',
+            subtitle: t('This Month Revenue'),
         },
     ];
 

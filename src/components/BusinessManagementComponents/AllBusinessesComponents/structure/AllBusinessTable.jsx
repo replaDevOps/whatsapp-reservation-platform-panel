@@ -49,7 +49,7 @@ const AllBusinessTable = () => {
     };
     const [changeBusinessStatus, { loading: statusChanging }] = useMutation(CHANGE_BUSINESS_STATUS,{
         onCompleted: ()=>{
-            notifySuccess(api,"Business status change","Business status changes successfully", ()=> {fetchBusinesses(); setStatusChange(null)})
+            notifySuccess(api,t("Business status change"),t("Business status changes successfully"), ()=> {fetchBusinesses(); setStatusChange(null)})
         },
         onError: (error) => {
             notifyError(api, error);
@@ -57,12 +57,7 @@ const AllBusinessTable = () => {
     });
      const [deleteBusiness, {loading: deleting}] = useMutation(DELETE_BUSINESS, {
         onCompleted: () => {
-            notifySuccess(
-                api,
-                "Business Delete",
-                "Business deleted successfully",
-                ()=> {getBusinesses();setDeleteItem(false)}
-            )
+            notifySuccess(api,t("Business Delete"),t("Business deleted successfully"),()=> {fetchBusinesses();setDeleteItem(false)})
         },
         onError: (error) => {
             notifyError(api, error);
@@ -133,7 +128,7 @@ const AllBusinessTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(typeItems.find((i) => i.key === selectedAction)?.label || "Type")}
+                                                    {t(typeItems.find((i) => i.key === selectedAction)?.label || "All Type")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -150,7 +145,7 @@ const AllBusinessTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(statusbusinessItem.find((i) => i.key === selectedstatus)?.label || "Status")}
+                                                    {t(statusbusinessItem.find((i) => i.key === selectedstatus)?.label || "All Status")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>

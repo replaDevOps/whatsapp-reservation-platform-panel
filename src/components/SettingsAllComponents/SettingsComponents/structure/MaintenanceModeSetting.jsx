@@ -20,6 +20,7 @@ const MaintenanceModeSetting = () => {
     }, [data]);
     const handleEdit = () => {
         setVisible(true)
+        refetch()
     }
     const handleModalClose = (newValue) => {
         if (typeof newValue === 'boolean') {
@@ -27,7 +28,6 @@ const MaintenanceModeSetting = () => {
         }
         setVisible(false)
     }
-
     return (
         <>
             <Card className='card-bg card-cs radius-12 border-gray'>

@@ -1,7 +1,7 @@
 const getUserID = () => {
   try {
     const user = JSON.parse(localStorage?.getItem("user"))
-    return user?.userId || null
+    return user?.id || null
   }
   catch (e){
     return null

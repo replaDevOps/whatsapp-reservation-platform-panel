@@ -49,14 +49,14 @@ const AddEditBusiness = () => {
                 variables: {
                     limit: 1000,
                     offset: 0,
-                    role: "SUBSCRIBER"
+                    roles: ["SUBSCRIBER"]
                 }
             })
 
     }, [getSubscriberCustomersLookup])
     useEffect(()=>{
         if(data?.getUsers?.users?.length)
-            setSubscriberCustomersLookup(data?.getUsers?.users?.map(({id, firstName, lastName}) => ({id, name: lastName})))
+            setSubscriberCustomersLookup(data?.getUsers?.users?.map(({id, firstName, lastName}) => ({id, name: firstName + " " + lastName})))
     }, [data])
 
      const uploadFileToServer = async (file) => {

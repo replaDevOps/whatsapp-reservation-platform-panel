@@ -21,21 +21,26 @@ const DemoRequestTable = () => {
     const [statusfilter, setStatusFilter] = useState('');
     const [selectedType, setselectedType] = useState('');
     const [selectedStatus, setselectedStatus] = useState(demoreqData);
-    const [selectedYear, setSelectedYear] = useState([null, null]);
+    const [selectedDate, setSelectedDate] = useState([null, null]);
     const [ visible, setVisible ] = useState(false)
     const [demorequestData, setDemoRequestData]= useState([])
     const [ getDemoRequest, { data, loading }] = useLazyQuery(GET_DEMO_REQUEST,{
         fetchPolicy: 'network-only'
     })
-
-    const buildFilterObject = () => ({
-        businessType: selectedType || undefined,
-        status: statusfilter || undefined ,
-        startDate: selectedYear?.[0] ? selectedYear[0].format("DD-MM-YYYY") : undefined,
-        endDate: selectedYear?.[1] ? selectedYear[1].format("DD-MM-YYYY") : undefined
-    });
-
-    
+    const FetchDemoRequest = () => {
+        const startDate =  selectedDate?.[0] ? selectedDate[0].format("DD-MM-YYYY") : null;
+        const endDate = selectedDate?.[1] ? selectedDate[1].format("DD-MM-YYYY") : null;
+        getDemoRequest({
+            variables: { 
+                limit: pageSize,
+                offset: (current - 1) * pageSize,
+                businessType: selectedType || null,
+                status: statusfilter || null,
+                startDate,
+                endDate
+            }
+        })
+    }    
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -61,15 +66,9 @@ const DemoRequestTable = () => {
 
     useEffect(()=>{
         if(getDemoRequest){
-            getDemoRequest({
-                variables: {
-                    limit: pageSize,
-                    offset: (current - 1) * pageSize,
-                    filter: buildFilterObject()
-                }
-            })
+            FetchDemoRequest()
         }
-    },[getDemoRequest, current, pageSize, selectedType, statusfilter, selectedYear])
+    },[getDemoRequest, current, pageSize, selectedType, statusfilter, selectedDate])
     
     useEffect(()=>{
         if (data?.getBookDemos?.bookDemos)
@@ -99,7 +98,7 @@ const DemoRequestTable = () => {
                                 >
                                     <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                         <Flex justify="space-between" align="center" gap={30}>
-                                            {t(servicetypeItems.find((i) => i.key === selectedType)?.label || "Type")}
+                                            {t(servicetypeItems.find((i) => i.key === selectedType)?.label || "All Type")}
                                             <DownOutlined />
                                         </Flex>
                                     </Button>
@@ -116,7 +115,7 @@ const DemoRequestTable = () => {
                                 >
                                     <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                         <Flex justify="space-between" align="center" gap={30}>
-                                            {t(statusItems.find((i) => i.key === statusfilter)?.label || "Status")}
+                                            {t(statusItems.find((i) => i.key === statusfilter)?.label || "All Status")}
                                             <DownOutlined />
                                         </Flex>
                                     </Button>
@@ -129,9 +128,9 @@ const DemoRequestTable = () => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder={[t("Start Year"),t("Start Year")]}
-                                    value={selectedYear}
-                                    onChange={(range) => setSelectedYear(range)}
+                                    placeholder={[t("Start Date"),t("End Date")]}
+                                    value={selectedDate}
+                                    onChange={(date) => setSelectedDate(date)}
                                 />
                             </Flex>
                         </Col>
@@ -167,10 +166,7 @@ const DemoRequestTable = () => {
             <MeetingNoteModal 
                 visible={visible}
                 onClose={()=>setVisible(false)}
-                refetch={() => refetch({
-                    limit: 10,
-                    offset: 0,
-                })}
+                refetch={() => FetchDemoRequest()}
             />
         </>
     );

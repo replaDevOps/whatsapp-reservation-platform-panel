@@ -20,7 +20,7 @@ const EditSubscription = ({setEditItem,edititem}) => {
             getSubscriptionPlans()
         }
     });
-console.log("featureValues:", success)
+    console.log("featureValues:", success)
     useEffect(()=>{
         if(edititem){
             form.setFieldsValue({
@@ -89,7 +89,6 @@ console.log("featureValues:", success)
 
 
     const handleSubmit = async (values) => {
-        console.log("featureValues:", featureValues)
         const data = {
             ...values,
             price: parseInt(values?.price),
@@ -135,7 +134,7 @@ console.log("featureValues:", success)
                 <Col span={24}>
                     <MyInput 
                         label={t("Subscription Title")} 
-                        value={edititem?.title}
+                        value={t(edititem?.title)}
                         required 
                         message={t("Please enter subscription title")} 
                         disabled
@@ -155,7 +154,7 @@ console.log("featureValues:", success)
                         name="price"
                         required
                         message={t("Please enter price")}
-                        addonBefore='SAR'
+                        addonBefore={t('SAR')}
                         addonAfter={
                             <Select
                                 defaultValue="monthly"

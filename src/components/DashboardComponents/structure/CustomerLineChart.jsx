@@ -100,12 +100,6 @@ const CustomerLineChart = () => {
                     <ModuleTopHeading level={4} name={t("Customers")} />
                     <Text className='text-gray fs-13'>{t("Total registered customers in system")}</Text>
                 </Flex>
-                {/* <Title level={4} className='fw-500 text-black m-0'>
-                    {isArabic ? toArabicDigits(data?.getCustomersAnalyticsApi?.totalCustomers):data?.getCustomersAnalyticsApi?.totalCustomers} 
-                    <span className='text-bright-red fs-13 fw-400'>{i18n?.language === 'ar' ? 
-                    `${data?.getCustomersAnalyticsApi?.percentageChange}%-`:
-                    `${data?.getCustomersAnalyticsApi?.percentageChange}%`} {t("then last month")} <img src='/assets/icons/down-ar.webp' width={12} alt='down arrow icon' fetchPriority="high" /></span>
-                </Title> */}
                 <Title level={4} className='fw-500 text-black m-0'>
                     {isArabic 
                         ? toArabicDigits(data?.getCustomersAnalyticsApi?.totalCustomers) 

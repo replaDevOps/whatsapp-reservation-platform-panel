@@ -20,7 +20,7 @@ const SubscriptionManageTable = () => {
     const [selectedAction, setselectedAction] = useState('');
     const [selectedType, setselectedType] = useState('');
     const [selectedperiod, setselectedPeriod] = useState('');
-    const [selectedYear, setSelectedYear] = useState([]);
+    const [selectedDate, setselectedDate] = useState([]);
     const [ visible, setVisible ] = useState(false)
     const [ edititem, setEditItem ] = useState(null)
     const [ upgradeplan, setUpgradePlan ] = useState(false)
@@ -37,8 +37,8 @@ const SubscriptionManageTable = () => {
         type: selectedType || null,
         plan: selectedAction || null,
         validity: selectedperiod || null,
-        startDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
-        endDate: selectedYear?.[1]?.format("YYYY-MM-DD") || null,
+        startDate: selectedDate?.[0]?.format("YYYY-MM-DD") || null,
+        endDate: selectedDate?.[1]?.format("YYYY-MM-DD") || null,
     });
     useEffect(()=>{
         if(getSubscriberSubscriptions)
@@ -49,7 +49,7 @@ const SubscriptionManageTable = () => {
                     ...buildFilterObject()
                 }
             })
-    }, [getSubscriberSubscriptions,debouncedSearch,selectedAction,selectedType,selectedperiod, selectedYear, pageSize, current])
+    }, [getSubscriberSubscriptions,debouncedSearch,selectedAction,selectedType,selectedperiod, selectedDate, pageSize, current])
     useEffect(()=>{
         if(data?.getSubscriberSubscriptions)
         {
@@ -109,7 +109,7 @@ const SubscriptionManageTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(typeItems.find((i) => i.key === selectedType)?.label || "Type")}
+                                                    {t(typeItems.find((i) => i.key === selectedType)?.label || "All Types")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -126,7 +126,7 @@ const SubscriptionManageTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(periodItems.find((i) => i.key === selectedperiod)?.label || "Period")}
+                                                    {t(periodItems.find((i) => i.key === selectedperiod)?.label || "All Periods")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -143,7 +143,7 @@ const SubscriptionManageTable = () => {
                                         >
                                             <Button className="btncancel px-3 filter-bg fs-13 text-black">
                                                 <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(subscriptionItems.find((i) => i.key === selectedAction)?.label || "Subscription Plan")}
+                                                    {t(subscriptionItems.find((i) => i.key === selectedAction)?.label || "All Subscription Plans")}
                                                     <DownOutlined />
                                                 </Flex>
                                             </Button>
@@ -158,9 +158,9 @@ const SubscriptionManageTable = () => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder={[t("Start Year"),t("End Year")]}
-                                    value={selectedYear}
-                                    onChange={(year) => setSelectedYear(year)}
+                                    placeholder={[t("Start Date"),t("End Date")]}
+                                    value={selectedDate}
+                                    onChange={(date) => setselectedDate(date)}
                                 />
                             </Flex>
                         </Col>
@@ -205,8 +205,6 @@ const SubscriptionManageTable = () => {
                 edititem={edititem}
                 onClose={()=>{setIsRenew(false);setEditItem(null);}}
             />
-
-            
         </>
     );
 };

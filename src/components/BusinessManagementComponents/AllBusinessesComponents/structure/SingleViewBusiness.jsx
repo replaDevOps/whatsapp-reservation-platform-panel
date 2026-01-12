@@ -103,7 +103,7 @@ const SingleViewBusiness = () => {
                                             <Avatar src={singleview?.image} size={40} className='shrink-0'  />
                                             <Flex gap={10} align="center">
                                                 <ModuleTopHeading level={5} name={capitalizeTranslated(singleview?.name)} />
-                                                <Tag className='px-3 py-1 radius-20'>{capitalizeTranslated(t(singleview?.businessType))}</Tag>
+                                                <Tag className='px-3 py-1 radius-20'>{t(capitalizeTranslated(singleview?.businessType))}</Tag>
                                             </Flex>
                                         </Flex>
                                     </Col>
@@ -113,7 +113,7 @@ const SingleViewBusiness = () => {
                                                 <Flex align='center' gap={2}>
                                                     <Text strong className='m-0 fs-15'>
                                                         {
-                                                            capitalizeTranslated(t(singleview?.subscription?.type))
+                                                            t(capitalizeTranslated(singleview?.subscription?.type))
                                                         } 
                                                         {/* {
                                                             t(singleview?.subscriptionPlan

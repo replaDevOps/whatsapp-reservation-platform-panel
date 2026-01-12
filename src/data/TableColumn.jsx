@@ -29,7 +29,7 @@ const BookingDashboardColumn = ({t,i18n})=> [
     {
         title: t("Type"),
         dataIndex: 'type',
-        render: (type) => capitalizeTranslated(t(type))
+        render: (type) => t(capitalizeTranslated(type))
     },
     {
         title: t("Total Bookings"),
@@ -64,7 +64,7 @@ const customerColumn = ({t,i18n})=> [
     {
         title: t("Joined At"),
         dataIndex: 'createdAt',
-        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(createdAt) : utcDateTimeToLocal(createdAt)
+        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(utcDateTimeToLocal(createdAt)) : utcDateTimeToLocal(createdAt)
     },
 ];
 
@@ -259,7 +259,7 @@ const revenueColumns = ({t,i18n})=> [
         dataIndex: 'business',
         render: (business) => 
             business?.businessType ?
-            business?.businessType?.charAt(0)?.toUpperCase() + business?.businessType?.slice(1)?.toLowerCase()
+            t(business?.businessType?.charAt(0)?.toUpperCase() + business?.businessType?.slice(1)?.toLowerCase())
             :
             '-'
     },
@@ -283,14 +283,14 @@ const revenueColumns = ({t,i18n})=> [
     {
         title: t("Period"),
         dataIndex: 'validity',
-        render:(validity)=> t(validity)?.charAt(0)?.toUpperCase() + t(validity)?.slice(1)?.toLowerCase()
+        render:(validity)=> t((validity)?.charAt(0)?.toUpperCase() + (validity)?.slice(1)?.toLowerCase())
     },
     {
         title: t("Discount"),
         dataIndex: 'subscriptionDiscountLog',
         render: (subscriptionDiscountLog) =>
             subscriptionDiscountLog?.discount?.value != null
-                ? `SAR ${subscriptionDiscountLog.discount.value}`
+                ? `${t("SAR")} ${subscriptionDiscountLog.discount.value}`
                 : '--'
                 },
     {
@@ -309,7 +309,7 @@ const revenueColumns = ({t,i18n})=> [
     {
         title: t("Purchasing Date"),
         dataIndex: 'createdAt',
-        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(createdAt) : dayjs.utc(createdAt).local().format("YYYY-MM-DD hh:mm A")
+        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(utcDateTimeToLocal(createdAt)) : utcDateTimeToLocal(createdAt)
     },
 ]
 
@@ -362,7 +362,7 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
         {
             title: t("Date"),
             dataIndex: 'createdAt',
-            render: (createdAt) => i18n.language === "ar" ? toArabicDigits(createdAt) : utcDateTimeToLocal(createdAt)
+            render: (createdAt) => i18n.language === "ar" ? toArabicDigits(utcDateTimeToLocal(createdAt)) : utcDateTimeToLocal(createdAt)
         },
         {
             title: t("Note"),
@@ -448,7 +448,7 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
     {
         title: t('Type'),
         dataIndex: 'business',
-        render:(business)=> capitalizeTranslated(business?.businessType)
+        render:(business)=> t(capitalizeTranslated(business?.businessType))
     },
     {
         title: t("Subscription Plan"),
@@ -469,7 +469,7 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
     {
         title: t('Period'),
         dataIndex: 'validity',
-        render:(validity)=> capitalizeTranslated(t(validity))
+        render:(validity)=> t(capitalizeTranslated(validity))
     },
     {
         title: t('Start Date'),
@@ -836,7 +836,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t }) => [
     {
         title: t("Type"),
         dataIndex: 'businessType',
-        render: (businessType) => capitalizeTranslated(businessType)
+        render: (businessType) => t(capitalizeTranslated(businessType))
     },
     {
         title: t("Customer Name"),
@@ -1018,6 +1018,17 @@ const businessstaffColumns = ({t})=> [
     {
         title: t("Role"),
         dataIndex: 'role',
+        render:(role) => {
+            return (
+                role === 'SERVICE_PROVIDER' ? (
+                    <Text>{t("Service Provider")}</Text>
+                ) : role === 'RECEPTIONIST' ? (
+                    <Text>{t("Receptionist")}</Text>
+                ) : role === 'STAFF_MEMBER' ? (
+                    <Text>{t("Staff Manager")}</Text>
+                ) : {role}
+            );
+        }
     },
     {
         title: t("Services"),

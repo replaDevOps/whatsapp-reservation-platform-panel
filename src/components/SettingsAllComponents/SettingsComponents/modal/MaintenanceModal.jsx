@@ -1,7 +1,7 @@
 import { CloseOutlined } from '@ant-design/icons'
 import { useMutation } from '@apollo/client/react'
 import { Button, Divider, Flex, Modal, notification, Switch, Typography } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IS_MAINTENANCE_ALLOW } from '../../../../graphql/mutation'
 import { notifyError, notifySuccess } from '../../../../shared'
@@ -27,22 +27,22 @@ const MaintenanceModal = ({visible,onClose,initialChecked,refetch}) => {
             console.error(e);
         }
     }
-    const handleCancel = () => {
-        onClose()
-    }
 
+    useEffect(() => {
+        setLocalChecked(initialChecked)
+    }, [initialChecked]);
     return (
         <>
             {contextHolder}
             <Modal
                 title={null}
                 open={visible}
-                onCancel={handleCancel}
+                onCancel={onClose}
                 closeIcon={false}
                 centered
                 footer={
                     <Flex justify='end' gap={5}>
-                        <Button type='button' className='btncancel text-black border-gray' onClick={handleCancel}>
+                        <Button type='button' className='btncancel text-black border-gray' onClick={onClose}>
                             {t("Cancel")}
                         </Button>
                         <Button type="primary" loading={loading} className='btnsave border0 text-white brand-bg' onClick={handleOk}>

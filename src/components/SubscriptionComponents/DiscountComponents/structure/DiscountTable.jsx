@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, message } from 'antd';
+import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, message, notification } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, DeleteModal, } from '../../../Ui';
 import { discountColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
-import { subscriptionItems, TableLoader, typeamountItem, typeitemsCust, useDebounce } from '../../../../shared';
+import { notifySuccess, subscriptionItems, TableLoader, typeamountItem, typeitemsCust, useDebounce } from '../../../../shared';
 import { AddEditDiscount } from '../modal';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
@@ -26,21 +26,35 @@ const DiscountTable = ({visible,setVisible}) => {
     const [selectedgroup, setselectedGroup] = useState('');
     const [selectedYear, setSelectedYear] = useState([null]);
     const [ edititem, setEditItem ] = useState(null)
-    const [ expireitem, setExpireItem ] = useState(false)
-    const [messageApi, contextHolder] = message.useMessage();
+    const [ expireitem, setExpireItem ] = useState(null)
+    const [ api, contextHolder] = notification.useNotification();
     const [ getDiscounts, { data, loading } ] = useLazyQuery(GET_DISCOUNTS,{
         fetchPolicy: 'network-only'
     })
-    const [expireStaffPackage] = useMutation(EXPIRE_DISCOUNT);
-
-    const buildFilterObject = () => ({
-        search: searchdebounce || null,
-        discountType: selectedType || null,
-        group: selectedgroup || null,
-        packageType: selectedAction || null,
-        startDate: selectedYear?.[0] ? dayjs(selectedYear[0]).toISOString() : null,
-        endDate: selectedYear?.[1] ? dayjs(selectedYear[1]).toISOString() : null,
+    const [expireStaffPackage] = useMutation(EXPIRE_DISCOUNT,{
+        onCompleted: ()=>{notifySuccess(api,"Discount Expire","Discount expired successfully",()=>{fetchDiscounts();setExpireItem(null)})},
     });
+
+    const fetchDiscounts = () => {
+        const startDate= selectedYear?.[0] ? dayjs(selectedYear[0]).toISOString() : null;
+        const endDate= selectedYear?.[1] ? dayjs(selectedYear[1]).toISOString() : null;
+        return (
+            getDiscounts({
+                variables: {
+                    limit: pageSize,
+                    offset: (current - 1) * pageSize,
+                    filter: {
+                        search: searchdebounce || null,
+                        discountType: selectedType || null,
+                        group: selectedgroup || null,
+                        packageType: selectedAction || null,
+                        startDate,
+                        endDate
+                    }
+                }
+            })
+        )
+    };
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -62,13 +76,7 @@ const DiscountTable = ({visible,setVisible}) => {
     const [discountData, setDiscountData]= useState([])
     useEffect(() => {
         if (getDiscounts) {
-            getDiscounts({
-                variables: {
-                    limit: pageSize,
-                    offset: (current - 1) * pageSize,
-                    filter: buildFilterObject()
-                }
-            });
+            fetchDiscounts();
         }
     }, [
         getDiscounts,
@@ -85,27 +93,6 @@ const DiscountTable = ({visible,setVisible}) => {
         if(data?.getDiscounts?.discounts)
             setDiscountData(data?.getDiscounts?.discounts)
     }, [data])
-
-    const handleExpire = async () => {
-        if (!expireitem) return;
-        try {
-            await expireStaffPackage({
-                variables: { expireDiscountId: expireitem }
-            });
-            messageApi.success(t("Discount expired successfully"));
-            setExpireItem(null);
-            getDiscounts({
-                variables: {
-                    limit: pageSize,
-                    offset: (current - 1) * pageSize,
-                    filter: buildFilterObject()
-                }
-            });
-        } catch (err) {
-            console.error(err);
-            messageApi.error(t("Failed to expire discount"));
-        }
-    };
 
     
     return (
@@ -241,8 +228,11 @@ const DiscountTable = ({visible,setVisible}) => {
                 visible={expireitem}
                 title={'Are you sure?'}
                 subtitle={'This action cannot be undone. Are you sure you want to expire this discount?'}
-                onClose={()=>setExpireItem(false)}
-                onConfirm={handleExpire}
+                onClose={()=>setExpireItem(null)}
+                onConfirm={ async()=>{
+                    if (!expireitem) return;
+                    await expireStaffPackage({ variables: { expireDiscountId: expireitem }})
+                }}
                 loading={loading}
             />            
         </>

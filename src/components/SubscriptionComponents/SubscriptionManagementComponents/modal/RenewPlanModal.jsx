@@ -2,8 +2,7 @@ import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, notification, Row, Typography } from 'antd'
 import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
-import { capitalizeTranslated, notifyError, notifySuccess, periodOp, subscriptionplanOp, typeOp, typeOps } from '../../../../shared'
-import moment from 'moment'
+import { capitalizeTranslated, notifyError, notifySuccess, periodOp, subscriptionplanOp, typeOps } from '../../../../shared'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { GET_SUBSCRIBERS_SUBSCRIPTIONS } from '../../../../graphql/query'
@@ -21,12 +20,7 @@ const RenewPlanModal = ({visible,onClose,edititem}) => {
     })
     const [renewSubscriberSubscription, { loading }] = useMutation(RENEW_SUBSCRIBER_SUBSCRIPTION, {
         onCompleted: () => {
-            notifySuccess(
-                api,
-                "Renew Plan Upgrade",
-                "Renew plan upgraded successfully",
-                ()=> {getSubscriberSubscriptions();onClose()}
-            )
+            notifySuccess(api,t("Renew Plan Upgrade"), t("Renew plan upgraded successfully"),()=> {getSubscriberSubscriptions();onClose()})
         },
         onError: (error) => {
             notifyError(api, error);

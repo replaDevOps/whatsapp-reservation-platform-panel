@@ -61,7 +61,7 @@ const SubscriptionPlanTab = () => {
         setActiveKey(key)
         setActiveSubscriptionPlan({...subscriptionPlans?.find(plan => plan?.type === key), title: key})
     }
-console.log("subscriptionPlans:", activeSubscriptionPlan)
+    console.log("subscriptionPlans:", activeSubscriptionPlan)
     return (
         <Row gutter={[24,24]}>
             <Col span={24} lg={9} xl={7} xxl={5}>
@@ -97,7 +97,7 @@ console.log("subscriptionPlans:", activeSubscriptionPlan)
                             <Flex justify='space-between' align='center' wrap gap={10}>
                                 <Title level={5} className='m-0'>
                                     {
-                                        activeSubscriptionPlan?.title
+                                        t(activeSubscriptionPlan?.title)
                                     }
                                 </Title>
                                 <Button className='btncancel' onClick={()=>setEditItem(activeSubscriptionPlan)}> 

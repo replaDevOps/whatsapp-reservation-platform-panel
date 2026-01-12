@@ -23,17 +23,12 @@ const AddEditStaff = () => {
     const [ api, contextHolder ] = notification.useNotification()
     const [ previewimage, setPreviewImage ] = useState(null)
     const [createstaff, { loading: creating, error }] = useMutation(CREATE_STAFF,{
-        onCompleted:()=>{notifySuccess(api,"Staff Create","Staff created successfully",()=> {navigate("/staff")})},
+        onCompleted:()=>{notifySuccess(api,t("Staff Create"),t("Staff has been created successfully."),()=> {navigate("/staff")})},
         onError: (error) => {notifyError(api, error);},
     });
     const [updatestaff, {loading: updating}] = useMutation(UPDATE_STAFF,{
         onCompleted:()=>{
-            notifySuccess(
-                api,
-                "Staff Update",
-                "Staff updated successfully",
-                ()=>{navigate("/staff")}
-            )
+            notifySuccess(api,t("Staff Update"),t("Staff has been updated successfully"),()=>{navigate("/staff")})
         },
         onError: (error) => {
             notifyError(api, error);
@@ -53,7 +48,6 @@ const AddEditStaff = () => {
                 role: data?.getUser?.role,
             });
             setPreviewImage(data?.getUser?.imageUrl);
-            console.log('staff single id',data?.getUser?.id)
         }
     }, [loading, data]);
 
@@ -93,7 +87,7 @@ const AddEditStaff = () => {
     
         } catch (err) {
             console.error("Upload error:", err);
-            message.error("Failed to upload file");
+            notifyError(api,t("Failed to upload file"));
             throw err;
         }
     };
@@ -106,12 +100,7 @@ const AddEditStaff = () => {
         try {
             if (id) {
                 await updatestaff({
-                    variables: {
-                        input:{
-                            id,
-                            ...input
-                        }
-                    }
+                    variables: {input:{id,...input}}
                 });
             } else {
                 await createstaff({
@@ -274,7 +263,7 @@ const AddEditStaff = () => {
                                     </Col>
                                     <Col span={24}>
                                         <Flex justify='end' gap={5} >
-                                            <Button type='button' className='btncancel text-black border-gray' >
+                                            <Button type='button' onClick={()=>navigate('/staff')} className='btncancel text-black border-gray' >
                                                 {t("Cancel")}
                                             </Button>
                                             <Button htmlType='submit' loading={creating || updating } className={`btnsave border-0 text-white brand-bg`}>
