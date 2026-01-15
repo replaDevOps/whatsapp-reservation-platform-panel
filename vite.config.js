@@ -9,3 +9,4 @@ export default defineConfig({
     host: true,     // allow access from network / Docker / mobile (optional)
   },
 })
+ 
