@@ -490,7 +490,14 @@
   "Privacy Policy Update":"Privacy Policy Update",
   "Privacy Policy has been updated successfully":"Privacy Policy has been updated successfully",
   "Mark all read":"Mark all read",
-  "Mark read":"Mark read"
+  "Mark read":"Mark read",
+
+  "FAQ Delete":"FAQ Delete",
+  "FAQ has been deleted successfully":"FAQ has been deleted successfully",
+  "FAQ Create":"FAQ Create",
+  "FAQ has been created successfully":"FAQ has been created successfully",
+  "FAQ Update":"FAQ Update",
+  "FAQ has been updated successfully":"FAQ has been updated successfully"
   
 
 

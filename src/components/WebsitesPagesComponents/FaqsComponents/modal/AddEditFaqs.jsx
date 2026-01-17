@@ -1,23 +1,27 @@
 import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
-import { Button, Col, Divider, Flex, Form, message, Modal, Row, Typography } from 'antd'
+import { Button, Col, Divider, Flex, Form, message, Modal, notification, Row, Typography } from 'antd'
 import { MyInput } from '../../../Forms'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from '@apollo/client/react'
 import { CREATE_FAQS, UPDATE_FAQS } from '../../../../graphql/mutation'
+import { notifyError, notifySuccess } from '../../../../shared'
 
 const { Title, Text } = Typography
 const AddEditFaqs = ({visible,onClose,edititem,refetch}) => {
 
     const [form] = Form.useForm();
-    const [messageApi, contextHolder] = message.useMessage();
+    const [api, contextHolder] = notification.useNotification();
     const {t} = useTranslation()
-    const [ updateFaqs, {loading: updating} ] = useMutation(UPDATE_FAQS)
+    const [ updateFaqs, {loading: updating} ] = useMutation(UPDATE_FAQS,{
+        onCompleted: ()=> {
+            notifySuccess(api,t("FAQ Update"),t("FAQ has been updated successfully"),()=>{refetch();onClose()})
+        },onError: (error)=> {notifyError(api,error)}
+    })
     const [ createFaqs, { loading: creating, error } ] = useMutation(CREATE_FAQS,{
-        onCompleted: async () => {
-            await refetch();
-            onClose();     
-        }
+        onCompleted: ()=> {
+            notifySuccess(api,t("FAQ Create"),t("FAQ has been created successfully"),()=>{refetch();onClose()})
+        },onError: (error)=> {notifyError(api,error)}
     })
     useEffect(()=>{
         if(visible && edititem){
@@ -41,18 +45,14 @@ const AddEditFaqs = ({visible,onClose,edititem,refetch}) => {
                         input
                     }
                 });
-                messageApi.success("Faqs updated successfully!");
             } else {
                 await createFaqs({
                     variables: { input }
                 });
-                messageApi.success("Faqs created successfully!");
             }
-            await refetch();
-            onClose();
         } catch (e) {
             console.error(e);
-            message.error(error?.message);
+            notifyError(e);
         }
     }
     return (

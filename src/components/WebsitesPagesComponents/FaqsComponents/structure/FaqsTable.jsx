@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Flex, message, Table } from 'antd';
+import { Card, Flex, message, notification, Table } from 'antd';
 import { CustomPagination, DeleteModal } from '../../../Ui';
 import { faqColumns, faqsData } from '../../../../data';
 import { AddEditFaqs } from '../modal';
@@ -20,7 +20,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useTranslation } from 'react-i18next';
 import { GET_FAQS } from '../../../../graphql/query';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
-import { TableLoader } from '../../../../shared';
+import { notifyError, notifySuccess, TableLoader } from '../../../../shared';
 import { DELETE_FAQS } from '../../../../graphql/mutation';
 
 const DraggableRow = (props) => {
@@ -36,7 +36,7 @@ const DraggableRow = (props) => {
         cursor: 'move',
         ...(isDragging && {
             position: 'relative',
-            zIndex: 9999,
+            zIndex: 999,
         }),
     };
 
@@ -58,20 +58,28 @@ const FaqsTable = ({ visible, setVisible }) => {
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [editItem, setEditItem] = useState(null);
-    const [deleteItem, setDeleteItem] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
-    const [ getFaqs, { data, loading, refetch  } ] = useLazyQuery(GET_FAQS,{
+    const [deleteItem, setDeleteItem] = useState(null);
+    const [api, contextHolder] = notification.useNotification();
+    const [ getFaqs, { data, loading  } ] = useLazyQuery(GET_FAQS,{
         fetchPolicy: 'network-only'
     })
-    const [deleteFaqs, { loading: deleting }] = useMutation(DELETE_FAQS);
+    const [deleteFaqs, { loading: deleting }] = useMutation(DELETE_FAQS,{
+        onCompleted: ()=>{notifySuccess(api,t("FAQ Delete"),t("FAQ has been deleted successfully"),()=>{fetchFaqs();setDeleteItem(null)})},
+        onError: (error)=> notifyError(api,error)
+    });
+
+    const fetchFaqs = (()=>{
+        getFaqs({
+            variables: {
+                limit: pageSize,
+                offset: (current - 1) * pageSize,
+            }
+        });
+    })
+    
     useEffect(() => {
         if (getFaqs) {
-            getFaqs({
-                variables: {
-                    limit: pageSize,
-                    offset: (current - 1) * pageSize,
-                }
-            });
+            fetchFaqs()
         }
     }, [
         getFaqs,
@@ -106,23 +114,6 @@ const FaqsTable = ({ visible, setVisible }) => {
         setPageSize(size);
     };
 
-    const handleDelete = async () => {
-        if (!deleteItem) return;
-        try {
-            await deleteFaqs({ variables: { deleteFaqId: deleteItem } });
-            messageApi.success('Staff deleted successfully');
-            setDeleteItem(null);
-            refetch({
-                limit: 20,
-                offset: 0,
-            });
-        } catch (err) {
-            console.error(err);
-            messageApi.error('Failed to delete staff',err);
-        }
-    };
-
-
     return (
         <>
             {contextHolder}
@@ -145,11 +136,11 @@ const FaqsTable = ({ visible, setVisible }) => {
                                 rowHoverable={false}
                                 scroll={{ x: 800 }}
                                 components={{
-                                body: {
-                                    row: DraggableRow,
-                                },
+                                    body: {
+                                        row: DraggableRow,
+                                    },
                                 }}
-                                rowKey={(record)=>record?.id}
+                                rowKey={"id"}
                                 className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                                 loading={
                                     {
@@ -175,17 +166,17 @@ const FaqsTable = ({ visible, setVisible }) => {
                     setVisible(false);
                     setEditItem(null);
                 }}
-                refetch={() => refetch({
-                    limit: 20,
-                    offset: 0,
-                })}
+                refetch={() => fetchFaqs()}
             />
             <DeleteModal
                 visible={deleteItem}
                 title="Are you sure?"
                 subtitle="This action cannot be undone. Are you sure you want to delete this question?"
-                onClose={() => setDeleteItem(false)}
-                onConfirm={handleDelete} 
+                onClose={() => setDeleteItem(null)}
+                onConfirm={ async()=> {
+                    if (!deleteItem) return;
+                    await deleteFaqs({ variables: { deleteFaqId: deleteItem } })
+                }} 
                 loading={deleting}
             />
         </>

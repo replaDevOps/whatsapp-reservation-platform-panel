@@ -498,7 +498,13 @@
   "Privacy Policy Update": "تحديث سياسة الخصوصية",
   "Privacy Policy has been updated successfully": "تم تحديث سياسة الخصوصية بنجاح",
   "Mark all read": "تحديد الكل كمقروء",
-  "Mark read": "تحديد كمقروء"
+  "Mark read": "تحديد كمقروء",
+  "FAQ Delete": "حذف الأسئلة الشائعة",
+  "FAQ has been deleted successfully": "تم حذف السؤال الشائع بنجاح",
+  "FAQ Create": "إنشاء سؤال شائع",
+  "FAQ has been created successfully": "تم إنشاء السؤال الشائع بنجاح",
+  "FAQ Update": "تحديث السؤال الشائع",
+  "FAQ has been updated successfully": "تم تحديث السؤال الشائع بنجاح"
 
 
 }
