@@ -504,7 +504,10 @@
   "FAQ Create": "إنشاء سؤال شائع",
   "FAQ has been created successfully": "تم إنشاء السؤال الشائع بنجاح",
   "FAQ Update": "تحديث السؤال الشائع",
-  "FAQ has been updated successfully": "تم تحديث السؤال الشائع بنجاح"
+  "FAQ has been updated successfully": "تم تحديث السؤال الشائع بنجاح",
+  "Login failed: Something went wrong": "فشل تسجيل الدخول: حدث خطأ ما",
+  "Login failed: Invalid credentials": "فشل تسجيل الدخول: بيانات الدخول غير صحيحة",
+  "Login successful!": "تم تسجيل الدخول بنجاح!"
 
 
 }

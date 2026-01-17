@@ -497,7 +497,10 @@
   "FAQ Create":"FAQ Create",
   "FAQ has been created successfully":"FAQ has been created successfully",
   "FAQ Update":"FAQ Update",
-  "FAQ has been updated successfully":"FAQ has been updated successfully"
+  "FAQ has been updated successfully":"FAQ has been updated successfully",
+  "Login failed: Something went wrong":"Login failed: Something went wrong",
+  "Login failed: Invalid credentials":"Login failed: Invalid credentials",
+  "Login successful!":"Login successful!"
   
 
 

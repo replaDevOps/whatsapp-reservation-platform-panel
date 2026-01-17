@@ -28,11 +28,11 @@ const LoginPage = () => {
                 messageApi.success("Login successful!");
                 navigate("/")
             } else {
-                messageApi.error("Login failed: Invalid credentials");
+                messageApi.error(t("Login failed: Invalid credentials"));
             }
         } catch (error) {
             console.error("Login error:", error);
-            messageApi.error("Login failed: Something went wrong");
+            messageApi.error(t("Login failed: Something went wrong"));
         }
     };
 
