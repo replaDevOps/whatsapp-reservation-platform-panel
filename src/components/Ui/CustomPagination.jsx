@@ -55,7 +55,7 @@ const CustomPagination = ({
 
   return (
     <ConfigProvider direction={isArabic ? "rtl" : "ltr"}>
-      <Flex justify="space-between" align="center" className="px-2 py-4">
+      <Flex justify="space-between" align="center" className="px-2 py-4 mbl-pag">
         <Flex align="center" gap={8}>
           <span className="text-gray-500">{t("Rows per page")}:</span>
 

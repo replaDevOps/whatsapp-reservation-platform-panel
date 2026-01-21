@@ -29,7 +29,7 @@ const SystemActivityLogTable = () => {
 
     const buildFilterObject = () => ({
         search: debounce || null,
-        role: selectedRole || null,
+        roles: selectedRole || null,
         action: selectedAction || null,
         startDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
         endDate: selectedYear?.[1]?.format("YYYY-MM-DD") || null

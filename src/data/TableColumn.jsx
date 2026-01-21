@@ -313,7 +313,7 @@ const revenueColumns = ({t,i18n})=> [
     },
 ]
 
-const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
+const demoreqColumns = ({setVisible,setEditItem,t,i18n}) => [
         {
             title: t("Customer Name"),
             dataIndex: 'name',
@@ -337,6 +337,7 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
         {
             title: t("Business Type"),
             dataIndex: 'businessType',
+            render: (businessType) => t(capitalizeTranslated(businessType))
         },
         {
             title: t("Message"),
@@ -402,8 +403,9 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
                                             className="fs-12"
                                             onClick={(e) => {
                                                 e.preventDefault();
-                                                handleStatusChange('Contacted', row);
+                                                // handleStatusChange('Contacted', row);
                                                 setVisible(true)
+                                                setEditItem(row?.id)
                                             }}
                                         >
                                             {t("Contacted")}
@@ -416,12 +418,12 @@ const demoreqColumns = ({setVisible,handleStatusChange,t,i18n}) => [
                         trigger={['click']}
                     >
                         <Flex gap={5} justify="space-between" className="btnpill fs-12 dsasellerpending cursor">
-                            {t(formattedStatus)}
+                            {t(capitalizeTranslated(formattedStatus))}
                             <DownOutlined />
                         </Flex>
                     </Dropdown>
                 ) : (
-                    <Text className="btnpill fs-12 success">{t(formattedStatus)}</Text>
+                    <Text className="btnpill fs-12 success">{t(capitalizeTranslated(formattedStatus))}</Text>
                 )
             );
         },
@@ -739,12 +741,22 @@ const activitylogColumn = ({t,i18n})=> [
     {
         title: t('Role'),
         dataIndex: 'userRole',
-        render:(role) => t(role)?.charAt(0)?.toUpperCase() + t(role)?.slice(1).toLowerCase()
+        render: (userRole) => (
+            <Text>
+                {userRole.includes("SUPER_ADMIN")
+                ? t("Super Admin")
+                : userRole.includes("SERVICE_PROVIDER")
+                ? t("Service Provider")
+                : userRole.includes("STAFF_MEMBER")
+                ? t("Staff Manager")
+                : t(capitalizeTranslated(userRole))}
+            </Text>
+        )
     },
     {
         title: t('Action'),
         dataIndex: 'action',
-        render:(action) => t(action)?.charAt(0)?.toUpperCase() + t(action)?.slice(1).toLowerCase()
+        render:(action) => t(capitalizeTranslated(action))
     },
     {
         title: t('Activity'),
@@ -762,7 +774,7 @@ const activitylogColumn = ({t,i18n})=> [
                 .replace('PM', 'م')
                 .replace('am', 'ص')
                 .replace('pm', 'م');
-                return arabicDate;
+                return utcDateTimeToLocal(arabicDate);
             }
             return utcDateTimeToLocal(createdAt)
         }
@@ -791,7 +803,7 @@ const discountactivityColumn = ({t,i18n})=> [
     {
         title: t('Group'),
         dataIndex: 'discount',
-        render:(discount) => t(discount?.group)
+        render:(discount) => t(capitalizeTranslated(discount?.group))
     },
     {
         title: 'Date & Time',
@@ -805,7 +817,7 @@ const discountactivityColumn = ({t,i18n})=> [
                 .replace('PM', 'م')
                 .replace('am', 'ص')
                 .replace('pm', 'م');
-                return arabicDate;
+                return utcDateTimeToLocal(arabicDate);
             }
             return utcDateTimeToLocal(appliedAt);
         }

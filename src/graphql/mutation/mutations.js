@@ -127,6 +127,14 @@ const MARK_AS_ALLREAD = gql`
   }
 `
 
+const UPDATE_DEMO_REQUEST = gql`
+  mutation UpdateBookDemo($input: UpdateBookDemoInput!) {
+    updateBookDemo(input: $input) {
+      id
+    }
+  }
+`
+
 export {
   CREATE_SUBSCRIBER_CUSTOMER,
   UPDATE_TERMS,
@@ -145,4 +153,5 @@ export {
   IS_MAINTENANCE_ALLOW,
   MARK_AS_READ,
   MARK_AS_ALLREAD,
+  UPDATE_DEMO_REQUEST,
 }

@@ -20,7 +20,7 @@ const CustomerTable = () => {
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
     const [ visible, setVisible ] = useState(false)
-    const [selectedYear, setSelectedYear] = useState([null, null]);
+    const [selectedDate, setSelectedDate] = useState([null, null]);
     const [ search, setSearch ] = useState('')
     const debouncedSearch = useDebounce(search, 500);
     const [subscriberCustomers, setSubscriberCustomers]= useState([])
@@ -31,22 +31,28 @@ const CustomerTable = () => {
     const [getSubscriberCustomers, { data, loading }] = useLazyQuery(GET_SUBSCRIBER_CUSTOMERS, {
         fetchPolicy: "network-only",
     })
-    const buildFilterObject = () => ({
-        search: debouncedSearch || null,
-        startDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
-        endDate: selectedYear?.[1]?.format("YYYY-MM-DD") || null,
-    });
-
-    useEffect(()=>{
-        if(getSubscriberCustomers)
+    const fetchCustomer = ()=> {
+        const startDate = selectedDate?.[0]?.format("YYYY-MM-DD") || null;
+        const endDate =  selectedDate?.[1]?.format("YYYY-MM-DD") || null;
+        return(
             getSubscriberCustomers({
                 variables: {
                     limit: pageSize,
                     offset: (current - 1) * pageSize,
-                    filter: buildFilterObject()
+                    filter: {
+                        search: debouncedSearch || null,
+                        startDate,
+                        endDate 
+                    }
                 }
             })
-    }, [getSubscriberCustomers,debouncedSearch,selectedYear,current,pageSize])
+        )
+    }
+
+    useEffect(()=>{
+        if(getSubscriberCustomers)
+            fetchCustomer()
+    }, [getSubscriberCustomers,debouncedSearch,selectedDate,current,pageSize])
 
     useEffect(()=>{
         setSubscriberCustomers(data?.getSubscribers?.subscribers)
@@ -90,8 +96,8 @@ const CustomerTable = () => {
                                         rangePicker
                                         className="datepicker-cs"
                                         placeholder={[t("Start Year"),t("End Year")]}
-                                        value={selectedYear}
-                                        onChange={(year) => setSelectedYear(year)}
+                                        value={selectedDate}
+                                        onChange={(date) => setSelectedDate(date)}
                                     />
                                 </Flex>
                             </Col>
@@ -122,19 +128,9 @@ const CustomerTable = () => {
                     />
                 </Flex>
             </Card>
-
-            
             <AddCustomerModal 
                 visible={visible}
-                refetch={() => {
-                    getSubscriberCustomers({
-                        variables: {
-                            limit: pageSize,
-                            offset: (current - 1) * pageSize,
-                            filter: buildFilterObject()
-                        }
-                    })
-                }}
+                refetch={() => fetchCustomer()}
                 onClose={()=>setVisible(false)}
             />
         </>

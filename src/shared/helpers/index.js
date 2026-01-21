@@ -1,5 +1,6 @@
 import dayjs from "dayjs"
 import { useEffect, useState } from "react";
+import imageCompression from 'browser-image-compression';
 
 const utcDateTimeToLocal= (dateTime)=>{
     return dayjs.utc(dateTime).local().format("YYYY-MM-DD hh:mm A")
@@ -93,5 +94,43 @@ const FieldMerger = ({ object, fields = [], separator = " " }) => {
 };
 
 
-export {utcDateTimeToLocal, greaterThanEqualTo, handleApolloError, capitalizeTranslated, formatTime24to12, useDebounce, notifySuccess, notifyError,FieldMerger,utcDateToLocal}
+const uploadFileToServer = async ({file,setPreviewImage}) => {
+        try {
+            let compressedFile = file;
+    
+            // Compress only if image
+            if (file.type.startsWith("image/")) {
+                compressedFile = await imageCompression(file, {
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1024,
+                    useWebWorker: true,
+                });
+            }
+    
+            const formData = new FormData();
+            formData.append("file", compressedFile);
+    
+            const res = await fetch("https://backend.qloop.me/upload", {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (!res.ok) throw new Error("Upload failed");
+            const data = await res.json();
+            setPreviewImage(data.fileUrl);
+            return {
+                fileName: data.fileName,
+                fileType: data.fileType,
+                filePath: data.fileUrl,
+            };
+    
+        } catch (err) {
+            console.error("Upload error:", err);
+            notifyError(api,t("Failed to upload file"));
+            throw err;
+        }
+    };
+
+
+export {utcDateTimeToLocal, greaterThanEqualTo, handleApolloError, capitalizeTranslated, formatTime24to12, useDebounce, notifySuccess, notifyError,FieldMerger,utcDateToLocal, uploadFileToServer}
 export * from "./TableLoader"

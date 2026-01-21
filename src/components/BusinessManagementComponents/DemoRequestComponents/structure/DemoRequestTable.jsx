@@ -18,9 +18,9 @@ const DemoRequestTable = () => {
     const [pageSize, setPageSize] = useState(10);
     const {t,i18n} = useTranslation()
     const [current, setCurrent] = useState(1);
-    const [statusfilter, setStatusFilter] = useState('');
-    const [selectedType, setselectedType] = useState('');
-    const [selectedStatus, setselectedStatus] = useState(demoreqData);
+    const [statusfilter, setStatusFilter] = useState(null);
+    const [selectedType, setselectedType] = useState(null);
+    const [editItem, setEditItem] = useState(null);
     const [selectedDate, setSelectedDate] = useState([null, null]);
     const [ visible, setVisible ] = useState(false)
     const [demorequestData, setDemoRequestData]= useState([])
@@ -34,10 +34,12 @@ const DemoRequestTable = () => {
             variables: { 
                 limit: pageSize,
                 offset: (current - 1) * pageSize,
-                businessType: selectedType || null,
-                status: statusfilter || null,
-                startDate,
-                endDate
+                filter:{
+                    businessType: selectedType || null,
+                    status: statusfilter || null,
+                    startDate,
+                    endDate
+                }
             }
         })
     }    
@@ -55,14 +57,14 @@ const DemoRequestTable = () => {
         setselectedType(key);
     };
 
-    const handleStatusChange = (key,row) => {
-        setselectedStatus(prevData =>
-            prevData.map(item =>
-                item.key === row.key ? { ...item, status: key } : item
-            )
-        );
-        console.log('key:',row)
-    };
+    // const handleStatusChange = (key,row) => {
+    //     setselectedStatus(prevData =>
+    //         prevData.map(item =>
+    //             item.key === row.key ? { ...item, status: key } : item
+    //         )
+    //     );
+    //     console.log('key:',row)
+    // };
 
     useEffect(()=>{
         if(getDemoRequest){
@@ -139,7 +141,7 @@ const DemoRequestTable = () => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={demoreqColumns({handleStatusChange,setVisible,t,i18n})}
+                        columns={demoreqColumns({setEditItem,setVisible,t,i18n})}
                         dataSource={demorequestData}
                         className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
@@ -165,7 +167,8 @@ const DemoRequestTable = () => {
 
             <MeetingNoteModal 
                 visible={visible}
-                onClose={()=>setVisible(false)}
+                id={editItem}
+                onClose={()=>{setVisible(false);setEditItem(null)}}
                 refetch={() => FetchDemoRequest()}
             />
         </>

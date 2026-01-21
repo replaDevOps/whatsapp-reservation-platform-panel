@@ -18,13 +18,13 @@ const RevenuePage = () => {
         {
             id: 1,
             icon:'/assets/icons/rev-icon.webp',
-            title: `${t("SAR")} ${isArabic ? toArabicDigits(revenueCount?.totalRevenue): revenueCount?.totalRevenue}`,
+            title: `${t("SAR")} ${ isArabic ? toArabicDigits(revenueCount?.totalRevenue ?? 0): revenueCount?.totalRevenue ?? 0}`,
             subtitle: t('Total Revenue'),
         },
         {
             id: 2,
             icon:'/assets/icons/rev-icon.webp',
-            title: `${t("SAR")} ${isArabic ? toArabicDigits(revenueCount?.thisMonthRevenue):revenueCount?.thisMonthRevenue}`,
+            title: `${t("SAR")} ${isArabic ? toArabicDigits(revenueCount?.thisMonthRevenue ?? 0):revenueCount?.thisMonthRevenue ?? 0}`,
             subtitle: t('This Month Revenue'),
         },
     ];

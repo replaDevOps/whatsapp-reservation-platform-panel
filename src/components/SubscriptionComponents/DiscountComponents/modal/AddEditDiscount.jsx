@@ -32,9 +32,9 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
         if(visible && edititem){
             form.setFieldsValue({
                 code: edititem?.code,
-                group: edititem?.group?.charAt(0)?.toUpperCase() + edititem?.group?.slice(1).toLowerCase(),
-                packageType: edititem?.packageType?.charAt(0)?.toUpperCase() + edititem?.packageType?.slice(1).toLowerCase(),
-                discountType: edititem?.discountType?.charAt(0)?.toUpperCase() + edititem?.discountType?.slice(1).toLowerCase(),
+                group: capitalizeTranslated(edititem?.group),
+                subscriptionIds: edititem?.applicableSubscriptions?.map((list)=> list?.id),
+                discountType: capitalizeTranslated(edititem?.discountType),
                 value: edititem?.value,
                 usageLimit: edititem?.usageLimit,
                 startDate: dayjs(edititem?.startDate,'YYYY/MM/DD'),
@@ -45,6 +45,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
             form.resetFields()
         }
     },[visible,edititem])
+    
 
     const AddEditDiscounts = async () => {
         const data = form.getFieldsValue();
@@ -60,7 +61,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
         };
         try {
             if (edititem?.id) {
-                await updateDiscounts({variables: {editDiscountId: edititem.id,...input}});
+                await updateDiscounts({variables: {editDiscountId: edititem.id,input}});
             } else {
                 await createDiscount({
                     variables: { input }

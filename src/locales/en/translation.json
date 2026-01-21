@@ -491,7 +491,6 @@
   "Privacy Policy has been updated successfully":"Privacy Policy has been updated successfully",
   "Mark all read":"Mark all read",
   "Mark read":"Mark read",
-
   "FAQ Delete":"FAQ Delete",
   "FAQ has been deleted successfully":"FAQ has been deleted successfully",
   "FAQ Create":"FAQ Create",
@@ -500,7 +499,32 @@
   "FAQ has been updated successfully":"FAQ has been updated successfully",
   "Login failed: Something went wrong":"Login failed: Something went wrong",
   "Login failed: Invalid credentials":"Login failed: Invalid credentials",
-  "Login successful!":"Login successful!"
+  "Login successful!":"Login successful!",
+  "Demo Request Status Update":"Demo Request Status Update",
+  "Demo request status has been updated successfully.":"Demo request status has been updated successfully.",
+  "Consumer":"Consumer",
+  "Request":"Request",
+  "Subscriber":"Subscriber",
+  "Create":"Create",
+
+  "Jun":"Jun",
+  "Jul":"Jul",
+  "All Group":"All Group",
+  "Customer Create":"Customer Create",
+  "Customer has been created successfully":"Customer has been created successfully",
+  "Business Create":"Business Create",
+  "Business has been created successfully":"Business has been created successfully",
+  "Please upload an image":"Please upload an image",
+  "Discount Expire":"Discount Expire",
+  "Discount has been expired successfully":"Discount has been expired successfully",
+  "Maintenance Status Update":"Maintenance Status Update",
+  "Maintenance status updated successfully":"Maintenance status updated successfully",
+  "Setting update":"Setting update",
+  "Setting has been updated successfully":"Setting has been updated successfully",
+  "Password Change":"Password Change",
+  "Password has been changed successfully":"Password has been changed successfully",
+  "New password and confirmation do not match.":"New password and confirmation do not match.",
+  "User ID not found.":"User ID not found."
   
 
 

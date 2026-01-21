@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, message, notification } from 'antd';
+import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, notification } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { CustomPagination, DeleteModal, } from '../../../Ui';
 import { discountColumns } from '../../../../data';
@@ -32,7 +32,7 @@ const DiscountTable = ({visible,setVisible}) => {
         fetchPolicy: 'network-only'
     })
     const [expireStaffPackage] = useMutation(EXPIRE_DISCOUNT,{
-        onCompleted: ()=>{notifySuccess(api,"Discount Expire","Discount expired successfully",()=>{fetchDiscounts();setExpireItem(null)})},
+        onCompleted: ()=>{notifySuccess(api,t("Discount Expire"),t("Discount has been expired successfully"),()=>{fetchDiscounts();setExpireItem(null)})},
     });
 
     const fetchDiscounts = () => {
@@ -216,13 +216,7 @@ const DiscountTable = ({visible,setVisible}) => {
                 visible={visible}
                 edititem={edititem}
                 onClose={()=>{setVisible(false);setEditItem(null)}}
-                refetch={() => getDiscounts({
-                    variables: {
-                        limit: pageSize,
-                        offset: (current - 1) * pageSize,
-                        filter: buildFilterObject()
-                    }
-                })}
+                refetch={() => fetchDiscounts()}
             />
             <DeleteModal 
                 visible={expireitem}
