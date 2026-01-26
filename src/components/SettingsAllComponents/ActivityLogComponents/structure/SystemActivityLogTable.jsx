@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Button, Dropdown, Flex, Table, Row, Col, Form, Image } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { CustomPagination } from '../../../Ui';
-import { activitylogColumn, activitylogtableData } from '../../../../data';
+import { Button, Flex, Table, Row, Col, Form, Image } from 'antd';
+import { CustomPagination, DropdownFilter } from '../../../Ui';
+import { activitylogColumn } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
-import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { actionItems, exportToExcel, roleItems, TableLoader, useDebounce } from '../../../../shared';
 import { useLazyQuery } from '@apollo/client/react';
@@ -17,9 +15,9 @@ const SystemActivityLogTable = () => {
     const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
-    const [selectedAction, setselectedAction] = useState('');
-    const [selectedRole, setselectedRole] = useState('');
-    const [selectedYear, setSelectedYear] = useState(dayjs());
+    const [selectedAction, setselectedAction] = useState(null);
+    const [selectedRole, setselectedRole] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(dayjs());
     const [systemactivityData, setSystemActivityData]= useState([])
     const [ search, setSearch ] = useState('')
     const debounce = useDebounce(search,500)
@@ -31,23 +29,14 @@ const SystemActivityLogTable = () => {
         search: debounce || null,
         roles: selectedRole || null,
         action: selectedAction || null,
-        startDate: selectedYear?.[0]?.format("YYYY-MM-DD") || null,
-        endDate: selectedYear?.[1]?.format("YYYY-MM-DD") || null
+        startDate: selectedDate?.[0]?.format("YYYY-MM-DD") || null,
+        endDate: selectedDate?.[1]?.format("YYYY-MM-DD") || null
     });
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
         setPageSize(size);
     };
-
-    const handleActionClick = ({ key }) => {
-        setselectedAction(key);
-    };
-
-    const handleRoleClick = ({ key }) => {
-        setselectedRole(key);
-    };
-
 
     useEffect(() => {
         getSystemActivity({
@@ -60,7 +49,7 @@ const SystemActivityLogTable = () => {
     }, [
         getSystemActivity,
         debounce,
-        selectedYear,
+        selectedDate,
         selectedRole,
         selectedAction,
         current,
@@ -88,6 +77,7 @@ const SystemActivityLogTable = () => {
                                         value={search}
                                         onChange={(e) => {
                                             setSearch(e.target.value);
+                                            setCurrent(1)
                                         }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
@@ -95,40 +85,22 @@ const SystemActivityLogTable = () => {
                                 </Col>
                                 <Col span={24} lg={12}>
                                     <Flex gap={5}>
-                                        <Dropdown
-                                            menu={{
-                                                items: roleItems.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleRoleClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(roleItems.find((i) => i.key === selectedRole)?.label || "Role")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
-                                        <Dropdown
-                                            menu={{
-                                                items: actionItems.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleActionClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(actionItems.find((i) => i.key === selectedAction)?.label || "Action")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
+                                        <DropdownFilter
+                                            items={roleItems}
+                                            value={selectedRole}
+                                            onChange={(key)=>{setselectedRole(key);setCurrent(1)}}
+                                            onClear={() => setselectedRole(null)}
+                                            placeholder="Role"
+                                            t={t}
+                                        />
+                                        <DropdownFilter
+                                            items={actionItems}
+                                            value={selectedAction}
+                                            onChange={(key)=>{setselectedAction(key);setCurrent(1)}}
+                                            onClear={() => setselectedAction(null)}
+                                            placeholder="Action"
+                                            t={t}
+                                        />
                                     </Flex>
                                 </Col>
                             </Row>
@@ -144,9 +116,9 @@ const SystemActivityLogTable = () => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder={[t("Start Year"),t("End Year")]}
-                                    value={selectedYear}
-                                    onChange={(year) => setSelectedYear(year)}
+                                    placeholder={[t("Start Date"),t("End Date")]}
+                                    value={selectedDate}
+                                    onChange={(date) => {setSelectedDate(date);setCurrent(1)}}
                                 />
                             </Flex>
                         </Col>

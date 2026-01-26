@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import { ArrowLeftOutlined, ArrowRightOutlined, EditFilled } from '@ant-design/icons'
-import { Button, Card, Col, Divider, Flex, Form, notification, Row, Select, Typography } from 'antd'
+import { Button, Card, Col, Divider, Flex, Form, notification, Row, Select, Spin, Typography } from 'antd'
 import { BreadCrumbCard, BusinessChooseSubscriptionPlan, ConfirmModal, MyInput, SingleFileUpload } from '../../../../components'
 import { MySelect } from '../../../Forms'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BusinessTitle, notifyError, notifySuccess, typeOps } from '../../../../shared'
-import { GET_SUBSCRIBER_CUSTOMERS_LOOKUP } from '../../../../graphql/query'
+import { BusinessTitle, notifyError, notifySuccess, SmLoader, typeOps, uploadFileToServer, useDebounce } from '../../../../shared'
+import { GET_SUBSCRIBER_CUSTOMERS_LOOKUP, VERIFY_PROMOTION_CODE } from '../../../../graphql/query'
 import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { CREATE_BUSINESS } from '../../../../graphql/mutation'
 
-const { Title } = Typography
+const { Title, Text } = Typography
 const AddEditBusiness = () => {
 
     const [form] = Form.useForm();
@@ -19,8 +19,16 @@ const AddEditBusiness = () => {
     const [ api, contextHolder ] = notification.useNotification()
     const [ previewimage, setPreviewImage ] = useState(null)
     const [ confirmsubmit, setConfirmSubmit ] = useState(false)
+    const [promoCode, setPromoCode] = useState('');
+    const debouncedPromo = useDebounce(promoCode, 500);
+    const [ promoId, setPromoId ] = useState(null)
+    const [ promostatus, setPromoStatus ] = useState(null)
     const navigate = useNavigate()
+    const [subscriberCustomersLookup, setSubscriberCustomersLookup]= useState([])
+    const [subscriptionValidity, setSubscriptionValidity] = useState('MONTHLY')
+    const [selectedSubscriptionPlan, setSelectedSubscriptionPlan]= useState(null)
 
+    const [ getVerifyPromotion, { data: verifyPromotionData, loading:verifyingPromotion } ] = useLazyQuery(VERIFY_PROMOTION_CODE);
     const [createBusiness, { loading, error, success }] = useMutation(CREATE_BUSINESS, {
         onCompleted: () => {
             notifySuccess(api,t("Business Create"),t("Business has been created successfully"),
@@ -34,9 +42,7 @@ const AddEditBusiness = () => {
     const [getSubscriberCustomersLookup, { data }] = useLazyQuery(GET_SUBSCRIBER_CUSTOMERS_LOOKUP, {
         fetchPolicy: "network-only",
     })
-    const [subscriberCustomersLookup, setSubscriberCustomersLookup]= useState([])
-    const [subscriptionValidity, setSubscriptionValidity] = useState('MONTHLY')
-    const [selectedSubscriptionPlan, setSelectedSubscriptionPlan]= useState(null)
+   
     useEffect(()=>{
         if(getSubscriberCustomersLookup)
             getSubscriberCustomersLookup({
@@ -59,7 +65,9 @@ const AddEditBusiness = () => {
 
     const onFinish = async () => {
         let data = form.getFieldsValue()
-        console.log("data:", data)
+        const subscriptionPrice = subscriptionValidity === 'YEARLY' 
+            ? (selectedSubscriptionPlan?.discountYearlyPrice !== null && selectedSubscriptionPlan?.discountYearlyPrice > 0 ? selectedSubscriptionPlan?.discountYearlyPrice : selectedSubscriptionPlan?.yearlyPrice)
+            : (selectedSubscriptionPlan?.discountPrice !== null && selectedSubscriptionPlan?.discountPrice > 0 ? selectedSubscriptionPlan?.discountPrice : selectedSubscriptionPlan?.price)
         if (!previewimage) {
             notifyError(api, t('Please upload an image'));
             return;
@@ -70,13 +78,42 @@ const AddEditBusiness = () => {
             subscriberId: subscriberCustomersLookup?.find(subscriber => subscriber?.id === data?.subscriberId)?.id,
             subscriptionId: selectedSubscriptionPlan?.id,
             subscriptionType: selectedSubscriptionPlan?.type,
-            subscriptionPrice: selectedSubscriptionPlan?.type === 'ENTERPRISE' ? Number(data?.customPrice): subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.price*12 : selectedSubscriptionPlan?.price,
-            subscriptionValidity
+            subscriptionPrice: selectedSubscriptionPlan?.type === 'ENTERPRISE' ? Number(data?.customPrice): subscriptionPrice,
+            subscriptionValidity,
+            discountCode: promoId
         }
         delete data?.customPrice
+        console.log('create business',data)
         await createBusiness({ variables: { input: {...data} } })
     }
-    console.log("subscriberCustomersLookup:", data)
+
+    useEffect(() => {
+        if (!debouncedPromo?.trim()) {
+            setPromoStatus(null);
+            setPromoId(null);
+            return;
+        }
+        const verify = async () => {
+            try {
+            const res = await getVerifyPromotion({
+                variables: { name: debouncedPromo }
+            });
+            const promo = res?.data?.verifyPromotion;
+            if (promo?.id) {
+                setPromoStatus(true);
+                setPromoId(promo.id);
+            } else {
+                setPromoStatus(false);
+                setPromoId(null);
+            }
+            } catch (e) {
+                setPromoStatus(false);
+                setPromoId(null);
+            } 
+        };
+        verify();
+    }, [debouncedPromo]);
+
     return (
         <>
             {contextHolder}
@@ -111,6 +148,7 @@ const AddEditBusiness = () => {
                                             align="center"
                                             width={100}
                                             height={100}
+                                            acceptFileType='image'
                                         />
                                         :
                                         <Flex vertical gap={5} justify='center' align='center'>
@@ -201,6 +239,20 @@ const AddEditBusiness = () => {
                                         name="discountCode"
                                         placeholder={t("Enter discount code")}
                                         className="w-100"
+                                        onChange={(e) => {setPromoCode(e.target.value);setPromoStatus(null)}}
+                                        suffix= {
+                                            <Flex align="center" justify="center" gap={2}>
+                                                {verifyingPromotion && <Spin {...SmLoader} size="small" />}
+
+                                                {!verifyingPromotion && promostatus !== null && (
+                                                    promostatus ? (
+                                                    <Text className="text-green fs-12">{t("Valid")}</Text>
+                                                    ) : (
+                                                    <Text className="text-red fs-12">{t("Invalid")}</Text>
+                                                    )
+                                                )}
+                                            </Flex>
+                                        }
                                     />
                                 </Col>
                                 <Col span={24}>
@@ -216,7 +268,7 @@ const AddEditBusiness = () => {
                                 </Col>
                                 <Col span={24}>
                                     <Flex justify='end' gap={5} >
-                                        <Button type='button' className='btncancel text-black border-gray' >
+                                        <Button type='button' onClick={()=>navigate('/allbusiness')} className='btncancel text-black border-gray' >
                                             {t("Cancel")}
                                         </Button>
                                         <Button loading={loading} onClick={()=>setConfirmSubmit(true)} className={`btnsave border-0 text-white brand-bg`}>

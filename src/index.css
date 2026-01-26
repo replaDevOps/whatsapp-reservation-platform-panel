@@ -201,6 +201,9 @@
 .fs-18{
     font-size: 18px !important;
 }
+.fs-22{
+    font-size: 22px !important;
+}
 
 .fs-35{
     font-size: 35px !important;
@@ -1440,6 +1443,11 @@
 .shrink-0{
     flex-shrink: 0 !important;
 }
+
+/* table loader centered */
+/* .table .ant-spin-nested-loading >div>.ant-spin {
+    max-height: none !important;
+} */
 
 /* =================================================== media querry =============================================== */
 @media (max-width: 991px){

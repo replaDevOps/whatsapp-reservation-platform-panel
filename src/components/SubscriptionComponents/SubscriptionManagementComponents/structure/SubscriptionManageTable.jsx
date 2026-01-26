@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Row, Col, Form } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { CustomPagination, } from '../../../Ui';
+import { Card, Flex, Table, Row, Col, Form } from 'antd';
+import { CustomPagination, DropdownFilter, } from '../../../Ui';
 import { submanageColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import { periodItems, subscriptionItems, TableLoader, typeItems, useDebounce } from '../../../../shared';
@@ -17,9 +16,9 @@ const SubscriptionManageTable = () => {
     const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
-    const [selectedAction, setselectedAction] = useState('');
-    const [selectedType, setselectedType] = useState('');
-    const [selectedperiod, setselectedPeriod] = useState('');
+    const [selectedAction, setselectedAction] = useState(null);
+    const [selectedType, setselectedType] = useState(null);
+    const [selectedperiod, setselectedPeriod] = useState(null);
     const [selectedDate, setselectedDate] = useState([]);
     const [ visible, setVisible ] = useState(false)
     const [ edititem, setEditItem ] = useState(null)
@@ -62,19 +61,6 @@ const SubscriptionManageTable = () => {
         setCurrent(page);
         setPageSize(size);
     };
-
-    const handleActionClick = ({ key }) => {
-        setselectedAction(key);
-    };
-
-
-    const handlePeriodClick = ({ key }) => {
-        setselectedPeriod(key);
-    };
-
-    const handleTypeClick = ({key}) => {
-        setselectedType(key);
-    }
     
     return (
         <>
@@ -83,7 +69,7 @@ const SubscriptionManageTable = () => {
                     <Row gutter={[16, 16]} justify="space-between" align="middle">
                         <Col xl={10} md={24} span={24}>        
                             <Row gutter={[16, 16]}>
-                                <Col span={24} md={24} lg={12}>
+                                <Col span={24} md={24} lg={24} xl={24}>
                                     <SearchInput
                                         name='name'
                                         placeholder={t('Search by Business ID')}
@@ -92,62 +78,36 @@ const SubscriptionManageTable = () => {
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                         onChange={(e)=>{
                                             setSearch(e.target.value)
+                                            setCurrent(1)
                                         }}
                                     />
                                 </Col>
-                                <Col span={24} lg={12}>
+                                <Col span={24} lg={24} xl={12}>
                                     <Flex gap={5}>
-                                        <Dropdown
-                                            menu={{
-                                                items: typeItems.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleTypeClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(typeItems.find((i) => i.key === selectedType)?.label || "All Types")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
-                                        <Dropdown
-                                            menu={{
-                                                items: periodItems.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handlePeriodClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(periodItems.find((i) => i.key === selectedperiod)?.label || "All Periods")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
-                                        <Dropdown
-                                            menu={{
-                                                items: subscriptionItems.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleActionClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(subscriptionItems.find((i) => i.key === selectedAction)?.label || "All Subscription Plans")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
+                                        <DropdownFilter
+                                            items={typeItems}
+                                            value={selectedType}
+                                            onChange={(key)=>{setselectedType(key);setCurrent(1)}}
+                                            onClear={() => setselectedType(null)}
+                                            placeholder="Type"
+                                            t={t}
+                                        />
+                                        <DropdownFilter
+                                            items={periodItems}
+                                            value={selectedperiod}
+                                            onChange={(key)=>{setselectedPeriod(key);setCurrent(1)}}
+                                            onClear={() => setselectedPeriod(null)}
+                                            placeholder="Period"
+                                            t={t}
+                                        />
+                                        <DropdownFilter
+                                            items={subscriptionItems}
+                                            value={selectedAction}
+                                            onChange={(key)=>{setselectedAction(key);setCurrent(1)}}
+                                            onClear={() => setselectedAction(null)}
+                                            placeholder="Subscription Plan"
+                                            t={t}
+                                        />
                                     </Flex>
                                 </Col>
                             </Row>
@@ -160,7 +120,7 @@ const SubscriptionManageTable = () => {
                                     className="datepicker-cs"
                                     placeholder={[t("Start Date"),t("End Date")]}
                                     value={selectedDate}
-                                    onChange={(date) => setselectedDate(date)}
+                                    onChange={(date) => {setselectedDate(date);setCurrent(1)}}
                                 />
                             </Flex>
                         </Col>

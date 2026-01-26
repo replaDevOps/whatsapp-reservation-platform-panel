@@ -1,6 +1,6 @@
 import { Form, Input, Typography } from 'antd';
 import './index.css'
-export const MyInput = ({withoutForm, name, label, tooltip, type, size, disabled, required, message, value, placeholder, textArea, oTp, nolabel=true, validator, ...props }) => {
+export const MyInput = ({withoutForm, maxLength, name, label, tooltip, type, size, disabled, required, message, value, placeholder, textArea, oTp, nolabel=true, validator, ...props }) => {
     return (
         <>
             {
@@ -79,6 +79,7 @@ export const MyInput = ({withoutForm, name, label, tooltip, type, size, disabled
                                 size={size || 'middle'}
                                 disabled={disabled || false}
                                 {...props}
+                                maxLength={maxLength}
                             />
                     }
                 </Form.Item>

@@ -1,4 +1,4 @@
-import { Form, Button, Typography, Row, Col, Checkbox, Flex, Image } from "antd";
+import { Form, Button, Typography, Row, Col, Checkbox, Flex, Image, notification } from "antd";
 import { NavLink } from "react-router-dom";
 import { message } from "antd";
 import { useMutation } from "@apollo/client/react";
@@ -7,12 +7,13 @@ import { LanguageChange, MyInput } from "../../components";
 import { useTranslation } from "react-i18next";
 import { client } from "../../config/apolloClient";
 import { LOGIN_USER } from "../../graphql/mutation";
+import { notifyError, notifySuccess } from "../../shared";
 
 const { Title, Paragraph } = Typography;
 const LoginPage = () => {
     const navigate = useNavigate()
     const {t} = useTranslation()
-    const [messageApi, contextHolder] = message.useMessage();
+    const [api, contextHolder] = notification.useNotification();
     const [loginUser, { loading, error }] = useMutation(LOGIN_USER);
     const [form] = Form.useForm();
 
@@ -25,14 +26,14 @@ const LoginPage = () => {
                 localStorage.setItem("accessToken", data.loginUser.token);
                 localStorage.setItem("user", JSON.stringify(data.loginUser.user));
                 await client.resetStore();
-                messageApi.success("Login successful!");
+                notifySuccess(api,t("Login successful!"));
                 navigate("/")
             } else {
-                messageApi.error(t("Login failed: Invalid credentials"));
+                notifyError(api,t("Login failed: Invalid credentials"));
             }
         } catch (error) {
             console.error("Login error:", error);
-            messageApi.error(t("Login failed: Something went wrong"));
+            notifyError(api,t("Login failed: Something went wrong"));
         }
     };
 
@@ -53,18 +54,19 @@ const LoginPage = () => {
                             {t("Please sign in to access your system and manage platform activities.")}
                         </Paragraph>
 
-                        <Form layout="vertical" form={form} onFinish={handleFinish} requiredMark={false}
-                            // initialValues={{
-                            //     email: "platformpanel@gmail.com",
-                            //     password: "test@123",
-                            // }}
-                        >
+                        <Form layout="vertical" form={form} onFinish={handleFinish} requiredMark={false}>
                             <MyInput 
                                 label={t("Email Address" )}
                                 name="email" 
                                 required 
                                 message={t("Please enter email address")} 
                                 placeholder={t("Enter Email Address")} 
+                                validator={
+                                    {
+                                        type:'email',
+                                        message: t("Please enter a valid email format"),
+                                    }
+                                }
                             />
                             <MyInput 
                                 label={t("Password")} 
@@ -73,6 +75,16 @@ const LoginPage = () => {
                                 required 
                                 message={t("Please enter password")} 
                                 placeholder={t("Enter Password")} 
+                                validator={({ getFieldValue }) => ({
+                                    validator: (_, value) => {
+                                        const reg = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,}$/;
+                                        if (!reg.test(value)) {
+                                            return Promise.reject(new Error(t('Password should contain at least 8 characters, one uppercase letter, one number, one special character')));
+                                        } else {
+                                            return Promise.resolve();
+                                        }
+                                    }
+                                })}
                             />
                             <Flex justify="space-between" className="mb-3">
                                 <Checkbox>{t("Remember Me")}</Checkbox>

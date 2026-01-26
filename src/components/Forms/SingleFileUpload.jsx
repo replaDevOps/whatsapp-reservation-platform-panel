@@ -15,9 +15,19 @@ const SingleFileUpload = ({
   onUpload,
   align = "center",
   width = 150,
-  height = 150
+  height = 150,
+  acceptFileType = "all"
 }) => {
   const [fileList, setFileList] = useState([]);
+
+  // Map acceptFileType to Ant Design accept format
+  const getAcceptFormat = () => {
+    const acceptMap = {
+      image: "image/*",
+      all: null,
+    };
+    return acceptMap[acceptFileType] || null;
+  };
 
   const handleChange = async (info) => {
     let newFileList = [...info.fileList];
@@ -70,6 +80,7 @@ const SingleFileUpload = ({
             name="file"
             multiple={multiple}
             showUploadList={false}
+            accept={getAcceptFormat()}
             customRequest={({ file, onSuccess }) => {
               setTimeout(() => {
                 onSuccess("ok");

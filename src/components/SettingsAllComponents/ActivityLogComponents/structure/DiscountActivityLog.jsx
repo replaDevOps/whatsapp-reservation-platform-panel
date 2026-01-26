@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Button, Dropdown, Flex, Table, Row, Col, Form, Image } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { CustomPagination } from '../../../Ui';
+import { Button, Flex, Table, Row, Col, Form, Image } from 'antd';
+import { CustomPagination, DropdownFilter } from '../../../Ui';
 import { discountactivityColumn } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import { useTranslation } from 'react-i18next';
@@ -15,10 +14,10 @@ const DiscountActivityLog = () => {
     const {t,i18n} = useTranslation();
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
-    const [selectedAction, setselectedAction] = useState('');
-    const [selecteddiscount, setselectedDiscount] = useState('');
-    const [selectedYear, setSelectedYear] = useState([]);
-    const [ search, setSearch ] = useState('')
+    const [selectedAction, setselectedAction] = useState(null);
+    const [selecteddiscount, setselectedDiscount] = useState(null);
+    const [selectedDate, setSelectedDate] = useState([]);
+    const [ search, setSearch ] = useState(null)
     const debounce = useDebounce(search,500)
     const [ discountlogdata, setDiscountLogData ] = useState([])
     const [ getDiscountLog, { data, loading } ] = useLazyQuery(GET_DISCOUNT_LOG,{
@@ -34,8 +33,8 @@ const DiscountActivityLog = () => {
     const discountLookup = discountLookups?.getDiscounts?.discounts
 
     const fetchDiscountFilter = () => {
-        const startDate = selectedYear?.[0]?.format("YYYY-MM-DD") || null;
-        const endDate = selectedYear?.[1]?.format("YYYY-MM-DD") || null;
+        const startDate = selectedDate?.[0]?.format("YYYY-MM-DD") || null;
+        const endDate = selectedDate?.[1]?.format("YYYY-MM-DD") || null;
 
         getDiscountLog({
             variables: {
@@ -54,7 +53,7 @@ const DiscountActivityLog = () => {
         fetchDiscountFilter()
     }, [
         debounce,
-        selectedYear,
+        selectedDate,
         selectedAction,
         selecteddiscount,
         current,
@@ -65,16 +64,13 @@ const DiscountActivityLog = () => {
         setCurrent(page);
         setPageSize(size);
     };
-
-    const handleActionClick = ({ key }) => {
-        setselectedAction(key);
-    };
-
-    const handleDiscountClick = ({ key }) => {
-        const found = discountLookup?.find((i) => String(i.id) === String(key));
-        const code = found?.code ?? null;
-        setselectedDiscount(code);
-    };
+    
+    // const handleDiscountClick = ({ key }) => {
+    //     const found = discountLookup?.find((i) => String(i.id) === String(key));
+    //     const code = found?.code ?? null;
+    //     setselectedDiscount(code);
+    //     setCurrent(1)
+    // };
 
     useEffect(()=>{
         if(data?.getAllSubscriptionDiscountLogs)
@@ -96,47 +92,33 @@ const DiscountActivityLog = () => {
                                         value={search}
                                         onChange={(e) => {
                                             setSearch(e.target.value);
+                                            setCurrent(1)
                                         }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                     />
                                 </Col>
                                 <Col span={24} lg={12}>
-                                    <Flex gap={5}>
-                                        <Dropdown
-                                            menu={{
-                                                items: discountLookup?.map((item) => ({
-                                                    key: String(item.id),
-                                                    label: item.code
-                                                })),
-                                                onClick: handleDiscountClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(discountLookup?.find((i) => String(i.id) === selecteddiscount)?.label || "Discount Code")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
-                                        <Dropdown
-                                            menu={{
-                                                items: groupItem.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleActionClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(groupItem.find((i) => i.key === selectedAction)?.label || "All Group")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
+                                    <Flex gap={5}>                                        
+                                        <DropdownFilter
+                                            items={discountLookup?.map((item) => ({
+                                                key: String(item.code),
+                                                label: item.code
+                                            }))}
+                                            value={selecteddiscount}
+                                            onChange={(key)=>{setselectedDiscount(key);setCurrent(1)}}
+                                            onClear={() => setselectedDiscount(null)}
+                                            placeholder="Discount Code"
+                                            t={t}
+                                        />
+                                        <DropdownFilter
+                                            items={groupItem}
+                                            value={selectedAction}
+                                            onChange={(key)=>{setselectedAction(key);setCurrent(1)}}
+                                            onClear={() => setselectedAction(null)}
+                                            placeholder="Group"
+                                            t={t}
+                                        />
                                     </Flex>
                                 </Col>
                             </Row>
@@ -152,9 +134,9 @@ const DiscountActivityLog = () => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder={[t("Start Year"),t("End Year")]}
-                                    value={selectedYear}
-                                    onChange={(year) => setSelectedYear(year)}
+                                    placeholder={[t("Start Date"),t("End Date")]}
+                                    value={selectedDate}
+                                    onChange={(date) => {setSelectedDate(date);setCurrent(1)}}
                                 />
                             </Flex>
                         </Col>

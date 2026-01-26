@@ -22,27 +22,69 @@ const toArabicDigits = (number) => {
 
 const BusinessTitle = ({t}) => {
   const title = t("BUSINESS MANAGEMENT");
-  const formatted = title.charAt(0).toUpperCase() + title.slice(1).toLocaleLowerCase();
+  const formatted = title
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
   return formatted;
 };
 
 const subscriptionTitle = ({t}) => {
   const title = t("SUBSCRIPTION");
-  const formatted = title.charAt(0).toUpperCase() + title.slice(1).toLocaleLowerCase();
+  const formatted = title
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
   return formatted;
 }
 
 const websitepagesTitle = ({t}) => {
   const title = t("WEBSITE PAGES");
-  const formatted = title.charAt(0).toUpperCase() + title.slice(1).toLocaleLowerCase();
+  const formatted = title
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
   return formatted;
 }
 
 const settingTitle = ({t}) => {
   const title = t("ADMIN SETTING");
-  const formatted = title.charAt(0).toUpperCase() + title.slice(1).toLocaleLowerCase();
+  const formatted = title
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
   return formatted;
 }
 
+import { exportToExcel } from './exportToExcel'
 
-export {toArabicDigits,BusinessTitle, subscriptionTitle, websitepagesTitle, settingTitle}
+const exportAllData = async ({ fetchAll, columns, fileName, totalCount }) => {
+  if (!totalCount) {
+    console.error('Total count is not defined.')
+    return
+  }
+
+  try {
+    const res = await fetchAll({
+      limit: totalCount,
+      offset: 0,
+    })
+
+    const allRows = res || []
+
+    exportToExcel({
+      columns,
+      dataSource: allRows,
+      fileName,
+    })
+  } catch (error) {
+    console.error('Export failed:', error)
+  }
+}
+
+
+export {toArabicDigits,BusinessTitle, subscriptionTitle, websitepagesTitle, settingTitle, exportAllData}

@@ -48,19 +48,18 @@ const customertypeOp = [
 
 
 const typeitemsCust = [
-    { key: '', label: 'All' },
     { key: 'NEW', label: 'New' },
     { key: 'OLD', label: 'Old' },
 ];
 
 const statusitemsCust = [
-    { key: '', label: 'All Status' },
+    // { key: '', label: 'All Status' },
     { key: true, label: 'Active' },
     { key: false, label: 'Inactive' },
 ];
 
 const statusItem = [
-    { key: '', label: 'All Status' },
+    // { key: '', label: 'All Status' },
     { key: 'COMPLETED', label: 'Completed' },
     { key: 'NO_SHOW', label: 'No-Show' },
     { key: 'PENDING', label: 'Pending' },
@@ -69,7 +68,7 @@ const statusItem = [
 ]
 
 const typeItems = [
-    { key: '', label: 'All Types' },
+    // { key: '', label: 'All Types' },
     { key: 'GENERAL', label: 'General' },
     { key: 'BARBER', label: 'Barber' },
     { key: 'CLINIC', label: 'Clinic' },
@@ -84,7 +83,6 @@ const typeOp = [
 ];
 
 const subscriptionItems = [
-    { key: '', label: 'All Subscription Plans' },
     { key: 'BASIC', label: 'BP' },
     { key: 'STANDARD', label: 'SP' },
     { key: 'PRO', label: 'PP' },
@@ -121,8 +119,18 @@ const periodOp = [
     },
 ]
 
+const validityOp = [
+    {
+        id: 'MONTHLY',
+        name: 'Monthly'
+    },
+    {
+        id: 'YEARLY',
+        name: 'Yearly'
+    },
+]
+
 const typeamountItem = [
-    { key: '', label: 'All' },
     {
         key: 'FIXED',
         label: 'Fixed'
@@ -134,20 +142,19 @@ const typeamountItem = [
 ]
 
 const roleItems = [
-    { key: '', label: 'All Roles' },
     { key: 'SUPER_ADMIN', label: "Super Admin" },
     { key: 'TECHNICAL_ADMIN', label: "Technical Admin" },
     { key: 'DEMO_ADMIN', label: "Demo Admin" },
 ];
 
 const statusItems = [
-    { key: '', label: 'All Status' },
+    // { key: '', label: 'All Status' },
     { key: 'PENDING', label: 'Pending' },
     { key: 'CONTACTED', label: 'Contacted' },
 ];
 
 const servicetypeItems = [
-    { key: '', label: 'All Types' },
+    // { key: '', label: 'All Types' },
     { key: 'GENERAL', label: 'General' },
     { key: 'BARBER', label: 'Barber' },
     { key: 'CLINIC', label: 'Clinic' },
@@ -155,7 +162,6 @@ const servicetypeItems = [
 ];
 
 const actionItems = [
-    { key: '', label: 'All' },
     { key: 'CREATE', label: 'Add' },
     { key: 'EDIT', label: 'Edit' },
     { key: 'DELETE', label: 'Delete' },
@@ -171,19 +177,18 @@ const actionItems = [
 ];
 
 const statusbusinessItem = [
-    { key: "", label: 'All Status' },
+    // { key: "", label: 'All Status' },
     { key: "ACTIVE", label: 'Active' },
     { key: "INACTIVE", label: 'Deactive' },
 ];
 
 const periodItems = [
-    { key: '', label: 'All Periods' },
+    // { key: '', label: 'All Periods' },
     { key: 'MONTHLY', label: 'Monthly' },
     { key: 'YEARLY', label: 'Yearly' }, 
 ]
 
  const groupItem = [
-    { key: '', label: 'All Group' },
     { key: 'NEW', label: 'New' },
     { key: 'OLD', label: 'Old' },
 ];
@@ -217,4 +222,5 @@ export {
     periodItems,
     groupItem,
     typeOps,
+    validityOp,
 }

@@ -531,7 +531,13 @@
   "Password Change": "تغيير كلمة المرور",
   "Password has been changed successfully": "تم تغيير كلمة المرور بنجاح",
   "New password and confirmation do not match.": "كلمة المرور الجديدة وتأكيدها غير متطابقتين",
-  "User ID not found.": "معرّف المستخدم غير موجود"
-
+  "User ID not found.": "معرّف المستخدم غير موجود",
+  "Subscription Plan Upgrade": "ترقية خطة الاشتراك",
+  "Subscription plan has been upgraded successfully": "تمت ترقية خطة الاشتراك بنجاح",
+  "Subscription Update": "تحديث الاشتراك",
+  "Subscription has been Updated successfully": "تم تحديث الاشتراك بنجاح",
+  "Subscription plan has been updated successfully": "تم تحديث خطة الاشتراك بنجاح",
+  "Valid": "صالح",
+  "Invalid": "غير صالح"
 
 }

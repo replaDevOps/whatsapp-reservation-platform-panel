@@ -131,6 +131,16 @@ const uploadFileToServer = async ({file,setPreviewImage}) => {
         }
     };
 
+const getInitials = (name) => {
+    const safeName = typeof name === 'string' ? name : '';
+    const parts = safeName.trim().split(' ').filter(Boolean);
 
-export {utcDateTimeToLocal, greaterThanEqualTo, handleApolloError, capitalizeTranslated, formatTime24to12, useDebounce, notifySuccess, notifyError,FieldMerger,utcDateToLocal, uploadFileToServer}
+    return (
+        (parts[0]?.[0] || '') +
+        (parts.length > 1 ? parts[parts.length - 1]?.[0] : '')
+    ).toUpperCase();
+};
+
+export {utcDateTimeToLocal, greaterThanEqualTo, handleApolloError, capitalizeTranslated, formatTime24to12, useDebounce, notifySuccess, notifyError,FieldMerger,utcDateToLocal, uploadFileToServer,getInitials}
 export * from "./TableLoader"
+export * from "./SmLoader"

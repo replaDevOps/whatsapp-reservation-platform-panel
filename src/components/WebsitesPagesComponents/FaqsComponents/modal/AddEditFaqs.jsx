@@ -15,12 +15,14 @@ const AddEditFaqs = ({visible,onClose,edititem,refetch}) => {
     const {t} = useTranslation()
     const [ updateFaqs, {loading: updating} ] = useMutation(UPDATE_FAQS,{
         onCompleted: ()=> {
-            notifySuccess(api,t("FAQ Update"),t("FAQ has been updated successfully"),()=>{refetch();onClose()})
+            notifySuccess(api,t("FAQ Update"),t("FAQ has been updated successfully"),()=>{refetch()});
+            onClose()
         },onError: (error)=> {notifyError(api,error)}
     })
     const [ createFaqs, { loading: creating, error } ] = useMutation(CREATE_FAQS,{
         onCompleted: ()=> {
-            notifySuccess(api,t("FAQ Create"),t("FAQ has been created successfully"),()=>{refetch();onClose()})
+            notifySuccess(api,t("FAQ Create"),t("FAQ has been created successfully"),()=>{refetch();onClose()});
+            onClose()
         },onError: (error)=> {notifyError(api,error)}
     })
     useEffect(()=>{

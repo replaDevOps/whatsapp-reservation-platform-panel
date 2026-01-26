@@ -79,7 +79,7 @@ const AllBusinessPage = () => {
                 loading={loading}
                 lg={6}
             />
-            <AllBusinessTable/>
+            <AllBusinessTable getSubscriptionsStats={getSubscriptionsStats}/>
         </Flex>
     )
 }

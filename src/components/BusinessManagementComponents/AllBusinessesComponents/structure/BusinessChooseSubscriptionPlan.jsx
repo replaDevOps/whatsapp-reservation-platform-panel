@@ -28,9 +28,8 @@ const BusinessChooseSubscriptionPlan = ({subscriptionValidity, setSubscriptionVa
             setSelectedSubscriptionPlan({...data?.getSubscriptions?.find(plan => plan?.type === 'BASIC')})
         }
     }, [data])
-console.log("selectedSubscriptionPlan:", selectedSubscriptionPlan)
     return (
-        <Row gutter={[24, 24]}>
+        <Row gutter={[10, 24]}>
             <Col span={24} lg={{ span: 16 }}> 
                 <Flex vertical gap={16}>
                     <Flex justify="space-between" align="center">
@@ -55,7 +54,10 @@ console.log("selectedSubscriptionPlan:", selectedSubscriptionPlan)
             </Col>
 
             <Col span={24} lg={{ span: 8 }}>
-                <PlanCard {...{subscriptionPlan: selectedSubscriptionPlan}} />
+                <PlanCard
+                    subscriptionPlan={selectedSubscriptionPlan}
+                    subscriptionValidity={subscriptionValidity}
+                />
             </Col>
         </Row>
     );

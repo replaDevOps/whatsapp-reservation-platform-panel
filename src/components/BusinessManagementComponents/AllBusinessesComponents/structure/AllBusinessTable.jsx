@@ -1,7 +1,6 @@
 import { useState, useEffect} from 'react';
-import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, notification } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { ConfirmModal, CustomPagination, DeleteModal, } from '../../../Ui';
+import { Card, Flex, Table, Row, Col, Form, notification } from 'antd';
+import { ConfirmModal, CustomPagination, DeleteModal, DropdownFilter, } from '../../../Ui';
 import { allbusinessColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import { notifyError, notifySuccess, statusbusinessItem, TableLoader, typeItems, useDebounce } from '../../../../shared';
@@ -12,15 +11,15 @@ import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { CHANGE_BUSINESS_STATUS, DELETE_BUSINESS } from '../../../../graphql/mutation';
 
 
-const AllBusinessTable = () => {
+const AllBusinessTable = ({getSubscriptionsStats}) => {
 
     const [form] = Form.useForm();
     const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
-    const [selectedAction, setselectedAction] = useState('');
-    const [selectedstatus, setselectedStatus] = useState('');
-    const [selectedMonth, setSelectedMonth] = useState(null);
+    const [selectedAction, setselectedAction] = useState(null);
+    const [selectedstatus, setselectedStatus] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(null);
     const [ deleteitem, setDeleteItem ] = useState(false)
     const [ statuschange, setStatusChange ] = useState(null)
     const navigate = useNavigate()
@@ -32,8 +31,8 @@ const AllBusinessTable = () => {
         fetchPolicy: "network-only",
     })
     const fetchBusinesses = () => {
-        const startDate = selectedMonth?.[0]?.format("YYYY-MM-DD") || null;
-        const endDate = selectedMonth?.[1]?.format("YYYY-MM-DD") || null;
+        const startDate = selectedDate?.[0]?.format("YYYY-MM-DD") || null;
+        const endDate = selectedDate?.[1]?.format("YYYY-MM-DD") || null;
 
         getBusinesses({
             variables: {
@@ -49,7 +48,8 @@ const AllBusinessTable = () => {
     };
     const [changeBusinessStatus, { loading: statusChanging }] = useMutation(CHANGE_BUSINESS_STATUS,{
         onCompleted: ()=>{
-            notifySuccess(api,t("Business status change"),t("Business status changes successfully"), ()=> {fetchBusinesses(); setStatusChange(null)})
+            notifySuccess(api,t("Business status change"),t("Business status changes successfully"), ()=> {fetchBusinesses();});
+            setStatusChange(null)
         },
         onError: (error) => {
             notifyError(api, error);
@@ -57,7 +57,8 @@ const AllBusinessTable = () => {
     });
      const [deleteBusiness, {loading: deleting}] = useMutation(DELETE_BUSINESS, {
         onCompleted: () => {
-            notifySuccess(api,t("Business Delete"),t("Business deleted successfully"),()=> {fetchBusinesses();setDeleteItem(false)})
+            notifySuccess(api,t("Business Delete"),t("Business deleted successfully"),()=> {fetchBusinesses();getSubscriptionsStats()});
+            setDeleteItem(false)
         },
         onError: (error) => {
             notifyError(api, error);
@@ -72,7 +73,7 @@ const AllBusinessTable = () => {
         selectedAction,
         current,
         pageSize,
-        selectedMonth
+        selectedDate
     ])
     useEffect(()=>{
         setBusinesses(data?.getBusinesses?.businesses || []);
@@ -85,15 +86,6 @@ const AllBusinessTable = () => {
         setPageSize(size);
     };
 
-    const handleActionClick = ({ key }) => {
-        setselectedAction(key);
-    };
-
-    const handleStatusClick = ({ key }) => {
-        setselectedStatus(key);
-    };
-
-
     return (
         <>
             {contextHolder}
@@ -102,54 +94,38 @@ const AllBusinessTable = () => {
                     <Row gutter={[16, 16]} justify="space-between" align="middle">
                         <Col xl={10} md={24} span={24}>        
                             <Row gutter={[16, 16]}>
-                                <Col span={24} md={24} lg={12}>
+                                <Col span={24} md={24} lg={13}>
                                     <SearchInput
                                         name='name'
                                         value={search}
                                         onChange={(e) => {
                                             setSearch(e.target.value);
+                                            setCurrent(1)
                                         }}
                                         placeholder={t("Search by Business Name / Customer Name")}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
+                                        allowClear
                                     />
                                 </Col>
-                                <Col span={24} lg={12}>
+                                <Col span={24} lg={11}>
                                     <Flex gap={5}>
-                                        <Dropdown
-                                            menu={{
-                                                items: typeItems.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleActionClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(typeItems.find((i) => i.key === selectedAction)?.label || "All Type")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
-                                        <Dropdown
-                                            menu={{
-                                                items: statusbusinessItem.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleStatusClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(statusbusinessItem.find((i) => i.key === selectedstatus)?.label || "All Status")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
+                                        <DropdownFilter
+                                            items={typeItems}
+                                            value={selectedAction}
+                                            onChange={(key)=>{setselectedAction(key);setCurrent(1)}}
+                                            onClear={() => setselectedAction(null)}
+                                            placeholder="Type"
+                                            t={t}
+                                        />
+                                        <DropdownFilter
+                                            items={statusbusinessItem}
+                                            value={selectedstatus}
+                                            onChange={(key)=>{setselectedStatus(key);setCurrent(1)}}
+                                            onClear={() => setselectedStatus(null)}
+                                            placeholder="Status"
+                                            t={t}
+                                        />
                                     </Flex>
                                 </Col>
                             </Row>
@@ -160,9 +136,9 @@ const AllBusinessTable = () => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder={[t("Start Month"),t("End Month")]}
-                                    value={selectedMonth}
-                                    onChange={(month) => setSelectedMonth(month)}
+                                    placeholder={[t("Start Date"),t("End Date")]}
+                                    value={selectedDate}
+                                    onChange={(date) => {setSelectedDate(date);setCurrent(1)}}
                                 />
                             </Flex>
                         </Col>

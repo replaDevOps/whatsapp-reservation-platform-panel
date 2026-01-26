@@ -20,6 +20,7 @@ const GET_DISCOUNTS = gql`
                 expiryDate
                 status
                 createdAt
+                validity
             }
         }
     }
@@ -34,4 +35,13 @@ const GET_PLANS_LOOKUPS = gql`
     }
 `
 
-export {GET_DISCOUNTS,GET_PLANS_LOOKUPS}
+const VERIFY_PROMOTION_CODE = gql`
+    query VerifyPromotion($name: String!) {
+        verifyPromotion(name: $name) {
+            id
+            status
+        }
+    }
+`
+
+export {GET_DISCOUNTS,GET_PLANS_LOOKUPS,VERIFY_PROMOTION_CODE}

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, notification } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { ConfirmModal, CustomPagination } from '../../../Ui';
-import { singleviewColumns, singleviewData } from '../../../../data';
+import { Button, Card, Flex, Table, Row, Col, Form, notification } from 'antd';
+import { ConfirmModal, CustomPagination, DropdownFilter } from '../../../Ui';
+import { singleviewColumns } from '../../../../data';
 import { SearchInput } from '../../../Forms';
 import { notifyError, notifySuccess, statusitemsCust, TableLoader, useDebounce } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
@@ -58,14 +57,6 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
         setCurrent(page);
         setPageSize(size);
     };
-
-    const handleStatusClick = ({ key }) => {
-        if (key === '') {
-            setselectedStatus(null);
-        } else {
-            setselectedStatus(key === 'true');
-        }
-    }; 
     
     useEffect(()=>{
         setBranchBusinessData(data?.getBusinessBranches?.branches)
@@ -84,27 +75,19 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
                                     value={search}
                                     onChange={(e) => {
                                         setSearch(e.target.value);
+                                        setCurrent(1)
                                     }}
                                     prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                 />
-                                <Dropdown
-                                    menu={{
-                                        items: statusitemsCust.map((item) => ({
-                                            key: item.key,
-                                            label: t(item.label)
-                                        })),
-                                        onClick: handleStatusClick
-                                    }}
-                                    trigger={['click']}
-                                >
-                                    <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                        <Flex justify="space-between" align="center" gap={30}>
-                                            {t(statusitemsCust.find((i) => (i.key === '' ? selectedstatus === null : i.key === selectedstatus))?.label || "Status")}
-                                            <DownOutlined />
-                                        </Flex>
-                                    </Button>
-                                </Dropdown>    
+                                <DropdownFilter
+                                    items={statusitemsCust}
+                                    value={selectedstatus}
+                                    onChange={(key)=>{setselectedStatus(key);setCurrent(1)}}
+                                    onClear={() => setselectedStatus(null)}
+                                    placeholder="Status"
+                                    t={t}
+                                />
                             </Flex>    
                         </Col>
                         <Col span={24} md={24} xl={8}>

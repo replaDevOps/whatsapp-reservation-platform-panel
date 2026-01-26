@@ -506,7 +506,7 @@
   "Request":"Request",
   "Subscriber":"Subscriber",
   "Create":"Create",
-
+  
   "Jun":"Jun",
   "Jul":"Jul",
   "All Group":"All Group",
@@ -524,8 +524,15 @@
   "Password Change":"Password Change",
   "Password has been changed successfully":"Password has been changed successfully",
   "New password and confirmation do not match.":"New password and confirmation do not match.",
-  "User ID not found.":"User ID not found."
+  "User ID not found.":"User ID not found.",
   
+  "Subscription Plan Upgrade":"Subscription Plan Upgrade",
+  "Subscription plan has been upgraded successfully":"Subscription plan has been upgraded successfully",
+  "Subscription Update":"Subscription Update",
+  "Subscription has been Updated successfully":"Subscription has been Updated successfully",
+  "Subscription plan has been updated successfully":"Subscription plan has been updated successfully",
+  "Valid":"Valid",
+  "Invalid":"Invalid"
 
 
 }

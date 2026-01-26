@@ -8,6 +8,9 @@ const GET_SUBSCRIPTION_PLANS = gql`
             type
             description
             price
+            yearlyPrice
+            discountPrice
+            discountYearlyPrice
             noOfBranches
             noOfAdmins
             noOfStaffManagers

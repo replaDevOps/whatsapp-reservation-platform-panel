@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, notification } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { CustomPagination, DeleteModal, } from '../../../Ui';
+import { Card, Flex, Table, Row, Col, Form, notification } from 'antd';
+import { CustomPagination, DeleteModal, DropdownFilter, } from '../../../Ui';
 import { discountColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import { notifySuccess, subscriptionItems, TableLoader, typeamountItem, typeitemsCust, useDebounce } from '../../../../shared';
@@ -21,10 +20,10 @@ const DiscountTable = ({visible,setVisible}) => {
     const [current, setCurrent] = useState(1);
     const [search, setSearch] = useState('');
     const searchdebounce = useDebounce(search,500)
-    const [selectedAction, setselectedAction] = useState('');
-    const [selectedType, setselectedType] = useState('');
-    const [selectedgroup, setselectedGroup] = useState('');
-    const [selectedYear, setSelectedYear] = useState([null]);
+    const [selectedAction, setselectedAction] = useState(null);
+    const [selectedType, setselectedType] = useState(null);
+    const [selectedgroup, setselectedGroup] = useState(null);
+    const [selectedDate, setSelectedDate] = useState([null]);
     const [ edititem, setEditItem ] = useState(null)
     const [ expireitem, setExpireItem ] = useState(null)
     const [ api, contextHolder] = notification.useNotification();
@@ -36,8 +35,8 @@ const DiscountTable = ({visible,setVisible}) => {
     });
 
     const fetchDiscounts = () => {
-        const startDate= selectedYear?.[0] ? dayjs(selectedYear[0]).toISOString() : null;
-        const endDate= selectedYear?.[1] ? dayjs(selectedYear[1]).toISOString() : null;
+        const startDate= selectedDate?.[0] ? dayjs(selectedDate[0]).toISOString() : null;
+        const endDate= selectedDate?.[1] ? dayjs(selectedDate[1]).toISOString() : null;
         return (
             getDiscounts({
                 variables: {
@@ -61,18 +60,6 @@ const DiscountTable = ({visible,setVisible}) => {
         setPageSize(size);
     };
 
-    const handleActionClick = ({ key }) => {
-        setselectedAction(key);
-    };
-
-    const handleTypeClick = ({ key }) => {
-        setselectedType(key);
-    };
-
-    const handleGroupClick = ({ key }) => {
-        setselectedGroup(key);
-    };
-
     const [discountData, setDiscountData]= useState([])
     useEffect(() => {
         if (getDiscounts) {
@@ -84,7 +71,7 @@ const DiscountTable = ({visible,setVisible}) => {
         selectedType,
         selectedgroup,
         selectedAction,
-        selectedYear,
+        selectedDate,
         current,
         pageSize
     ]);
@@ -110,6 +97,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                         value={search}
                                         onChange={(e) => {
                                             setSearch(e.target.value);
+                                            setCurrent(1)
                                         }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
@@ -117,57 +105,30 @@ const DiscountTable = ({visible,setVisible}) => {
                                 </Col>
                                 <Col span={24} lg={14}>
                                     <Flex gap={5}>
-                                        <Dropdown
-                                            menu={{
-                                                items: typeamountItem.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleTypeClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(typeamountItem.find((i) => i.key === selectedType)?.label || "Type")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
-                                        <Dropdown
-                                            menu={{
-                                                items: typeitemsCust.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleGroupClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(typeitemsCust.find((i) => i.key === selectedgroup)?.label || "Group")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
-                                        <Dropdown
-                                            menu={{
-                                                items: subscriptionItems.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleActionClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(subscriptionItems.find((i) => i.key === selectedAction)?.label || "Subscription Plan")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
+                                        <DropdownFilter
+                                            items={typeamountItem}
+                                            value={selectedType}
+                                            onChange={(key)=>{setselectedType(key);setCurrent(1)}}
+                                            onClear={() => setselectedType(null)}
+                                            placeholder="Type"
+                                            t={t}
+                                        />
+                                        <DropdownFilter
+                                            items={typeitemsCust}
+                                            value={selectedgroup}
+                                            onChange={(key)=>{setselectedGroup(key);setCurrent(1)}}
+                                            onClear={() => setselectedGroup(null)}
+                                            placeholder="Group"
+                                            t={t}
+                                        />
+                                        <DropdownFilter
+                                            items={subscriptionItems}
+                                            value={selectedAction}
+                                            onChange={(key)=>{setselectedAction(key);setCurrent(1)}}
+                                            onClear={() => setselectedAction(null)}
+                                            placeholder="Subscription Plan"
+                                            t={t}
+                                        />
                                     </Flex>
                                 </Col>
                             </Row>
@@ -178,9 +139,9 @@ const DiscountTable = ({visible,setVisible}) => {
                                     withoutForm
                                     rangePicker
                                     className="datepicker-cs"
-                                    placeholder={[t("Start Year"),t("End Year")]}
-                                    value={selectedYear}
-                                    onChange={(year) => setSelectedYear(year)}
+                                    placeholder={[t("Start Date"),t("End Date")]}
+                                    value={selectedDate}
+                                    onChange={(date) => {setSelectedDate(date);setCurrent(1)}}
                                 />
                             </Flex>
                         </Col>

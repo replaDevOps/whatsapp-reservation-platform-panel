@@ -18,32 +18,31 @@ const SubscriptionPlanTab = () => {
         fetchPolicy: "network-only",
     })
     const [subscriptionPlans, setSubscriptionPlans]= useState([])
-    const [editSubscriptionPlan, setEditSubscriptionPlan]= useState()
     const [ edititem, setEditItem ] = useState(null)
-    const singledata = subscriptionplanData?.find((items)=>items?.id === Number(activeKey))
+    // const singledata = subscriptionplanData?.find((items)=>items?.id === Number(activeKey))
     const items = [
         {
             key: 'BASIC',
             label: t('Basic Subscription Plan'),
-            children: <SubscriptionPlanCard singledata={singledata}/>,
+            // children: <SubscriptionPlanCard singledata={singledata}/>,
         },
         {
             key: 'STANDARD',
             label: t('Standard Subscription Plan'),
-            children: <SubscriptionPlanCard singledata={singledata} />,
+            // children: <SubscriptionPlanCard singledata={singledata} />,
         },
         {
             key: 'PRO',
             label: t('Pro Subscription Plan'),
-            children: <SubscriptionPlanCard singledata={singledata} />,
+            // children: <SubscriptionPlanCard singledata={singledata} />,
         },
         {
             key: 'ENTERPRISE',
             label: t('Enterprise Subscription Plan'),
-            children: <SubscriptionPlanCard singledata={singledata} />,
+            // children: <SubscriptionPlanCard singledata={singledata} />,
         }
     ]
-    const currentContent = items.find((item) => item.key === activeKey)?.children
+    // const currentContent = items.find((item) => item.key === activeKey)?.children
 
     useEffect(()=>{
         if(getSubscriptionPlans)
@@ -66,7 +65,7 @@ const SubscriptionPlanTab = () => {
         <Row gutter={[24,24]}>
             <Col span={24} lg={9} xl={7} xxl={5}>
                 <Card className='card-bg card-cs radius-12 border-gray'>
-                    <Tabs defaultActiveKey="1" 
+                    <Tabs defaultActiveKey={activeKey} 
                         items={items.map(({ key, label }) => ({
                             key,
                             label,
@@ -108,7 +107,7 @@ const SubscriptionPlanTab = () => {
                     </Card>
                     <Card className='card-bg card-cs radius-12 border-gray'>
                         {
-                            edititem ?  <EditSubscription {...{ edititem, setEditItem }} /> : <SubscriptionPlanCard subscriptionPlan={activeSubscriptionPlan}/>
+                            edititem ?  <EditSubscription {...{ edititem, setEditItem, getSubscriptionPlans }} /> : <SubscriptionPlanCard subscriptionPlan={activeSubscriptionPlan}/>
                         }
                     </Card>
                 </Flex>
