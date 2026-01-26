@@ -75,7 +75,9 @@ const AddEditStaff = () => {
         }
     };
 
-    
+    useEffect(() => {
+        form.resetFields();
+    }, [i18n.language]);
 
     return (
         <>

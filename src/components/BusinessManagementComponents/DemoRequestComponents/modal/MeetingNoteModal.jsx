@@ -13,7 +13,7 @@ const MeetingNoteModal = ({visible,onClose,refetch,id}) => {
     const {t} = useTranslation()
     const [ api, contextHolder ] = notification.useNotification()    
     const [updateDemo, { loading }] = useMutation(UPDATE_DEMO_REQUEST,{
-        onCompleted:()=>{notifySuccess(api,t("Demo Request Status Update"),t("Demo request status has been updated successfully."),()=> {refetch(); onClose()})},
+        onCompleted:()=>{notifySuccess(api,t("Demo Request Status Update"),t("Demo request status has been updated successfully."),()=> {refetch()});onClose()},
         onError: (error) => {notifyError(api, error);},
     });
 

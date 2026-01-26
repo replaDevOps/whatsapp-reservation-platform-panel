@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Row, Col, Form, Image } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { CustomPagination, } from '../../../Ui';
+import { Button, Card, Flex, Table, Row, Col, Form, Image } from 'antd';
+import { CustomPagination, DropdownFilter, } from '../../../Ui';
 import { revenueColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
 import { subscriptionItems, TableLoader, servicetypeItems, exportToExcel, useDebounce } from '../../../../shared';
@@ -16,11 +15,11 @@ const RevenueTable = () => {
     const {t,i18n}=useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
-    const [selectedAction, setselectedAction] = useState('');
-    const [selectedType, setselectedType] = useState('');
+    const [selectedAction, setselectedAction] = useState(null);
+    const [selectedType, setselectedType] = useState(null);
     const [selectedDate, setselectedDate] = useState([]);
     const [revenueData, setRevenueData]= useState([])
-    const [ search, setSearch ] = useState('')
+    const [ search, setSearch ] = useState(null)
     const debouncedSearch = useDebounce(search, 500);
     const [ getRevenue, { data, loading }] = useLazyQuery(GET_REVENUE,{
         fetchPolicy: 'network-only'
@@ -45,14 +44,6 @@ const RevenueTable = () => {
     const handlePageChange = (page, size) => {
         setCurrent(page);
         setPageSize(size);
-    };
-
-    const handleActionClick = ({ key }) => {
-        setselectedAction(key);
-    };
-
-    const handleTypeClick = ({ key }) => {
-        setselectedType(key);
     };
 
     useEffect(() => {
@@ -87,6 +78,7 @@ const RevenueTable = () => {
                                         value={search}
                                         onChange={(e) => {
                                             setSearch(e.target.value);
+                                            setCurrent(1)
                                         }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
@@ -94,40 +86,22 @@ const RevenueTable = () => {
                                 </Col>
                                 <Col span={24} lg={12}>
                                     <Flex gap={5}>
-                                        <Dropdown
-                                            menu={{
-                                                items: servicetypeItems.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleTypeClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(servicetypeItems.find((i) => i.key === selectedType)?.label || "All Types")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
-                                        <Dropdown
-                                            menu={{
-                                                items: subscriptionItems.map((item) => ({
-                                                    key: String(item.key),
-                                                    label: t(item.label)
-                                                })),
-                                                onClick: handleActionClick
-                                            }}
-                                            trigger={['click']}
-                                        >
-                                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                                <Flex justify="space-between" align="center" gap={30}>
-                                                    {t(subscriptionItems.find((i) => i.key === selectedAction)?.label || "Subscription Plan")}
-                                                    <DownOutlined />
-                                                </Flex>
-                                            </Button>
-                                        </Dropdown>
+                                        <DropdownFilter
+                                            items={servicetypeItems}
+                                            value={selectedType}
+                                            onChange={(key)=>{setselectedType(key);setCurrent(1)}}
+                                            onClear={() => setselectedType(null)}
+                                            placeholder="Types"
+                                            t={t}
+                                        />
+                                        <DropdownFilter
+                                            items={subscriptionItems}
+                                            value={selectedAction}
+                                            onChange={(key)=>{setselectedAction(key);setCurrent(1)}}
+                                            onClear={() => setselectedAction(null)}
+                                            placeholder="Subscription Plan"
+                                            t={t}
+                                        />
                                     </Flex>
                                 </Col>
                             </Row>
@@ -145,7 +119,7 @@ const RevenueTable = () => {
                                     className="datepicker-cs"
                                     placeholder={[t("Start Date"),t("End Date")]}
                                     value={selectedDate}
-                                    onChange={(date) => setselectedDate(date)}
+                                    onChange={(date) => {setselectedDate(date);setCurrent(1)}}
                                 />
                             </Flex>
                         </Col>

@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd';
 import './index.css'
-export const SearchInput = ({withoutForm, name, label, tooltip, type, size, disabled, required, message, value, placeholder, textArea, validator, ...props }) => {
+export const SearchInput = ({withoutForm, allowClear, name, label, tooltip, type, size, disabled, required, message, value, placeholder, textArea, validator, ...props }) => {
     return (
         <>
             {
@@ -30,6 +30,7 @@ export const SearchInput = ({withoutForm, name, label, tooltip, type, size, disa
                             disabled={disabled || false}
                             {...props}
                             className='searchinputno'
+                            allowClear
                         />
                 :
                 <Form.Item
@@ -72,6 +73,7 @@ export const SearchInput = ({withoutForm, name, label, tooltip, type, size, disa
                                 size={size || 'middle'}
                                 disabled={disabled || false}
                                 {...props}
+                                allowClear={allowClear}
                             />
                     }
                 </Form.Item>

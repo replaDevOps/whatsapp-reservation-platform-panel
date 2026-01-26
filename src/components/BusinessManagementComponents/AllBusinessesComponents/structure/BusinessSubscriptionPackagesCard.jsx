@@ -1,12 +1,14 @@
 import { Card, Col, Flex, Radio, Row, Space, Typography } from 'antd';
 import { MyInput } from '../../../Forms';
 import { useTranslation } from 'react-i18next';
+import { capitalizeTranslated } from '../../../../shared';
+import { useState } from 'react';
 
-const { Text, Title } = Typography;
+const { Text, Title, Paragraph } = Typography;
 
 const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscriptionPlan, setSelectedSubscriptionPlan, subscriptionValidity}) => {
     const {t} = useTranslation()
-
+    const [expanded, setExpanded] = useState(false);
     return (
         <Row gutter={[12, 12]}>
             <Col span={24}>
@@ -27,24 +29,56 @@ const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscript
                                                 <Radio value={plan?.type} />
                                                 <Flex vertical gap={0}>
                                                     <Text
-                                                        className={`fw-500 ${
+                                                        className={`fw-500 fs-16 ${
                                                             plan?.type === selectedSubscriptionPlan?.type ? 'text-brand' : ''
                                                         }`}
                                                     >
-                                                        {t(plan?.type)}
+                                                        {t(capitalizeTranslated(plan?.type))}
                                                     </Text>
-                                                    <Text type="secondary">{t(plan?.description)}</Text>
+                                                    <Paragraph
+                                                        type="secondary"
+                                                        className={`fs-13`}
+                                                        ellipsis={{
+                                                            rows: 1,
+                                                            expandable:'collapsible',
+                                                            symbol: expanded ? <Text className="text-brand">less</Text> : <Text className="text-brand">more</Text>,
+                                                            onExpand: (_, info) => setExpanded(info.expanded),
+                                                        }}
+                                                    >
+                                                        {t(plan?.description)}
+                                                    </Paragraph>
                                                 </Flex>
                                             </Flex>
 
-                                            <Title level={5} className="m-0">
+                                            <Title level={4} className="m-0">
                                                 <Space size={8}>
-                                                    <sup className="fs-14 fw-600 text-grey">{t("SAR")}</sup>
+                                                    <sup className="fs-12 fw-600 text-grey">{t("SAR")}</sup>
                                                     {
-                                                        subscriptionValidity === 'ENTERPRISE' ? "Custom Price" :
-                                                        subscriptionValidity === 'YEARLY' ? plan?.price*12 : plan?.price
+                                                        subscriptionValidity === 'ENTERPRISE' ? (
+                                                            "Custom Price"
+                                                        ) : subscriptionValidity === 'YEARLY' ? (
+                                                            (plan?.discountYearlyPrice > 0 && plan?.discountYearlyPrice !== plan?.yearlyPrice) ? (
+                                                                <>
+                                                                    <Text delete className="fs-16 text-gray">
+                                                                        {plan?.yearlyPrice}
+                                                                    </Text>
+                                                                    {plan?.discountYearlyPrice}
+                                                                </>
+                                                            ) : (
+                                                                plan?.yearlyPrice
+                                                            )
+                                                        ) : (plan?.discountPrice > 0 && plan?.discountPrice !== plan?.price) ? (
+                                                            <>
+                                                                <Text delete className="fs-16 text-gray">
+                                                                    {plan?.price}
+                                                                </Text>
+                                                                {plan?.discountPrice}
+                                                            </>
+                                                        ) : (
+                                                            plan?.price
+                                                        )
                                                     }
-                                                    <span className="fs-14 fw-500 text-gray">/{t(subscriptionValidity)}</span>
+                                                    <span className="fs-13 fw-500 text-gray">/{t(capitalizeTranslated(subscriptionValidity))}</span>
                                                 </Space>
                                             </Title>
                                         </Flex>
@@ -66,6 +100,7 @@ const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscript
                         addonBefore={t("SAR")}
                         placeholder={t("Enter price")}
                         className="w-100"
+                        type={'number'}
                     />
                 </Col>
             }

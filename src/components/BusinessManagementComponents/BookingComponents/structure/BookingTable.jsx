@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col, Form } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Card, Flex, Table, Typography, Row, Col, Form } from 'antd';
 import { ModuleTopHeading } from '../../../PageComponent';
-import { CustomPagination } from '../../../Ui';
+import { CustomPagination, DropdownFilter } from '../../../Ui';
 import { bookingColumn } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
-import moment from 'moment';
 import { statusItem, TableLoader, useDebounce } from '../../../../shared';
 import { useTranslation } from 'react-i18next';
 import { useLazyQuery, useQuery } from '@apollo/client/react';
@@ -21,7 +19,7 @@ const BookingTable = () => {
     const [selectedstatus, setselectedStatus] = useState(null);
     const [selectedBusiness, setSelectedBusiness] = useState(null);
     const [selectedbrnach, setSelectedBranch] = useState(null);
-    const [selectedYear, setSelectedYear] = useState([]);
+    const [selectedDate, setSelectedDate] = useState([]);
     const [ search, setSearch ] = useState(null);
     const debouncedSearch = useDebounce(search, 500);
     const [ bookingData, setBookingData ] = useState([])
@@ -38,8 +36,8 @@ const BookingTable = () => {
     const businessItems = businessLookups?.getBusinesses?.businesses
 
     const fetchFilters = () => {
-        const startDate = selectedYear?.[0]?.format("YYYY-MM-DD") || null;
-        const endDate = selectedYear?.[1]?.format("YYYY-MM-DD") || null;
+        const startDate = selectedDate?.[0]?.format("YYYY-MM-DD") || null;
+        const endDate = selectedDate?.[1]?.format("YYYY-MM-DD") || null;
 
         getBooking({
             variables: {
@@ -60,24 +58,11 @@ const BookingTable = () => {
         if(getBooking){
             fetchFilters()
         }
-    },[getBooking,debouncedSearch,selectedbrnach,selectedBusiness,selectedYear,selectedstatus,pageSize,current])
+    },[getBooking,debouncedSearch,selectedbrnach,selectedBusiness,selectedDate,selectedstatus,pageSize,current])
 
     const handlePageChange = (page, size) => {
         setCurrent(page);
         setPageSize(size);
-    };
-
-   
-    const handleBusinessClick = ({ key }) => {
-        setSelectedBusiness(key);
-    };
-
-    const handleBranchClick = ({ key }) => {
-        setSelectedBranch(key === 'all' ? null : key);
-    }; 
-
-    const handleStatusClick = ({ key }) => {
-        setselectedStatus(key);
     };
 
     useEffect(()=>{
@@ -100,9 +85,9 @@ const BookingTable = () => {
                                 withoutForm
                                 rangePicker
                                 className="datepicker-cs"
-                                placeholder={[t("Start Year"),t("End Year")]}
-                                value={selectedYear}
-                                onChange={(year) => setSelectedYear(year)}
+                                placeholder={[t("Start Date"),t("End Date")]}
+                                value={selectedDate}
+                                onChange={(date) => {setSelectedDate(date);setCurrent(1)}}
                             />
                         </Flex>
                     </Flex>
@@ -115,6 +100,7 @@ const BookingTable = () => {
                                     value={search}
                                     onChange={(e) => {
                                         setSearch(e.target.value);
+                                        setCurrent(1)
                                     }}
                                     prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
@@ -122,63 +108,36 @@ const BookingTable = () => {
                             </Col>
                             <Col span={24} lg={16} xl={16}>
                                 <Flex gap={5} wrap>
-                                    <Dropdown
-                                        menu={{
-                                            items: [
-                                                { key: '', label: t("All Business") },
-                                                ...(businessItems?.map((item) => ({
-                                                    key: String(item.id),
-                                                    label: item.name
-                                                })) || [])
-                                            ],
-                                            onClick: handleBusinessClick
-                                        }}
-                                        trigger={['click']}
-                                    >
-                                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                            <Flex justify="space-between" align="center" gap={30}>
-                                                {selectedBusiness ? businessItems?.find((i) => String(i.id) === selectedBusiness)?.name : t("All Business")}
-                                                <DownOutlined />
-                                            </Flex>
-                                        </Button>
-                                    </Dropdown>
-                                    <Dropdown
-                                        menu={{
-                                            items: [
-                                                { key: '', label: t("All Branches") },
-                                                ...(branchitem?.map((item) => ({
-                                                    key: String(item.id),
-                                                    label: item.name
-                                                })) || [])
-                                            ],
-                                            onClick: handleBranchClick
-                                        }}
-                                        trigger={['click']}
-                                    >
-                                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                            <Flex justify="space-between" align="center" gap={30}>
-                                                {selectedbrnach ? branchitem?.find((i) => String(i.id) === selectedbrnach)?.name : t("All Branches")}
-                                                <DownOutlined />
-                                            </Flex>
-                                        </Button>
-                                    </Dropdown>
-                                    <Dropdown
-                                        menu={{
-                                            items: statusItem.map((item) => ({
-                                                key: String(item.key),
-                                                label: t(item.label)
-                                            })),
-                                            onClick: handleStatusClick
-                                        }}
-                                        trigger={['click']}
-                                    >
-                                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                            <Flex justify="space-between" align="center" gap={30}>
-                                                {t(statusItem.find((i) => i.key === selectedstatus)?.label || "All Status")}
-                                                <DownOutlined />
-                                            </Flex>
-                                        </Button>
-                                    </Dropdown>
+                                    <DropdownFilter
+                                        items={businessItems?.map((item) => ({
+                                            key: String(item.id),
+                                            label: item.name
+                                        })) || []}
+                                        value={selectedBusiness}
+                                        onChange={(key)=>{setSelectedBusiness(key);setCurrent(1)}}
+                                        onClear={() => setSelectedBusiness(null)}
+                                        placeholder="Businesses"
+                                        t={t}
+                                    />
+                                    <DropdownFilter
+                                        items={branchitem?.map((item) => ({
+                                            key: String(item.id),
+                                            label: item.name
+                                        })) || []}
+                                        value={selectedbrnach}
+                                        onChange={(key)=>{setSelectedBranch(key);setCurrent(1)}}
+                                        onClear={() => setSelectedBranch(null)}
+                                        placeholder="Branches"
+                                        t={t}
+                                    />
+                                    <DropdownFilter
+                                        items={statusItem}
+                                        value={selectedstatus}
+                                        onChange={(key)=>{setselectedStatus(key);setCurrent(1)}}
+                                        onClear={() => setselectedStatus(null)}
+                                        placeholder="Status"
+                                        t={t}
+                                    />
                                 </Flex>
                             </Col>
                         </Row>

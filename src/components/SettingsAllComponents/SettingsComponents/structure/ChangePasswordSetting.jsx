@@ -1,16 +1,17 @@
-import { Button, Card, Col, Flex, Form, message, notification, Row, Typography } from 'antd'
+import { Button, Card, Col, Flex, Form, notification, Row, Typography } from 'antd'
 import { MyInput } from '../../../../components'
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client/react';
 import { CHANGE_PASSWORD_USER } from '../../../../graphql/mutation';
 import { getUserID } from '../../../../utils/auth';
 import { notifyError, notifySuccess } from '../../../../shared';
+import { useEffect } from 'react';
 
 const { Title } = Typography
 const ChangePasswordSetting = () => {
 
     const [form] = Form.useForm();
-    const [messageApi] = message.useMessage();
+    const { i18n } = useTranslation()
     const [ api, contextHolder ] = notification.useNotification()
     const {t} = useTranslation()
 
@@ -39,6 +40,11 @@ const ChangePasswordSetting = () => {
             }
         });
     };
+
+    useEffect(() => {
+        form.resetFields();
+    }, [i18n.language]);
+
     return (
         <>
             {contextHolder}

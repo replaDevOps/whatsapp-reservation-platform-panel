@@ -22,10 +22,11 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
         onCompleted: () => {
             notifySuccess(
                 api,
-                "Subscription Plan Upgrade",
-                "Subscription plan upgraded successfully",
-                ()=> {getSubscriberSubscriptions();onClose()}
-            )
+                t("Subscription Plan Upgrade"),
+                t("Subscription plan has been upgraded successfully"),
+                ()=> {getSubscriberSubscriptions()}
+            );
+            onClose()
         },
         onError: (error) => {
             notifyError(api, error);

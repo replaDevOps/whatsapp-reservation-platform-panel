@@ -1,7 +1,7 @@
 import { DownOutlined, HolderOutlined } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Flex, Tag, Tooltip, Typography } from "antd";
 import { NavLink } from "react-router-dom";
-import { capitalizeTranslated, FieldMerger, toArabicDigits, utcDateTimeToLocal } from "../shared";
+import { capitalizeTranslated, FieldMerger, getInitials, toArabicDigits, utcDateTimeToLocal, utcDateToLocal } from "../shared";
 import dayjs from "dayjs";
 
 const { Text } = Typography
@@ -41,17 +41,22 @@ const BookingDashboardColumn = ({t,i18n})=> [
 
 const customerColumn = ({t,i18n})=> [
     {
-        title: t("Name"),
+        title: t("First Name"),
         dataIndex: 'firstName',
-        render: (_,row)=> `${row?.firstName} ${row?.lastName}`
+    },
+    {
+        title: t("Last Name"),
+        dataIndex: 'lastName',
     },
     {
         title: t("Email Address"),
         dataIndex: 'email', 
+        width: 250,
     },
     {
         title: t("Phone Number"),
         dataIndex: 'phone',
+        isPhone: true,
         render: (phoneNo) => {
         if (!phoneNo) return '';
         
@@ -59,12 +64,15 @@ const customerColumn = ({t,i18n})=> [
         return i18n.language === "ar" 
             ? `${prefix}${toArabicDigits(phoneNo)}`
             : `${prefix}${phoneNo}`;
-        }
+        },
+        width: 250,
     },
     {
         title: t("Joined At"),
         dataIndex: 'createdAt',
-        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(utcDateTimeToLocal(createdAt)) : utcDateTimeToLocal(createdAt)
+        width: 200,
+        isDate: true,
+        render: (createdAt) => i18n.language === "ar" ? toArabicDigits(utcDateToLocal(createdAt)) : utcDateToLocal(createdAt)
     },
 ];
 
@@ -72,7 +80,17 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => 
     {
         title: t("Image"),
         dataIndex: 'imageUrl',
-        render:(imageUrl) => <Avatar src={imageUrl} size={40} />,
+        render: (_,row) => {
+            return (
+                <>
+                    {
+                        row?.imageUrl ? 
+                        <Avatar src={row?.imageUrl} size={40} />
+                        : <Avatar size={40} className='fs-14 text-white fw-bold brand-bg'>{getInitials(row?.firstName) + getInitials(row?.lastName)}</Avatar>
+                    }
+                </>
+            )
+        },
         width: 100
     },
     {
@@ -147,8 +165,6 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => 
         ),
     },
 ];
-
-
 
 const bookingColumn = ({t,i18n})=> [
     {
@@ -245,7 +261,13 @@ const revenueColumns = ({t,i18n})=> [
         dataIndex: 'business',
         render: (business) => {
             return (
-                <Avatar src={business?.image} size={40} />
+                <>
+                    {
+                        business?.image ? 
+                        <Avatar src={business?.image} size={40} />
+                        : <Avatar size={40} className='fs-14 text-white fw-bold brand-bg'>{getInitials(business?.name)}</Avatar>
+                    }
+                </>
             )
         }
     },
@@ -363,7 +385,7 @@ const demoreqColumns = ({setVisible,setEditItem,t,i18n}) => [
         {
             title: t("Date"),
             dataIndex: 'createdAt',
-            render: (createdAt) => i18n.language === "ar" ? toArabicDigits(utcDateTimeToLocal(createdAt)) : utcDateTimeToLocal(createdAt)
+            render: (createdAt) => i18n.language === "ar" ? toArabicDigits(utcDateToLocal(createdAt)) : utcDateToLocal(createdAt)
         },
         {
             title: t("Note"),
@@ -578,7 +600,24 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
     {
         title: t('Used / Limit'),
         dataIndex: 'usedLimit',
-        render: (_,row) => i18n.language === "ar" ? toArabicDigits(row?.usageLimit) : row?.remainingLimit
+        render: (_,row) => i18n.language === "ar" ? toArabicDigits(row?.usageLimit+ '/' + row?.remainingLimit) : row?.usageLimit+ '/' +row?.remainingLimit
+    },
+    {
+        title: t('Validity'),
+        dataIndex: 'validity',
+        render: (validity) => {
+            return (
+                <Flex gap={5} wrap>
+                    {
+                        validity?.map((items,index)=>
+                            <Tag className="sm-pill radius-20 fs-12" key={index}>
+                                {t(capitalizeTranslated(items))}
+                            </Tag>       
+                        )
+                    }
+                </Flex>
+            );
+        }
     },
     {
         title: t('Start Date'),
@@ -829,14 +868,21 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t }) => [
     {
         title: t("Business ID"),
         dataIndex: 'businessId',
-        render: (businessId)=>  <Text>#{businessId}</Text>
+        width:140,
     },
     {
         title: t("Business Logo"),
         dataIndex: 'image',
-        render: (businessLogo) => {
+        width: 140,
+        render: (_,row) => {
             return (
-                <Avatar src={businessLogo} size={40} />
+                <>
+                    {
+                        row?.image ? 
+                        <Avatar src={row?.image} size={40} />
+                        : <Avatar size={40} className='fs-14 text-white fw-bold brand-bg'>{getInitials(row?.name)}</Avatar>
+                    }
+                </>
             )
         }
     },
@@ -863,9 +909,9 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t }) => [
                 subscription?.type === 'BASIC' ? 
                     <Text className='sm-pill text-white fs-12 bg-basic-color'>{t("Basic Plan")}</Text>
                 : subscription?.type === 'STANDARD' ? 
-                    <Text className='sm-pill text-white fs-12 bg-red'>{t("Standard Plan")}</Text>
+                    <Text className='sm-pill text-white fs-12 bg-violet'>{t("Standard Plan")}</Text>
                 : subscription?.type === 'PRO' ? 
-                    <Text className='sm-pill text-white fs-12 bg-violet'>{t("PRO Plan")}</Text>
+                    <Text className='sm-pill text-white fs-12  bg-red'>{t("PRO Plan")}</Text>
                 : <Text className='sm-pill text-white fs-12 bg-apple-green'>{t("Enterprise Plan")}</Text>
                 
             );
@@ -887,7 +933,7 @@ const allbusinessColumns = ({ setDeleteItem,setStatusChange,navigate,t }) => [
     {
         title: t("Date"),
         dataIndex: 'createdAt',
-        render: (date) => utcDateTimeToLocal(date),
+        render: (date) => utcDateToLocal(date),
         width: '200px',
     },
     {

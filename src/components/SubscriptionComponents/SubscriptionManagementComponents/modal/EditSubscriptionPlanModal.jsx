@@ -19,7 +19,8 @@ const EditSubscriptionPlanModal = ({visible,onClose,edititem}) => {
     })
     const [updateSubscriptionPlan, { loading}] = useMutation(UPDATE_SUBSCRIBER_SUBSCRIPTION,{
         onCompleted: () => {
-            notifySuccess(api,t("Subscription Plan Update"),t("Subscription plan has been Updated successfully"),()=> {getSubscriberSubscriptions();onClose()})
+            notifySuccess(api,t("Subscription Update"),t("Subscription has been Updated successfully"),()=> {getSubscriberSubscriptions()});
+            onClose()
         },
         onError: (error) => {
             notifyError(api, error);

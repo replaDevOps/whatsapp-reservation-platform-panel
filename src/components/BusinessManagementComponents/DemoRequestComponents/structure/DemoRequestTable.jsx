@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { CustomPagination, } from '../../../Ui';
-import { demoreqColumns, demoreqData } from '../../../../data';
+import { Card, Flex, Table, Typography, Row, Col } from 'antd';
+import { CustomPagination, DropdownFilter, } from '../../../Ui';
+import { demoreqColumns } from '../../../../data';
 import { MyDatepicker } from '../../../Forms';
-import moment from 'moment';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { MeetingNoteModal } from '../modal';
 import { useTranslation } from 'react-i18next';
@@ -48,15 +46,6 @@ const DemoRequestTable = () => {
         setCurrent(page);
         setPageSize(size);
     };
-
-    const handleStatusClick = ({ key }) => {
-        setStatusFilter(key);
-    };
-
-    const handleTypeClick = ({ key }) => {
-        setselectedType(key);
-    };
-
     // const handleStatusChange = (key,row) => {
     //     setselectedStatus(prevData =>
     //         prevData.map(item =>
@@ -88,40 +77,22 @@ const DemoRequestTable = () => {
                     <Row gutter={[16, 16]} justify="space-between" align="middle">
                         <Col span={24} lg={12}>
                             <Flex gap={5}>
-                                <Dropdown
-                                    menu={{
-                                        items: servicetypeItems.map((item) => ({
-                                            key: String(item.key),
-                                            label: t(item.label)
-                                        })),
-                                        onClick: handleTypeClick
-                                    }}
-                                    trigger={['click']}
-                                >
-                                    <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                        <Flex justify="space-between" align="center" gap={30}>
-                                            {t(servicetypeItems.find((i) => i.key === selectedType)?.label || "All Type")}
-                                            <DownOutlined />
-                                        </Flex>
-                                    </Button>
-                                </Dropdown>
-                                <Dropdown
-                                    menu={{
-                                        items: statusItems.map((item) => ({
-                                            key: String(item.key),
-                                            label: t(item.label)
-                                        })),
-                                        onClick: handleStatusClick
-                                    }}
-                                    trigger={['click']}
-                                >
-                                    <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                        <Flex justify="space-between" align="center" gap={30}>
-                                            {t(statusItems.find((i) => i.key === statusfilter)?.label || "All Status")}
-                                            <DownOutlined />
-                                        </Flex>
-                                    </Button>
-                                </Dropdown>
+                                <DropdownFilter
+                                    items={servicetypeItems}
+                                    value={selectedType}
+                                    onChange={(key)=>{setselectedType(key);setCurrent(1)}}
+                                    onClear={() => setselectedType(null)}
+                                    placeholder="Type"
+                                    t={t}
+                                />
+                                <DropdownFilter
+                                    items={statusItems}
+                                    value={statusfilter}
+                                    onChange={(key)=>{setStatusFilter(key);setCurrent(1)}}
+                                    onClear={() => setStatusFilter(null)}
+                                    placeholder="Status"
+                                    t={t}
+                                />
                             </Flex>
                         </Col>
                         <Col span={24} md={24} xl={8}>
@@ -132,7 +103,7 @@ const DemoRequestTable = () => {
                                     className="datepicker-cs"
                                     placeholder={[t("Start Date"),t("End Date")]}
                                     value={selectedDate}
-                                    onChange={(date) => setSelectedDate(date)}
+                                    onChange={(date) => {setSelectedDate(date);setCurrent(1)}}
                                 />
                             </Flex>
                         </Col>

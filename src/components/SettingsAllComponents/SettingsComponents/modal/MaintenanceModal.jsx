@@ -14,7 +14,7 @@ const MaintenanceModal = ({visible,onClose,initialChecked,refetch}) => {
     const {t} = useTranslation()
     const [ api, contextHolder ] = notification.useNotification()
     const [ updateMaintenanceStatus, {loading} ] = useMutation(IS_MAINTENANCE_ALLOW,{
-        onCompleted: () => {notifySuccess(api,t("Maintenance Status Update"),t("Maintenance status updated successfully"),()=> {refetch();onClose(localChecked)})},
+        onCompleted: () => {notifySuccess(api,t("Maintenance Status Update"),t("Maintenance status updated successfully"),()=> {refetch()});onClose(localChecked)},
         onError: (error) => {notifyError(api, error)},
     })
 

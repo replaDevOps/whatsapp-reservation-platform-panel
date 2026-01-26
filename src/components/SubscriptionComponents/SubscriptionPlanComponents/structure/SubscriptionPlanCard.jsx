@@ -94,9 +94,25 @@ const SubscriptionPlanCard = ({subscriptionPlan}) => {
             </Flex>
             <Title className={`m-0`}>
                 <Space size={8}>
-                    <sup className={`fs-16 fw-600 text-grey`}>{t("SAR")}</sup>
+                    <sup className={`fs-16 fw-600`}>{t("SAR")}</sup>
                     {
-                        planDuration === 'Yearly' ? subscriptionPlan?.price * 12 : subscriptionPlan?.price
+                        planDuration === 'Yearly' ? (
+                            (subscriptionPlan?.discountYearlyPrice > 0 && subscriptionPlan?.discountYearlyPrice !== subscriptionPlan?.yearlyPrice)  ? (
+                                <>
+                                    <Text delete className='fs-22 text-gray'>{subscriptionPlan?.yearlyPrice}</Text> {subscriptionPlan?.discountYearlyPrice}
+                                </>  
+                            ):  (
+                                subscriptionPlan?.yearlyPrice
+                            )
+                        ) : (
+                            (subscriptionPlan?.discountPrice > 0 && subscriptionPlan?.discountPrice !== subscriptionPlan?.price) ? (
+                                <>
+                                    <Text delete className='fs-22 text-gray'>{subscriptionPlan?.price}</Text> {subscriptionPlan?.discountPrice}
+                                </>
+                            ): (
+                                subscriptionPlan?.price
+                            )
+                        )
                     }
                     <span className='fs-16 fw-500 text-gray'>/{t(planDuration)}</span>
                 </Space> 

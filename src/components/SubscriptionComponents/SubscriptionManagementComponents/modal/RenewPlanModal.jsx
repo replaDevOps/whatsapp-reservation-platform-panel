@@ -20,7 +20,8 @@ const RenewPlanModal = ({visible,onClose,edititem}) => {
     })
     const [renewSubscriberSubscription, { loading }] = useMutation(RENEW_SUBSCRIBER_SUBSCRIPTION, {
         onCompleted: () => {
-            notifySuccess(api,t("Renew Plan Upgrade"), t("Renew plan upgraded successfully"),()=> {getSubscriberSubscriptions();onClose()})
+            notifySuccess(api,t("Renew Plan Upgrade"), t("Renew plan upgraded successfully"),()=> {getSubscriberSubscriptions()});
+            onClose()
         },
         onError: (error) => {
             notifyError(api, error);

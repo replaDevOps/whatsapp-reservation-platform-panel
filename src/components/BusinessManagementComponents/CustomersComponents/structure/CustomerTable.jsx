@@ -23,6 +23,7 @@ const CustomerTable = () => {
     const [selectedDate, setSelectedDate] = useState([null, null]);
     const [ search, setSearch ] = useState('')
     const debouncedSearch = useDebounce(search, 500);
+    const [isFetchingAll, setIsFetchingAll] = useState(false);
     const [subscriberCustomers, setSubscriberCustomers]= useState([])
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -57,6 +58,15 @@ const CustomerTable = () => {
     useEffect(()=>{
         setSubscriberCustomers(data?.getSubscribers?.subscribers)
     }, [data])
+
+    const tableColumns = customerColumn({ t, i18n })
+    const handleExport = () => {
+        exportToExcel({
+            dataSource: subscriberCustomers || [],
+            columns: tableColumns,
+            fileName: 'Subscriber_Customers',
+        })
+    }
     return (
         <>
             <Card className='radius-12 card-cs border-gray h-100'>
@@ -72,32 +82,35 @@ const CustomerTable = () => {
                     </Flex>
                     <Form layout="vertical" form={form}>
                         <Row gutter={[16, 16]} justify={'space-between'}>
-                            <Col span={24} md={24} lg={7} xl={8} >
+                            <Col span={24} md={24} lg={8} xl={10} >
                                 <SearchInput
                                     name='name'
                                     placeholder={t("Search by Customer Name")}
                                     value={search}
                                     onChange={(e) => {
                                         setSearch(e.target.value);
+                                        setCurrent(1)
                                     }}
+                                    allowClear
                                     prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
                                 />
                             </Col>
-                            <Col span={24} md={24} lg={12}>
+                            <Col span={24} md={24} lg={12} xl={12}>
                                 <Flex justify='end' gap={10}>         
-                                    <Button className='btncancel' onClick={() => exportToExcel(subscriberCustomers, 'SubscriberData')}> 
+                                    <Button className='btncancel' onClick={handleExport}
+                                    > 
                                         <Flex align='center' gap={10}>
-                                            <Image src='/assets/icons/export.webp' width={16} preview={false} alt='export icons' fetchPriority="high" /> {t("Export")}
+                                            <Image src='/assets/icons/export.webp' width={14} preview={false} alt='export icons' fetchPriority="high" /> {t("Export")}
                                         </Flex>
                                     </Button>
                                     <MyDatepicker
                                         withoutForm
                                         rangePicker
                                         className="datepicker-cs"
-                                        placeholder={[t("Start Year"),t("End Year")]}
+                                        placeholder={[t("Start Date"),t("End Date")]}
                                         value={selectedDate}
-                                        onChange={(date) => setSelectedDate(date)}
+                                        onChange={(date) => {setSelectedDate(date);setCurrent(1)}}
                                     />
                                 </Flex>
                             </Col>
@@ -107,17 +120,17 @@ const CustomerTable = () => {
                 <Flex vertical gap={20}>
                     <Table
                         size='large'
-                        columns={customerColumn({t,i18n})}
+                        columns={tableColumns}
                         dataSource={subscriberCustomers}
-                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left w-100' : 'w-100 pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1000 }}
                         rowHoverable={false}
                         pagination={false}
-                        rowKey={(record)=>record?.id}
+                        rowKey={'id'}
                         loading={{
                             ...TableLoader,
-                            spinning: loading
+                            spinning: !isFetchingAll && loading
                         }}
                     />
                     <CustomPagination 

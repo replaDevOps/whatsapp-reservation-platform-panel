@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Button, Card, Dropdown, Flex, Table, Typography, Row, Col, Form, message, notification } from 'antd';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Card, Flex, Table, Typography, Row, Col, Form, notification } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
-import { ConfirmModal, CustomPagination, DeleteModal } from '../../../Ui';
+import { ConfirmModal, CustomPagination, DeleteModal, DropdownFilter } from '../../../Ui';
 import { stafftableColumn } from '../../../../data';
 import { useNavigate } from 'react-router-dom';
 import { SearchInput } from '../../../Forms';
@@ -21,7 +21,7 @@ const StaffTable = () => {
     const {t,i18n} = useTranslation()
     const [pageSize, setPageSize] = useState(10);
     const [current, setCurrent] = useState(1);
-    const [selectedRole, setselectedRole] = useState('');
+    const [selectedRole, setselectedRole] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState(null);
     const navigate = useNavigate();
     const [ statuschange, setStatusChange ] = useState(false)
@@ -61,18 +61,6 @@ const StaffTable = () => {
         setCurrent(page);
         setPageSize(size);
     };
-
-    const handleRoleClick = ({ key }) => {
-        setselectedRole(key);
-    };
-
-    const handleStatusClick = ({ key }) => {
-        if (key === '') {
-            setSelectedStatus(null);
-        } else {
-            setSelectedStatus(key === 'true');
-        }
-    }; 
 
     useEffect(()=>{
         if(getstaff){
@@ -115,6 +103,7 @@ const StaffTable = () => {
                                     value={search}
                                     onChange={(e) => {
                                         setSearch(e.target.value);
+                                        setCurrent(1)
                                     }}
                                     prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
@@ -122,40 +111,22 @@ const StaffTable = () => {
                             </Col>
                             <Col span={24} lg={12}>
                                 <Flex gap={5}>
-                                    <Dropdown
-                                        menu={{
-                                            items: roleItems.map((item) => ({
-                                                key: String(item.key),
-                                                label: t(item.label)
-                                            })),
-                                            onClick: handleRoleClick
-                                        }}
-                                        trigger={['click']}
-                                    >
-                                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                            <Flex justify="space-between" align="center" gap={30}>
-                                                {t(roleItems.find((i) => i.key === selectedRole)?.label || "All Roles")}
-                                                <DownOutlined />
-                                            </Flex>
-                                        </Button>
-                                    </Dropdown>
-                                    <Dropdown
-                                        menu={{
-                                            items: statusitemsCust.map((item) => ({
-                                                key: item.key,
-                                                label: t(item.label)
-                                            })),
-                                            onClick: handleStatusClick
-                                        }}
-                                        trigger={['click']}
-                                    >
-                                        <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                                            <Flex justify="space-between" align="center" gap={30}>
-                                                {t(statusitemsCust.find((i) => (i.key === '' ? selectedStatus === null : i.key === selectedStatus))?.label || "All Status")}
-                                                <DownOutlined />
-                                            </Flex>
-                                        </Button>
-                                    </Dropdown>
+                                    <DropdownFilter
+                                        items={roleItems}
+                                        value={selectedRole}
+                                        onChange={(key)=>{setselectedRole(key);setCurrent(1)}}
+                                        onClear={() => setselectedRole(null)}
+                                        placeholder="Role"
+                                        t={t}
+                                    />
+                                    <DropdownFilter
+                                        items={statusitemsCust}
+                                        value={selectedStatus}
+                                        onChange={(key)=>{setSelectedStatus(key);setCurrent(1)}}
+                                        onClear={() => setSelectedStatus(null)}
+                                        placeholder="Status"
+                                        t={t}
+                                    />
                                 </Flex>
                             </Col>
                         </Row>

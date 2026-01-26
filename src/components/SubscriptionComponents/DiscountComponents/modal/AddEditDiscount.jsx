@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, notification, Row, Typography } from 'antd'
 import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
-import { capitalizeTranslated, customertypeOp, notifyError, notifySuccess, promoType } from '../../../../shared'
+import { capitalizeTranslated, customertypeOp, notifyError, notifySuccess, promoType, validityOp } from '../../../../shared'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from '@apollo/client/react'
 import { CREATE_DISCOUNTS, UPDATE_DISCOUNTS } from '../../../../graphql/mutation/mutations'
@@ -19,11 +19,11 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
         fetchPolicy:'network-only'
     })
     const [ updateDiscounts, {loading: updating} ] = useMutation(UPDATE_DISCOUNTS,{
-        onCompleted: () => {notifySuccess(api,t("Discount Update"),t("Discount has been updated successfully"),()=> {refetch(); onClose()})},
+        onCompleted: () => {notifySuccess(api,t("Discount Update"),t("Discount has been updated successfully"),()=> {refetch()});onClose()},
         onError: (error) => {notifyError(api, error);},
     })
     const [ createDiscount, { loading: creating } ] = useMutation(CREATE_DISCOUNTS,{
-        onCompleted: () => {notifySuccess(api,t("Discount Create"),t("Discount has been created successfully"),()=> {refetch();onClose()})},
+        onCompleted: () => {notifySuccess(api,t("Discount Create"),t("Discount has been created successfully"),()=> {refetch()});onClose()},
         onError: (error) => {notifyError(api, error);},
     })
     
@@ -37,6 +37,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                 discountType: capitalizeTranslated(edititem?.discountType),
                 value: edititem?.value,
                 usageLimit: edititem?.usageLimit,
+                validity: data?.validity,
                 startDate: dayjs(edititem?.startDate,'YYYY/MM/DD'),
                 expiryDate: dayjs(edititem?.expiryDate,'YYYY/MM/DD'),
             })
@@ -56,6 +57,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
             value: data.value ? Number(data.value) : 0,
             subscriptionIds: data.subscriptionIds || [],
             usageLimit: data.usageLimit ? Number(data.usageLimit) : 0,
+            validity: data?.validity,
             startDate: data.startDate,
             expiryDate: data.expiryDate
         };
@@ -176,6 +178,17 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     required
                                     message={t('Please enter limit')}
                                     placeholder={t('Enter limit')}
+                                />
+                            </Col>
+                            <Col span={24}>
+                                <MySelect 
+                                    mode={'multiple'}
+                                    label={t("Validity")} 
+                                    name="validity" 
+                                    required
+                                    message={t('Please choose validity')}
+                                    options={validityOp}
+                                    placeholder={t('Choose validity type')}
                                 />
                             </Col>
                             <Col span={24}>

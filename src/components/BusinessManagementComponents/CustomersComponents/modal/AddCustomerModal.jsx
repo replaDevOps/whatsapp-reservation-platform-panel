@@ -14,7 +14,7 @@ const AddCustomerModal = ({visible,onClose,refetch}) => {
     const isArabic = i18n?.language === 'ar'
     const [ api, contextHolder ] = notification.useNotification()
     const [createSubscriberCustomer, { loading }] = useMutation(CREATE_SUBSCRIBER_CUSTOMER, {
-        onCompleted: () => {notifySuccess(api,t("Customer Create"),t("Customer has been created successfully"),()=> {refetch(); onClose()})},
+        onCompleted: () => {notifySuccess(api,t("Customer Create"),t("Customer has been created successfully"),()=> {refetch()});onClose();form.resetFields()},
         onError: (error) => {notifyError(api, error);},
      });
 
@@ -107,6 +107,24 @@ const AddCustomerModal = ({visible,onClose,refetch}) => {
                                             </Select.Option>
                                         </Select>
                                     }
+                                    maxLength={20}
+                                    onInput={(e) => {
+                                        e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 20);
+                                    }}
+                                    validator={
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (!value) {
+                                                    return Promise.resolve();
+                                                }
+                                                const phoneLength = value.toString().length;
+                                                if (phoneLength < 9 || phoneLength > 20) {
+                                                    return Promise.reject(new Error(t("Phone number must be between 9 and 20 digits")));
+                                                }
+                                                return Promise.resolve();
+                                            }
+                                        })
+                                    }
                                 />
                             </Col>
                             <Col span={24}>
@@ -116,6 +134,12 @@ const AddCustomerModal = ({visible,onClose,refetch}) => {
                                     required 
                                     message={t("Please enter email")} 
                                     placeholder={t("Enter email")} 
+                                    validator={
+                                        {
+                                            type:'email',
+                                            message: t("Please enter a valid email format"),
+                                        }
+                                    }
                                 />
                             </Col>
                             <Col span={24}>
@@ -126,6 +150,16 @@ const AddCustomerModal = ({visible,onClose,refetch}) => {
                                     required 
                                     message={t("Please enter password")} 
                                     placeholder={t("Enter password")} 
+                                    validator={({ getFieldValue }) => ({
+                                        validator: (_, value) => {
+                                            const reg = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,}$/;
+                                            if (!reg.test(value)) {
+                                                return Promise.reject(new Error(t('Password should contain at least 8 characters, one uppercase letter, one number, one special character')));
+                                            } else {
+                                                return Promise.resolve();
+                                            }
+                                        }
+                                    })}
                                 />
                             </Col>
                         </Row>
