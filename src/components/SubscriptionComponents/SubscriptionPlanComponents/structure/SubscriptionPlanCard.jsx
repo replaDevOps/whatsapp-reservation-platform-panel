@@ -5,13 +5,14 @@ import { ModuleTopHeading } from '../../../PageComponent';
 import { useTranslation } from 'react-i18next';
 import { toArabicDigits } from '../../../../shared';
 
-const { Title,Text } = Typography;
+const { Title,Text,Paragraph } = Typography;
 const SubscriptionPlanCard = ({subscriptionPlan}) => {
 
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
     const [features, setFeatures]= useState([])
     const [planDuration, setPlanDuration ] = useState('Monthly')
+    const [expanded, setExpanded] = useState(false);
     const handleDurationClick = ({ key }) => {
         setPlanDuration(key)
     }
@@ -72,7 +73,17 @@ const SubscriptionPlanCard = ({subscriptionPlan}) => {
             <Flex justify='space-between' align='center' gap={10}>
                 <Flex vertical>
                     <ModuleTopHeading level={4} name={t(subscriptionPlan?.title)} />
-                    <Text className='text-gray fs-14'>{t(subscriptionPlan?.description)}</Text>
+                    <Paragraph
+                        className={`fs-14 text-gray`}
+                        ellipsis={{
+                            rows: 1,
+                            expandable:'collapsible',
+                            symbol: expanded ? <Text className="text-brand">less</Text> : <Text className="text-brand">more</Text>,
+                            onExpand: (_, info) => setExpanded(info.expanded),
+                        }}
+                    >
+                        {t(subscriptionPlan?.description)}
+                    </Paragraph>
                 </Flex>
                 <Dropdown
                     menu={{

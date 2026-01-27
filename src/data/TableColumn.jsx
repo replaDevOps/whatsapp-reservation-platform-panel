@@ -151,8 +151,8 @@ const stafftableColumn = ({navigate, setDeleteItem, setStatusChange,t,i18n}) => 
                 menu={{
                     items: [
                         { label: <NavLink onClick={(e) => {e.preventDefault(); navigate('/staff/staffmanagement/editstaff/'+row?.id)}}>{t("Edit")}</NavLink>, key: '1' },
-                        row?.status === 'Active' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Inactive")}</NavLink>, key: '2' },
-                        row?.status === 'Inactive' && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange(true) }}>{t("Active")}</NavLink>, key: '2a' },
+                        row?.isActive === true && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange({id: row?.id, status:row?.isActive}) }}>{t("Inactive")}</NavLink>, key: '2' },
+                        row?.isActive === false && { label: <NavLink onClick={(e) => {e.preventDefault(); setStatusChange({id: row?.id, status:row?.isActive}) }}>{t("Active")}</NavLink>, key: '2a' },
                         { label: <NavLink onClick={(e) => {e.preventDefault(); setDeleteItem(row?.id) }}>{t("Delete")}</NavLink>, key: '3' },
                     ],
                 }}
@@ -309,21 +309,45 @@ const revenueColumns = ({t,i18n})=> [
     },
     {
         title: t("Discount"),
-        dataIndex: 'subscriptionDiscountLog',
-        render: (subscriptionDiscountLog) =>
-            subscriptionDiscountLog?.discount?.value != null
-                ? `${t("SAR")} ${subscriptionDiscountLog.discount.value}`
+        dataIndex: 'applicableDiscount',
+        render: (applicableDiscount) =>
+            applicableDiscount?.code != null
+                ? <>{t("SAV")} <Text className="fs-12">{applicableDiscount?.code}</Text></>
                 : '--'
                 },
     {
         title: t("Price"),
-        dataIndex: 'price',
-        render: (price) => {
+        dataIndex: 'subscription',
+        render: (_,row) => {
             const isArabic = i18n.language === "ar"
             return (
                 <Flex align="flex-end" gap={5}>
-                    {t("SAR")} {isArabic ? toArabicDigits(price): price} 
-                    {/* <sup><Text className="fs-12" delete>{isArabic ? toArabicDigits(price?.original): price?.original}</Text></sup> */}
+                    {t("SAR")} {
+                            row?.validity === "MONTHLY" ?(
+                                (row?.subscription?.discountPrice > 0) ?(
+                                    <>
+                                        {isArabic ? toArabicDigits(row?.subscription?.discountPrice): row?.subscription?.discountPrice} 
+                                        <sup><Text className="fs-12" delete>{isArabic ? toArabicDigits(row?.subscription?.price): row?.subscription?.price}</Text></sup>
+                                    </>
+                                ):(
+                                    <>
+                                        {isArabic ? toArabicDigits(row?.subscription?.price): row?.subscription?.price} 
+                                    </>
+                                )
+                            )
+                            :
+                            (row?.subscription?.discountYearlyPrice > 0 ) ?(
+                                <>
+                                    {isArabic ? toArabicDigits(row?.subscription?.discountYearlyPrice): row?.subscription?.discountYearlyPrice}
+                                    <sup><Text className="fs-12" delete>{isArabic ? toArabicDigits(row?.subscription?.yearlyPrice): row?.subscription?.yearlyPrice}</Text></sup> 
+                                </>
+                            ):(
+                                <>
+                                    {isArabic ? toArabicDigits(row?.subscription?.yearlyPrice): row?.subscription?.yearlyPrice} 
+                                </>
+                            )
+
+                        }
                 </Flex>
             )
         }
@@ -413,7 +437,6 @@ const demoreqColumns = ({setVisible,setEditItem,t,i18n}) => [
         dataIndex: 'status',
         render: (status, row) => {
             const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
-
             return (
                 status === 'PENDING' ? (
                     <Dropdown
@@ -439,7 +462,7 @@ const demoreqColumns = ({setVisible,setEditItem,t,i18n}) => [
                         }}
                         trigger={['click']}
                     >
-                        <Flex gap={5} justify="space-between" className="btnpill fs-12 dsasellerpending cursor">
+                        <Flex gap={0} justify="space-between" className="btnpill fs-12 dsasellerpending cursor w-100px">
                             {t(capitalizeTranslated(formattedStatus))}
                             <DownOutlined />
                         </Flex>

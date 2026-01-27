@@ -1,6 +1,5 @@
 import { Form, Button, Typography, Row, Col, Checkbox, Flex, Image, notification } from "antd";
 import { NavLink } from "react-router-dom";
-import { message } from "antd";
 import { useMutation } from "@apollo/client/react";
 import { useNavigate } from "react-router-dom";
 import { LanguageChange, MyInput } from "../../components";

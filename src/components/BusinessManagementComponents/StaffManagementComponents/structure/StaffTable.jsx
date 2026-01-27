@@ -10,7 +10,7 @@ import { notifyError, notifySuccess, roleItems, statusitemsCust, TableLoader, us
 import { useTranslation } from 'react-i18next';
 import { GET_STAFFS } from '../../../../graphql/query';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
-import { DELETE_STAFF } from '../../../../graphql/mutation/mutations';
+import { DELETE_STAFF, UPDATE_STAFF } from '../../../../graphql/mutation/mutations';
 import { getUserID } from '../../../../utils/auth';
 
 const { Text } = Typography;
@@ -24,7 +24,7 @@ const StaffTable = () => {
     const [selectedRole, setselectedRole] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState(null);
     const navigate = useNavigate();
-    const [ statuschange, setStatusChange ] = useState(false)
+    const [ statuschange, setStatusChange ] = useState(null)
     const [ deleteitem, setDeleteItem ] = useState(null)
     const [api, contextHolder] = notification.useNotification();
     const [ search, setSearch ] = useState('')
@@ -32,6 +32,12 @@ const StaffTable = () => {
     const [staffData, setStaffData]= useState([])
     const [ getstaff, { data, loading }] = useLazyQuery(GET_STAFFS,{
         fetchPolicy: 'network-only'
+    })
+    const [updatestaff, {loading: updating}] = useMutation(UPDATE_STAFF,{
+        onCompleted: () => {
+            notifySuccess(api,t('Staff Status Update'),t('Staff status has been updated successfully'),()=>fetchStaffs());
+            setStatusChange(null);
+        },onError:(error)=>{notifyError(api,error)}
     })
     const fetchStaffs = () => {
         getstaff({
@@ -107,6 +113,7 @@ const StaffTable = () => {
                                     }}
                                     prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                     className='border-light-gray pad-x ps-0 radius-8 fs-13'
+                                    allowClear
                                 />
                             </Col>
                             <Col span={24} lg={12}>
@@ -163,7 +170,15 @@ const StaffTable = () => {
                 visible={statuschange}
                 title={'Are you sure?'}
                 subtitle={'Are you sure you want to change status this staff?'}
-                onClose={()=>setStatusChange(false)}
+                onClose={()=>setStatusChange(null)}
+                onConfirm={ async({id,status})=>{
+                    if(!id && !status) {
+                        notifyError(api,'Id is missing!') 
+                        return
+                    }
+                    await updatestaff({variables:{input:{id,isActive: !status}}})
+                }}
+                loading={updating}
             />
             <DeleteModal 
                 visible={deleteitem}

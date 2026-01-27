@@ -19,6 +19,7 @@ const AddEditStaff = () => {
     const title = BusinessTitle({t})
     const [form] = Form.useForm();
     const { id } = useParams()
+    const [messageApi] = message.useMessage();
     const [ api, contextHolder ] = notification.useNotification()
     const [ previewimage, setPreviewImage ] = useState(null)
     const [createstaff, { loading: creating }] = useMutation(CREATE_STAFF,{
@@ -56,14 +57,19 @@ const AddEditStaff = () => {
 
     const AddEditStaff = async () => {
         const data = form.getFieldsValue();
+        if(!previewimage){
+            notifyError(api,"Please upload image")
+            return;
+        }
         const input = {
             ...data,
             imageUrl: previewimage,
-        }
+        };
+        
         try {
             if (id) {
                 await updatestaff({
-                    variables: {input:{id,...input}}
+                    variables: { input: { id, ...input } }
                 });
             } else {
                 await createstaff({
@@ -72,7 +78,7 @@ const AddEditStaff = () => {
             }
         } catch (e) {
             console.error(e);
-        }
+        }        
     };
 
     useEffect(() => {
@@ -91,7 +97,7 @@ const AddEditStaff = () => {
                 />
                 {
                     loading ?
-                    <Flex justify='center' align='center'>
+                    <Flex justify='center' align='center' className='h-100vh'>
                         <Spin {...TableLoader} size="large" />
                     </Flex>
                     :
@@ -132,6 +138,7 @@ const AddEditStaff = () => {
                                                 align="center"
                                                 width={100}
                                                 height={100}
+                                                acceptFileType='image'
                                             />
                                             :
                                             <Flex vertical gap={5} justify='center' align='center'>
@@ -147,7 +154,6 @@ const AddEditStaff = () => {
                                                     </Button>
                                                 </div>
                                             </Flex>
-
                                         }
                                     </Col>
                                     <Col span={24} md={12}>
@@ -193,9 +199,25 @@ const AddEditStaff = () => {
                                                     </Select.Option>
                                                 </Select>
                                             }
-                                            placeholder="3445592382"
-                                            value={form.getFieldValue("phone") || ""}
-                                            className='w-100'
+                                            className="w-100"
+                                            maxLength={20}
+                                            onInput={(e) => {
+                                                e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 20);
+                                            }}
+                                            validator={
+                                                ({ getFieldValue }) => ({
+                                                    validator(_, value) {
+                                                        if (!value) {
+                                                            return Promise.resolve();
+                                                        }
+                                                        const phoneLength = value.toString().length;
+                                                        if (phoneLength < 9 || phoneLength > 20) {
+                                                            return Promise.reject(new Error(t("Phone number must be between 9 and 20 digits")));
+                                                        }
+                                                        return Promise.resolve();
+                                                    }
+                                                })
+                                            }
                                         />
                                     </Col>
                                     <Col span={24} md={12}>
@@ -205,6 +227,12 @@ const AddEditStaff = () => {
                                             required 
                                             message={t("Please enter email address")} 
                                             placeholder={t("Enter email address")} 
+                                            validator={
+                                                {
+                                                    type: 'email',
+                                                    message: t("Please enter a valid email format"),
+                                                }
+                                            }
                                         />
                                     </Col>
                                     <Col span={24} md={12}>
@@ -213,8 +241,18 @@ const AddEditStaff = () => {
                                             label={t("Password")} 
                                             name="password" 
                                             required={!data}
-                                            message={t("Please enter password")} 
+                                            message={()=>{}} 
                                             placeholder={t("Enter password")} 
+                                            validator={({ getFieldValue }) => ({
+                                                validator: (_, value) => {
+                                                    const reg = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,}$/;
+                                                    if (!reg.test(value)) {
+                                                        return Promise.reject(new Error(t('Password should contain at least 8 characters, one uppercase letter, one number, one special character')));
+                                                    } else {
+                                                        return Promise.resolve();
+                                                    }
+                                                }
+                                            })}
                                         />
                                     </Col>
                                     <Col span={24} md={12}>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, Flex, message, notification, Table } from 'antd';
 import { CustomPagination, DeleteModal } from '../../../Ui';
-import { faqColumns, faqsData } from '../../../../data';
+import { faqColumns } from '../../../../data';
 import { AddEditFaqs } from '../modal';
 import {
   DndContext,

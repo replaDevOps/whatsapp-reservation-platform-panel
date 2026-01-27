@@ -78,7 +78,7 @@ const notifySuccess = (api, message, description, onClose) => {
 const notifyError = (api, error) => {
     api.error({
         message: "Error",
-        description: error?.message || "Something went wrong",
+        description: error?.message || error,
         showProgress: true,
         pauseOnHover: true,
         duration:2

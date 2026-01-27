@@ -119,19 +119,20 @@ const DemoRequestTable = () => {
                         scroll={{ x: 1500 }}
                         rowHoverable={false}
                         pagination={false}
+                        rowKey={"id"}
                         loading={
                             {
                                 ...TableLoader,
                                 spinning: loading
                             }
                         }
-                        rowKey={(record)=> record?.id}
                     />
                     <CustomPagination 
                         total={data?.getBookDemos?.totalCount}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
+                        
                     />
                 </Flex>
             </Card>
