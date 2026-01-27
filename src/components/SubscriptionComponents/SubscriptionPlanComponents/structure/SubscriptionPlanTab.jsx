@@ -3,13 +3,12 @@ import { Button, Card, Flex, Typography, Row, Col, Tabs } from 'antd';
 import { SubscriptionPlanCard } from './SubscriptionPlanCard';
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { EditSubscription } from './EditSubscription';
-import { subscriptionplanData } from '../../../../data';
 import { useTranslation } from 'react-i18next';
 import { GET_SUBSCRIPTION_PLANS } from '../../../../graphql/query/subscriptionPlan';
 import { useLazyQuery } from '@apollo/client/react';
 
 const { Title } = Typography;
-const SubscriptionPlanTab = () => {
+const SubscriptionPlanTab = ({setState}) => {
 
     const {t,i18n} = useTranslation()
     const [activeKey, setActiveKey] = useState('1')
@@ -69,6 +68,7 @@ const SubscriptionPlanTab = () => {
                         items={items.map(({ key, label }) => ({
                             key,
                             label,
+                            disabled: edititem
                         }))} 
                         onChange={onChange} 
                         tabPosition='left'
@@ -82,7 +82,7 @@ const SubscriptionPlanTab = () => {
                         {
                             edititem ?
                             <Flex gap={10} align="center">
-                                <Button className="border-0 p-0 bg-transparent" onClick={() => setEditItem(null)}>
+                                <Button className="border-0 p-0 bg-transparent" onClick={() =>{ setEditItem(null);setState(null)}}>
                                     {i18n?.language === 'ar' ? <ArrowRightOutlined />:<ArrowLeftOutlined />}
                                 </Button>
                                 {
@@ -99,7 +99,7 @@ const SubscriptionPlanTab = () => {
                                         t(activeSubscriptionPlan?.title)
                                     }
                                 </Title>
-                                <Button className='btncancel' onClick={()=>setEditItem(activeSubscriptionPlan)}> 
+                                <Button className='btncancel' onClick={()=>{setEditItem(activeSubscriptionPlan);setState('Edit Subscription Plan')}}> 
                                     <img src='/assets/icons/edit-b.webp' width={20} alt='edit icon' /> {t("Edit Subscription Plan")}
                                 </Button>
                             </Flex>
@@ -107,7 +107,7 @@ const SubscriptionPlanTab = () => {
                     </Card>
                     <Card className='card-bg card-cs radius-12 border-gray'>
                         {
-                            edititem ?  <EditSubscription {...{ edititem, setEditItem, getSubscriptionPlans }} /> : <SubscriptionPlanCard subscriptionPlan={activeSubscriptionPlan}/>
+                            edititem ?  <EditSubscription {...{ edititem, setEditItem, getSubscriptionPlans, setState }} /> : <SubscriptionPlanCard subscriptionPlan={activeSubscriptionPlan}/>
                         }
                     </Card>
                 </Flex>

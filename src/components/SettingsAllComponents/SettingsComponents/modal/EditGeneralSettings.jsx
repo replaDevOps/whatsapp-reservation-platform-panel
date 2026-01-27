@@ -111,6 +111,7 @@ const EditGeneralSettings = ({visible,onClose,edititem,refetch}) => {
                                     message={t("Please enter phone number")} 
                                     placeholder={t("Enter phone number")} 
                                     addonBefore={ isArabic ? `${toArabicDigits(966)}+`: `+${966}`}
+                                    min={1}
                                 />
                             </Col>
                             <Col span={24}>

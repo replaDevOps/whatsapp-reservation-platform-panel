@@ -7,14 +7,15 @@ import { UPDATE_SUBSCRIPTION_PLAN } from '../../../../graphql/mutation';
 import { useMutation } from '@apollo/client/react';
 import { notifyError, notifySuccess } from '../../../../shared';
 
-const EditSubscription = ({setEditItem,edititem,getSubscriptionPlans}) => {
+const EditSubscription = ({setEditItem,edititem,getSubscriptionPlans,setState}) => {
 
     const [form] = Form.useForm();
     const {t} = useTranslation()
     const [ api, contextHolder ] = notification.useNotification()
     const [featureValues, setFeatureValues] = useState({})
     const [updateSubscriptionPlan, { loading, error, success }] = useMutation(UPDATE_SUBSCRIPTION_PLAN, {
-        onCompleted: () => {notifySuccess(api,t("Subscription Plan Update"),t("Subscription Plan has been updated successfully"),()=>{getSubscriptionPlans()})},
+        onCompleted: () => {notifySuccess(api,t("Subscription Plan Update"),t("Subscription Plan has been updated successfully"),()=>{getSubscriptionPlans();setEditItem(null);setState(null)})
+    },
         onError:(error)=>{notifyError(api,error)}
     });
     console.log("featureValues:", success)
@@ -173,6 +174,7 @@ const EditSubscription = ({setEditItem,edititem,getSubscriptionPlans}) => {
                             // value={form.getFieldValue("price") || ""}
                             className='w-100'
                             type='number'
+                            min={1}
                         />
                     </Col>
                     <Col span={24}>
@@ -184,6 +186,7 @@ const EditSubscription = ({setEditItem,edititem,getSubscriptionPlans}) => {
                             addonBefore={t('SAR')}
                             className='w-100'
                             type='number'
+                            min={1}
                         />
                     </Col>
                     <Col span={24}>

@@ -89,10 +89,11 @@ const ForgotPassword = () => {
                                     message={t("Please enter the OTP sent to your email")}
                                     onKeyPress={(e) => {
                                         if (!/[0-9]/.test(e.key)) {
-                                        e.preventDefault();
+                                            e.preventDefault();
                                         }
                                     }}
                                     className='w-100'
+                                    min={1}
                                 />
                             </Col>
                         )}

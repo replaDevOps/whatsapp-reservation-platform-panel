@@ -21,7 +21,7 @@ const BreadCrumbCard = ({ items = [], separator = "/", className = "" }) => {
                         <Text
                             className={
                                 index === items.length - 1
-                                    ? 'fw-500 fs-14 text-black'
+                                    ? 'fs-14 text-black'
                                     : 'fs-13 text-gray'
                             }
                         >

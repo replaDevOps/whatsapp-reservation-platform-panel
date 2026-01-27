@@ -19,13 +19,14 @@ const GET_REVENUE = gql`
         type
         subscription {
           type
+          discountPrice
+          discountYearlyPrice
+          price
+          yearlyPrice
         }
-        subscriptionDiscountLog {
+        applicableDiscount {
           id
-          discount {
-            id
-            value
-          }
+          code
         }
         validity
         createdAt
