@@ -6,6 +6,7 @@ import { EditSubscription } from './EditSubscription';
 import { useTranslation } from 'react-i18next';
 import { GET_SUBSCRIPTION_PLANS } from '../../../../graphql/query/subscriptionPlan';
 import { useLazyQuery } from '@apollo/client/react';
+import { capitalizeTranslated } from '../../../../shared';
 
 const { Title } = Typography;
 const SubscriptionPlanTab = ({setState}) => {
@@ -96,7 +97,7 @@ const SubscriptionPlanTab = ({setState}) => {
                             <Flex justify='space-between' align='center' wrap gap={10}>
                                 <Title level={5} className='m-0'>
                                     {
-                                        t(activeSubscriptionPlan?.title)
+                                        t(capitalizeTranslated(activeSubscriptionPlan?.title + ' ' +'Subscription Plan')) 
                                     }
                                 </Title>
                                 <Button className='btncancel' onClick={()=>{setEditItem(activeSubscriptionPlan);setState('Edit Subscription Plan')}}> 
