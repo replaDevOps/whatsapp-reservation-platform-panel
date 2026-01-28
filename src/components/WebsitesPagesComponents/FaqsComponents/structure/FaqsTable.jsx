@@ -1,55 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Card, Flex, message, notification, Table } from 'antd';
+import { Card, Flex, notification, Table } from 'antd';
 import { CustomPagination, DeleteModal } from '../../../Ui';
 import { faqColumns } from '../../../../data';
 import { AddEditFaqs } from '../modal';
-import {
-  DndContext,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { CSS } from '@dnd-kit/utilities';
 import { useTranslation } from 'react-i18next';
 import { GET_FAQS } from '../../../../graphql/query';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { notifyError, notifySuccess, TableLoader } from '../../../../shared';
 import { DELETE_FAQS } from '../../../../graphql/mutation';
-
-const DraggableRow = (props) => {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({
-        id: props['data-row-key'],
-    });
-
-    const style = {
-        ...props.style,
-        transform: CSS.Transform.toString(transform),
-        transition,
-        cursor: 'move',
-        ...(isDragging && {
-            position: 'relative',
-            zIndex: 999,
-        }),
-    };
-
-    return (
-        <tr
-            {...props}
-            ref={setNodeRef}
-            style={style}
-            {...attributes}
-            {...listeners}
-        />
-    );
-};
 
 const FaqsTable = ({ visible, setVisible }) => {
 
@@ -64,8 +22,9 @@ const FaqsTable = ({ visible, setVisible }) => {
         fetchPolicy: 'network-only'
     })
     const [deleteFaqs, { loading: deleting }] = useMutation(DELETE_FAQS,{
-        onCompleted: ()=>{notifySuccess(api,t("FAQ Delete"),t("FAQ has been deleted successfully"),()=>{fetchFaqs();setDeleteItem(null)})},
-        onError: (error)=> notifyError(api,error)
+        onCompleted: ()=>{notifySuccess(api,t("FAQ Delete"),t("FAQ has been deleted successfully"),()=>{fetchFaqs()}),
+            setDeleteItem(null)    
+        },onError: (error)=> notifyError(api,error)
     });
 
     const fetchFaqs = (()=>{
@@ -92,23 +51,6 @@ const FaqsTable = ({ visible, setVisible }) => {
             setFaqsData(data?.getFaqs?.faqs)
     }, [data])
 
-    const sensors = useSensors(
-        useSensor(PointerSensor, {
-            activationConstraint: { distance: 1 },
-        })
-    );
-
-    const onDragEnd = ({ active, over }) => {
-        if (active.id !== over?.id) {
-            setFaqsData((prev) => {
-                const oldIndex = prev.findIndex((item) => item.id === active.id);
-                const newIndex = prev.findIndex((item) => item.id === over?.id);
-                return arrayMove(prev, oldIndex, newIndex); 
-            });
-        }
-    };
-
-
     const handlePageChange = (page, size) => {
         setCurrent(page);
         setPageSize(size);
@@ -119,38 +61,22 @@ const FaqsTable = ({ visible, setVisible }) => {
             {contextHolder}
             <Card className="radius-12 card-cs border-gray h-100">
                 <Flex vertical gap={20}>
-                    <DndContext
-                        sensors={sensors}
-                        modifiers={[restrictToVerticalAxis]}
-                        onDragEnd={onDragEnd}
-                    >
-                        <SortableContext
-                            items={faqsData.map((i) => i.id)}
-                            strategy={verticalListSortingStrategy}
-                        >
-                            <Table
-                                size="large"
-                                columns={faqColumns({ setVisible, setEditItem, setDeleteItem,t })}
-                                dataSource={faqsData}
-                                pagination={false}
-                                rowHoverable={false}
-                                scroll={{ x: 800 }}
-                                components={{
-                                    body: {
-                                        row: DraggableRow,
-                                    },
-                                }}
-                                rowKey={"id"}
-                                className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
-                                loading={
-                                    {
-                                        ...TableLoader,
-                                        spinning: loading
-                                    }
-                                }
-                            />
-                        </SortableContext>
-                    </DndContext>
+                    <Table
+                        size="large"
+                        columns={faqColumns({ setVisible, setEditItem, setDeleteItem,t })}
+                        dataSource={faqsData}
+                        pagination={false}
+                        rowHoverable={false}
+                        scroll={{ x: 800 }}
+                        rowKey={"id"}
+                        className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left' : 'pagination table-cs table left-to-right'}
+                        loading={
+                            {
+                                ...TableLoader,
+                                spinning: loading
+                            }
+                        }
+                    />
                     <CustomPagination
                         total={data?.getFaqs?.totalCount}
                         current={current}
