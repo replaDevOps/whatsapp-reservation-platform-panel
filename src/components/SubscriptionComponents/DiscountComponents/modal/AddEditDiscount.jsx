@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, notification, Row, Typography } from 'antd'
 import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
@@ -15,6 +15,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
     const [form] = Form.useForm();
     const {t} = useTranslation()
     const [ api, contextHolder ] = notification.useNotification()
+    const [ selectDiscountType, setSelectDiscountType ] = useState(null)
     const {data} = useQuery(GET_PLANS_LOOKUPS,{
         fetchPolicy:'network-only'
     })
@@ -37,19 +38,29 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                 discountType: capitalizeTranslated(edititem?.discountType),
                 value: edititem?.value,
                 usageLimit: edititem?.usageLimit,
-                validity: data?.validity,
+                validity: edititem?.validity?.map(list => list),
                 startDate: dayjs(edititem?.startDate,'YYYY/MM/DD'),
                 expiryDate: dayjs(edititem?.expiryDate,'YYYY/MM/DD'),
             })
+            setSelectDiscountType(edititem?.discountType)
         }
         else {
             form.resetFields()
+            setSelectDiscountType(null)
         }
     },[visible,edititem])
     
 
     const AddEditDiscounts = async () => {
         const data = form.getFieldsValue();
+
+        if (data.startDate && data.expiryDate) {
+            if (data.startDate.isAfter(data.expiryDate)) {
+                notifyError(api, t("Start date cannot be greater than expiry date"));
+                return;
+            }
+        }
+        
         const input = {
             code: data.code,
             group: data.group?.toUpperCase() || null,
@@ -134,7 +145,6 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     message={t('Please choose group')}
                                     options={customertypeOp}
                                     placeholder={t('Choose group')}
-                                    
                                 />
                             </Col>
                             <Col span={24}>
@@ -149,6 +159,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                         name: capitalizeTranslated(items?.type)
                                     }))}
                                     placeholder={t('Choose plan type')}
+                                    showSearch={false}
                                 />
                             </Col>
                             <Col span={24}>
@@ -159,7 +170,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     message={t('Please choose discount type')}
                                     options={promoType}
                                     placeholder={t('Choose discount type')}
-                                    
+                                    onChange={(id)=>{setSelectDiscountType(id)}}
                                 />
                             </Col>
                             <Col span={24}>
@@ -169,6 +180,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     required
                                     message={t('Please enter value')}
                                     placeholder={t('Enter value')}
+                                    suffix={(((selectDiscountType ?? edititem?.discountType) || '').toUpperCase() === 'PERCENTAGE') ? '%' : null}
                                 />
                             </Col>
                             <Col span={24}>
@@ -199,6 +211,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     required
                                     message={t('Please select start date')}
                                     placeholder={t('Select date')}
+                                    
                                 />
                             </Col>
                             <Col span={24}>

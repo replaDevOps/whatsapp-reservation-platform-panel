@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Flex, Table, Row, Col, Form, notification } from 'antd';
+import { Card, Flex, Table, Row, Col, Form, notification, Typography } from 'antd';
 import { CustomPagination, DeleteModal, DropdownFilter, } from '../../../Ui';
 import { discountColumns } from '../../../../data';
 import { MyDatepicker, SearchInput } from '../../../Forms';
@@ -11,7 +11,7 @@ import { GET_DISCOUNTS } from '../../../../graphql/query';
 import { EXPIRE_DISCOUNT } from '../../../../graphql/mutation';
 import dayjs from 'dayjs';
 
-
+const { Text } = Typography
 const DiscountTable = ({visible,setVisible}) => {
 
     const [form] = Form.useForm();
@@ -101,6 +101,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                         }}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
+                                        allowClear
                                     />
                                 </Col>
                                 <Col span={24} lg={14}>
@@ -141,6 +142,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                     className="datepicker-cs"
                                     placeholder={[t("Start Date"),t("End Date")]}
                                     value={selectedDate}
+                                    prefix={<Text className='text-gray'>Expiry: </Text>}
                                     onChange={(date) => {setSelectedDate(date);setCurrent(1)}}
                                 />
                             </Flex>
