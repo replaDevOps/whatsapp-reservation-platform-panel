@@ -30,24 +30,27 @@ const SubscriptionManageTable = () => {
     const [getSubscriberSubscriptions, { data, loading }] = useLazyQuery(GET_SUBSCRIBERS_SUBSCRIPTIONS, {
         fetchPolicy: "network-only",
     })
-
-    const buildFilterObject = () => ({
-        search: debouncedSearch || null,
-        type: selectedType || null,
-        plan: selectedAction || null,
-        validity: selectedperiod || null,
-        startDate: selectedDate?.[0]?.format("YYYY-MM-DD") || null,
-        endDate: selectedDate?.[1]?.format("YYYY-MM-DD") || null,
-    });
-    useEffect(()=>{
-        if(getSubscriberSubscriptions)
+    const fetchSubscriptionPlanManagement = () => {
+        const startDate = selectedDate?.[0]?.format("YYYY-MM-DD") || null;
+        const endDate = selectedDate?.[1]?.format("YYYY-MM-DD") || null;
+        return(
             getSubscriberSubscriptions({
                 variables:{
                     limit: pageSize,
                     offDet: (current - 1) * pageSize,
-                    ...buildFilterObject()
+                    search: debouncedSearch || null,
+                    type: selectedType || null,
+                    plan: selectedAction || null,
+                    validity: selectedperiod || null,
+                    startDate,
+                    endDate
                 }
             })
+        )
+    }
+    useEffect(()=>{
+        if(getSubscriberSubscriptions)
+            fetchSubscriptionPlanManagement()
     }, [getSubscriberSubscriptions,debouncedSearch,selectedAction,selectedType,selectedperiod, selectedDate, pageSize, current])
     useEffect(()=>{
         if(data?.getSubscriberSubscriptions)
@@ -67,12 +70,12 @@ const SubscriptionManageTable = () => {
             <Card className='radius-12 card-cs border-gray h-100'>
                 <Form layout="vertical" form={form} className='mb-3'>
                     <Row gutter={[16, 16]} justify="space-between" align="middle">
-                        <Col xl={10} md={24} span={24}>        
+                        <Col xl={12} md={24} span={24}>        
                             <Row gutter={[16, 16]}>
-                                <Col span={24} md={24} lg={24} xl={24}>
+                                <Col span={24} md={24} lg={24} xl={12}>
                                     <SearchInput
                                         name='name'
-                                        placeholder={t('Search by Business ID')}
+                                        placeholder={t('Search by business name')}
                                         value={search}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'
@@ -80,6 +83,7 @@ const SubscriptionManageTable = () => {
                                             setSearch(e.target.value)
                                             setCurrent(1)
                                         }}
+                                        allowClear
                                     />
                                 </Col>
                                 <Col span={24} lg={24} xl={12}>
@@ -154,16 +158,19 @@ const SubscriptionManageTable = () => {
                 visible={visible}
                 edititem={edititem}
                 onClose={()=>{setVisible(false)}}
+                refetch={()=>fetchSubscriptionPlanManagement()}
             />
             <UpgradePlanModal 
                 visible={upgradeplan}
                 edititem={edititem}
                 onClose={()=>{setUpgradePlan(false);setEditItem(null);}}
+                refetch={()=>fetchSubscriptionPlanManagement()}
             />
             <RenewPlanModal 
                 visible={isrenew}
                 edititem={edititem}
                 onClose={()=>{setIsRenew(false);setEditItem(null);}}
+                refetch={()=>fetchSubscriptionPlanManagement()}
             />
         </>
     );
