@@ -83,10 +83,10 @@ const typeOp = [
 ];
 
 const subscriptionItems = [
-    { key: 'BASIC', label: 'BP' },
-    { key: 'STANDARD', label: 'SP' },
-    { key: 'PRO', label: 'PP' },
-    { key: 'ENTERPRISE', label: 'EP' },
+    { key: 'BASIC', label: 'Basic Plan' },
+    { key: 'STANDARD', label: 'Standard Plan' },
+    { key: 'PRO', label: 'PRO Plan' },
+    { key: 'ENTERPRISE', label: 'Enterprise Plan' },
 ];
 
 const subscriptionplanOp = [

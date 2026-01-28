@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { capitalizeTranslated, FieldMerger, getInitials, toArabicDigits, utcDateTimeToLocal, utcDateToLocal } from "../shared";
 import dayjs from "dayjs";
 
-const { Text } = Typography
+const { Text, Paragraph } = Typography
 const BookingDashboardColumn = ({t,i18n})=> [
     {
         title: t("Business Name"),
@@ -478,11 +478,22 @@ const demoreqColumns = ({setVisible,setEditItem,t,i18n}) => [
 
 const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew, t, i18n  }) => [
     {
+        title: t("Business ID"),
+        dataIndex: "businessId",
+        render: (businessId) => '#'+businessId?.toUpperCase().slice(0,5)
+    },
+    {
         title: t('Business Logo'),
         dataIndex: 'business',
         render: (business) => {
             return (
-                <Avatar src={business?.image} size={40} />
+                <>
+                    {
+                        business?.image ? 
+                        <Avatar src={business?.image} size={40} />
+                        : <Avatar size={40} className='fs-14 text-white fw-bold brand-bg'>{getInitials(business?.name)}</Avatar>
+                    }
+                </>
             )
         }
     },
@@ -521,13 +532,13 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
     {
         title: t('Start Date'),
         dataIndex: 'startDate',
-        render: (startDate) => utcDateTimeToLocal(startDate),
+        render: (startDate) => utcDateToLocal(startDate),
         width: '180px'
     },
     {
         title: t('Expiry Date'),
         dataIndex: 'endDate',
-        render: (expiryDate) => utcDateTimeToLocal(expiryDate),
+        render: (expiryDate) => utcDateToLocal(expiryDate),
         width: '180px'
     },
     {
@@ -652,10 +663,7 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
     {
         title: t('End Date'),
         dataIndex: 'expiryDate',
-        render: (expiryDate) => 
-            i18n.language === "ar"  ? 
-            toArabicDigits(dayjs(expiryDate).format("YYYY-MM-DD"))
-            : dayjs(expiryDate).format("YYYY-MM-DD")
+        render: (expiryDate) => dayjs(expiryDate).format("YYYY-MM-DD")
     },
     {
         title: t('Status'),
@@ -749,7 +757,15 @@ const faqColumns = ({ setVisible, setEditItem, setDeleteItem,t }) => [
         render: (question) => {
             return (
                 <Flex gap={15} align="flex-start">
-                    <HolderOutlined className="mt-2" /> {question}
+                    {/* <HolderOutlined className="mt-2" />  */}
+                    <Paragraph
+                        ellipsis={{
+                            rows: 1,
+                            tooltip: question
+                        }}
+                    >
+                        {question}
+                    </Paragraph>
                 </Flex>
             )
         }
@@ -758,16 +774,15 @@ const faqColumns = ({ setVisible, setEditItem, setDeleteItem,t }) => [
         title: t('Answer'),
         dataIndex: 'answer',
         render: (answer) => {
-            const words = answer?.split(' ') || [];
-            const previewText = words.slice(0, 20).join(' ');
-            const showEllipsis = words.length > 20;
-
             return (
-                <Tooltip title={answer}>
-                    <Text>
-                        {previewText}{showEllipsis ? '...' : ''}
-                    </Text>
-                </Tooltip>
+                <Paragraph
+                    ellipsis={{
+                        rows: 1,
+                        tooltip: answer
+                    }}
+                >
+                    {answer}
+                </Paragraph>
             );
         }
     },

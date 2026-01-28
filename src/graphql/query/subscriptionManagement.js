@@ -6,6 +6,7 @@ const GET_SUBSCRIBERS_SUBSCRIPTIONS = gql`
       totalCount
       subscribersubscriptions {
         id
+        businessId
         business {
           id
           image
