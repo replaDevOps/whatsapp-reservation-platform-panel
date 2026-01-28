@@ -85,7 +85,7 @@ export const IncludeFeatureField = ({
                 }
 
                 {
-                    fields.map(({ key, name, placeholder = "Enter value", selectOptions: fieldOptions }) => {
+                    fields.map(({ key, name, placeholder = "", selectOptions: fieldOptions }) => {
                         const current = localValues[key] || {};
                         const isActive = current.active;
                         const isRowDisabled = disabledKeys.includes(key);
