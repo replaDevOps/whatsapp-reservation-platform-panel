@@ -2,29 +2,24 @@ import { useEffect } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { Button, Col, Divider, Flex, Form, Modal, notification, Row, Typography } from 'antd'
 import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
-import { notifyError, notifySuccess, periodOp, subscriptionplanOp, typeOp, typeOps } from '../../../../shared'
-import moment from 'moment'
+import { notifyError, notifySuccess, subscriptionplanOp, typeOps, validityOp } from '../../../../shared'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { UPDATE_SUBSCRIBER_SUBSCRIPTION } from '../../../../graphql/mutation'
-import { useLazyQuery, useMutation } from '@apollo/client/react'
-import { GET_SUBSCRIBERS_SUBSCRIPTIONS } from '../../../../graphql/query'
+import { useMutation } from '@apollo/client/react'
 
 const { Title, Text } = Typography
-const UpgradePlanModal = ({visible,onClose,edititem}) => {
+const UpgradePlanModal = ({visible,onClose,edititem,refetch}) => {
     const [form] = Form.useForm();
     const {t} = useTranslation()
     const [ api, contextHolder ] = notification.useNotification()
-    const [getSubscriberSubscriptions] = useLazyQuery(GET_SUBSCRIBERS_SUBSCRIPTIONS, {
-        fetchPolicy: "network-only",
-    })
     const [updateSubscriberSubscription, { loading }] = useMutation(UPDATE_SUBSCRIBER_SUBSCRIPTION, {
         onCompleted: () => {
             notifySuccess(
                 api,
                 t("Subscription Plan Upgrade"),
                 t("Subscription plan has been upgraded successfully"),
-                ()=> {getSubscriberSubscriptions()}
+                ()=> {refetch()}
             );
             onClose()
         },
@@ -40,8 +35,10 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
                 email: edititem?.subscriber?.email,
                 type: edititem?.type,
                 validity: edititem?.validity,
-                startDate: dayjs(),
-                endDate: edititem?.validity === 'MONTHLY' ? dayjs().add(1, "m")  : dayjs().add(1, 'year'),
+                startDate: dayjs(edititem?.startDate),
+                // endDate: edititem?.validity === 'MONTHLY' ? dayjs().add(1, "m")  : dayjs().add(1, 'year'),
+                // edititem?.validity === 'MONTHLY' ? dayjs(edititem?.startDate).add(1, 'm') : dayjs(edititem?.startDate).add(1, 'year'),
+                endDate: dayjs(edititem?.endDate)
             })
         }
         else {
@@ -130,16 +127,7 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
                                     name="validity" 
                                     required
                                     message={t('Choose period')}
-                                    options={[
-                                        {
-                                            id: 'MONTHLY',
-                                            name: 'Monthly'
-                                        },
-                                        {
-                                            id: "YEARLY",
-                                            name: 'Yearly'
-                                        },
-                                    ]}
+                                    options={validityOp}
                                     onChange= {(value)=>{
                                         if(value === 'MONTHLY')
                                             form.setFieldValue("endDate", dayjs().add(1, 'M'))
@@ -156,6 +144,15 @@ const UpgradePlanModal = ({visible,onClose,edititem}) => {
                                     required
                                     message={t('Please select start date')}
                                     placeholder='Select date'
+                                    onChange= {(value)=>{
+                                        if(value){
+                                            const validity = form.getFieldValue('validity');
+                                            if(validity === 'MONTHLY')
+                                                form.setFieldValue("endDate", value.add(1, 'month'))
+                                            else if(validity === 'YEARLY')
+                                                form.setFieldValue("endDate", value.add(1, 'year'))
+                                        }
+                                    }}
                                 />
                             </Col>
                             <Col span={24}>
