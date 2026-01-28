@@ -3,7 +3,7 @@ import { Button, Divider, Dropdown, Flex, List, Space, Typography } from 'antd';
 import { CheckOutlined, DownOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { useTranslation } from 'react-i18next';
-import { toArabicDigits } from '../../../../shared';
+import { capitalizeTranslated, toArabicDigits } from '../../../../shared';
 
 const { Title,Text,Paragraph } = Typography;
 const SubscriptionPlanCard = ({subscriptionPlan}) => {
@@ -72,7 +72,7 @@ const SubscriptionPlanCard = ({subscriptionPlan}) => {
         <Flex vertical gap={20}>
             <Flex justify='space-between' align='center' gap={10}>
                 <Flex vertical>
-                    <ModuleTopHeading level={4} name={t(subscriptionPlan?.title)} />
+                    <ModuleTopHeading level={4} name={t(capitalizeTranslated(subscriptionPlan?.title))} />
                     <Paragraph
                         className={`fs-14 text-gray`}
                         ellipsis={{
