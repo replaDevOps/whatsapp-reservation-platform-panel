@@ -4,22 +4,18 @@ import { Button, Col, Divider, Flex, Modal, notification, Row, Typography } from
 import { IncludeFeatureField } from '../../SubscriptionPlanComponents'
 import { useTranslation } from 'react-i18next'
 import { UPDATE_SUBSCRIBER_SUBSCRIPTION } from '../../../../graphql/mutation'
-import { useLazyQuery, useMutation } from '@apollo/client/react'
-import { GET_SUBSCRIBERS_SUBSCRIPTIONS } from '../../../../graphql/query'
+import { useMutation } from '@apollo/client/react'
 import { notifyError, notifySuccess } from '../../../../shared'
 
 const { Title, Text } = Typography
-const EditSubscriptionPlanModal = ({visible,onClose,edititem}) => {
+const EditSubscriptionPlanModal = ({visible,onClose,edititem,refetch}) => {
 
     const {t} = useTranslation()
     const [ featureValues, setFeatureValues ] = useState(null)
     const [ api, contextHolder ] = notification.useNotification()
-    const [getSubscriberSubscriptions] = useLazyQuery(GET_SUBSCRIBERS_SUBSCRIPTIONS, {
-        fetchPolicy: "network-only",
-    })
     const [updateSubscriptionPlan, { loading}] = useMutation(UPDATE_SUBSCRIBER_SUBSCRIPTION,{
         onCompleted: () => {
-            notifySuccess(api,t("Subscription Update"),t("Subscription has been Updated successfully"),()=> {getSubscriberSubscriptions()});
+            notifySuccess(api,t("Subscription Update"),t("Subscription has been Updated successfully"),()=> {refetch()});
             onClose()
         },
         onError: (error) => {
@@ -69,7 +65,7 @@ const EditSubscriptionPlanModal = ({visible,onClose,edititem}) => {
                 // Boolean fields
                 if (value === true) {
                     result[key] = {
-                        value: "1",
+                        value: "",
                         select: selectLabel,
                         active: true
                     };
