@@ -5,22 +5,18 @@ import { MyDatepicker, MyInput, MySelect } from '../../../Forms'
 import { capitalizeTranslated, notifyError, notifySuccess, periodOp, subscriptionplanOp, typeOps } from '../../../../shared'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
-import { GET_SUBSCRIBERS_SUBSCRIPTIONS } from '../../../../graphql/query'
-import { useLazyQuery, useMutation } from '@apollo/client/react'
+import { useMutation } from '@apollo/client/react'
 import { RENEW_SUBSCRIBER_SUBSCRIPTION } from '../../../../graphql/mutation'
 
 const { Title, Text } = Typography
-const RenewPlanModal = ({visible,onClose,edititem}) => {
+const RenewPlanModal = ({visible,onClose,edititem,refetch}) => {
 
     const [form] = Form.useForm();
     const {t} = useTranslation()
     const [ api, contextHolder ] = notification.useNotification()
-    const [getSubscriberSubscriptions] = useLazyQuery(GET_SUBSCRIBERS_SUBSCRIPTIONS, {
-        fetchPolicy: "network-only",
-    })
     const [renewSubscriberSubscription, { loading }] = useMutation(RENEW_SUBSCRIBER_SUBSCRIPTION, {
         onCompleted: () => {
-            notifySuccess(api,t("Renew Plan Upgrade"), t("Renew plan upgraded successfully"),()=> {getSubscriberSubscriptions()});
+            notifySuccess(api,t("Renew Plan Update"), t("Renew plan update successfully"),()=> {refetch()});
             onClose()
         },
         onError: (error) => {
@@ -37,8 +33,8 @@ const RenewPlanModal = ({visible,onClose,edititem}) => {
                 currentsubscriptionPlan: edititem?.type,
                 validity: capitalizeTranslated(edititem?.validity),
                 currentexpDate: dayjs(edititem?.endDate),
-                startDate: dayjs(),
-                endDate: edititem?.validity === 'MONTHLY' ? dayjs().add(1, "m")  : dayjs().add(1, 'year'),
+                startDate: dayjs(edititem?.startDate),
+                endDate: dayjs(edititem?.endDate)
             })
         }
         else {
@@ -138,7 +134,7 @@ const RenewPlanModal = ({visible,onClose,edititem}) => {
                             <Col span={24}>
                                 <MySelect 
                                     label={t("Renew Period")} 
-                                    name="renewperiod" 
+                                    name="validity" 
                                     required
                                     message={t('Choose renew period')}
                                     disabled={edititem}

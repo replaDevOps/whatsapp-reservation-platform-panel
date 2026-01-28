@@ -10,6 +10,8 @@ import { GET_TERMS } from '../../graphql/query'
 const TermsConditionPage = () => {
 
     const [ descriptionData, setDescriptionData ] = useState('')
+    const [initialDescription, setInitialDescription] = useState('')
+    const [isDirty, setIsDirty] = useState(false)
     const {t} = useTranslation()
     const title = websitepagesTitle({t})
     const [ api, contextHolder ] = notification.useNotification()
@@ -22,10 +24,13 @@ const TermsConditionPage = () => {
     useEffect(() => {
         if (!loading && data?.getTermsCondition?.content) {
           setDescriptionData(data.getTermsCondition.content)
+          setInitialDescription(data.getTermsCondition.content)
+          setIsDirty(false)
         }
     }, [loading])
     const handleDescriptionChange = (value) =>{
       setDescriptionData(value)
+      setIsDirty(value !== initialDescription)
     }
 
     const onFinish = async () => {
@@ -75,14 +80,12 @@ const TermsConditionPage = () => {
                     <Divider className='my-2 bg-divider' />
 
                     <Flex justify='end' gap={5}>
-                        <Button type='button' onClick={()=>setDescriptionData(null)} className='btncancel text-black border-gray'>
-                          {t("Cancel")}
-                        </Button>
                         <Button 
-                            type="primary"
-                            loading={updating}
-                            onClick={onFinish}
-                            className='btnsave border0 text-white brand-bg'
+                          type="primary"
+                          loading={updating}
+                          onClick={onFinish}
+                          className='btnsave border0'
+                          disabled={!isDirty}
                         >
                             {t("Save")}
                         </Button>

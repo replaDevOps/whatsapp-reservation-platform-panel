@@ -75,7 +75,7 @@ export const MyInput = ({withoutForm, maxLength, name, label, tooltip, type, siz
                             <Input
                                 type={type || 'text'}
                                 placeholder={placeholder || ''}
-                                value={value || ''}
+                                value={value}
                                 size={size || 'middle'}
                                 disabled={disabled || false}
                                 {...props}

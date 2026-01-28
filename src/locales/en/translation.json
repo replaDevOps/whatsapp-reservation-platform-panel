@@ -532,7 +532,10 @@
   "Subscription has been Updated successfully":"Subscription has been Updated successfully",
   "Subscription plan has been updated successfully":"Subscription plan has been updated successfully",
   "Valid":"Valid",
-  "Invalid":"Invalid"
+  "Invalid":"Invalid",
+
+  "Renew Plan Update":"Renew Plan Update",
+  "Renew plan update successfully":"Renew plan update successfully"
 
 
 }

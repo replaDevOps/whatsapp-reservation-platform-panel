@@ -121,6 +121,7 @@ const EditGeneralSettings = ({visible,onClose,edititem,refetch}) => {
                                     required 
                                     message={t("Please enter email address")} 
                                     placeholder={t("Enter email address")} 
+                                    disabled
                                 />
                             </Col>
                             <Col span={24}>

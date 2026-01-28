@@ -73,7 +73,7 @@ const EditSubscription = ({setEditItem,edititem,getSubscriptionPlans,setState}) 
                 // Boolean fields
                 if (value === true) {
                     result[key] = {
-                        value: "1",
+                        value: "",
                         select: selectLabel,
                         active: true
                     };
@@ -158,7 +158,7 @@ const EditSubscription = ({setEditItem,edititem,getSubscriptionPlans,setState}) 
                         <MyInput
                             label={t("Monthly Price")}
                             name="price"
-                            required
+                            required={edititem?.title !== 'ENTERPRISE'}
                             message={t("Please enter monthly price")}
                             addonBefore={t('SAR')}
                             // addonAfter={
@@ -174,19 +174,19 @@ const EditSubscription = ({setEditItem,edititem,getSubscriptionPlans,setState}) 
                             // value={form.getFieldValue("price") || ""}
                             className='w-100'
                             type='number'
-                            min={1}
+                            min={0}
                         />
                     </Col>
                     <Col span={24}>
                         <MyInput
                             label={t("Yearly Price")}
                             name="yearlyPrice"
-                            required
+                            required={edititem?.title !== 'ENTERPRISE'}
                             message={t("Please enter yearly price")}
                             addonBefore={t('SAR')}
                             className='w-100'
                             type='number'
-                            min={1}
+                            min={0}
                         />
                     </Col>
                     <Col span={24}>
