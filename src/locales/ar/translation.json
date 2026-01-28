@@ -538,6 +538,8 @@
   "Subscription has been Updated successfully": "تم تحديث الاشتراك بنجاح",
   "Subscription plan has been updated successfully": "تم تحديث خطة الاشتراك بنجاح",
   "Valid": "صالح",
-  "Invalid": "غير صالح"
+  "Invalid": "غير صالح",
+  "Renew Plan Update": "تحديث تجديد الخطة",
+  "Renew plan update successfully": "تم تحديث تجديد الخطة بنجاح"
 
 }
