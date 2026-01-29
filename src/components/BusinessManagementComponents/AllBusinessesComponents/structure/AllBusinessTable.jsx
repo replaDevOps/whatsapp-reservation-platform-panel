@@ -154,8 +154,8 @@ const AllBusinessTable = ({getSubscriptionsStats}) => {
                         scroll={{ x: 1500 }}
                         rowHoverable={false}
                         pagination={false}
-                        rowKey={(record)=>record?.id}
-                         loading={{
+                        rowKey={"id"}
+                        loading={{
                             ...TableLoader,
                             spinning: loading,
                         }}
