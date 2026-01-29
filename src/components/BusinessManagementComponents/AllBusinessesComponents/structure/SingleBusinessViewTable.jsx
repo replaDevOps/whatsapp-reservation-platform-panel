@@ -109,7 +109,7 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
                         scroll={{ x: 1000 }}
                         rowHoverable={false}
                         pagination={false}
-                        rowKey={(record)=>record?.id}
+                        rowKey={"id"}
                         loading={{
                             ...TableLoader,
                             spinning: loading

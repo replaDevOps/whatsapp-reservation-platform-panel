@@ -48,7 +48,7 @@ const BusinessServiceTable = ({id,setServiceTableData}) => {
                 scroll={{ x: 800 }}
                 rowHoverable={false}
                 pagination={false}
-                rowKey={(record)=>record?.id}
+                rowKey={"id"}
                 loading={{
                     ...TableLoader,
                     spinning: loading

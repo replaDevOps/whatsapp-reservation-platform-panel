@@ -77,7 +77,7 @@ const MostBookTable = () => {
                         scroll={{ x: 400 }}
                         rowHoverable={false}
                         pagination={false}
-                        rowKey={(record)=>record?.id}
+                        rowKey={"id"}
                         loading={{
                             ...TableLoader,
                             spinning: loading

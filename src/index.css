@@ -1452,6 +1452,31 @@
 .w-100px{
     width: 100px;
 }
+
+.class-dropdown{
+    height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.scroll-style::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+	background-color: var(--light-gray);
+}
+
+.scroll-style::-webkit-scrollbar
+{
+	width: 4px;
+    border-radius: 10px;
+}
+
+.scroll-style::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+    background-color: var(--brand-color);
+}
+
 /* =================================================== media querry =============================================== */
 @media (max-width: 991px){
     .mbl-pt{

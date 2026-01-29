@@ -121,6 +121,8 @@ const AddEditFaqs = ({visible,onClose,edititem,refetch}) => {
                                     message={t('Please enter answer')}
                                     placeholder={t('Enter answer')}
                                     rows={5}
+                                    showCount 
+                                    maxLength={500}
                                 />
                             </Col>
                         </Row>

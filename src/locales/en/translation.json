@@ -533,9 +533,11 @@
   "Subscription plan has been updated successfully":"Subscription plan has been updated successfully",
   "Valid":"Valid",
   "Invalid":"Invalid",
-
   "Renew Plan Update":"Renew Plan Update",
-  "Renew plan update successfully":"Renew plan update successfully"
+  "Renew plan update successfully":"Renew plan update successfully",
+
+  "Please upload image":"Please upload image",
+  "Start date cannot be greater than expiry date":"Start date cannot be greater than expiry date"
 
 
 }

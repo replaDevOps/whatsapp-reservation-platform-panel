@@ -140,7 +140,7 @@ const SubscriptionManageTable = () => {
                         scroll={{ x: 1600 }}
                         rowHoverable={false}
                         pagination={false}
-                        rowKey={(record)=>record?.id}
+                        rowKey={"id"}
                         loading={{
                             ...TableLoader,
                             spinning: loading

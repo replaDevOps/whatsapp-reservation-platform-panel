@@ -211,7 +211,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     required
                                     message={t('Please select start date')}
                                     placeholder={t('Select date')}
-                                    
+                                    disabledDate={(value)=> value && value < dayjs().startOf('month')}
                                 />
                             </Col>
                             <Col span={24}>
@@ -222,6 +222,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     placeholder={t('Select date')}
                                     required
                                     message={t('Please select expiry date')}
+                                    disabledDate={(value)=> value && value < dayjs().startOf('month')}
                                 />
                             </Col>
                         </Row>

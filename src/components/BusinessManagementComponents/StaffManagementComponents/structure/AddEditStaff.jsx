@@ -58,7 +58,7 @@ const AddEditStaff = () => {
     const AddEditStaff = async () => {
         const data = form.getFieldsValue();
         if(!previewimage){
-            notifyError(api,"Please upload image")
+            notifyError(api,t("Please upload image"))
             return;
         }
         const input = {
