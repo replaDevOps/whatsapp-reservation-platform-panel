@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Col, Divider, Flex, Form, notification, Row, Select } from 'antd'
+import { Button, Col, Divider, Flex, Form, notification, Row } from 'antd'
 import { MyInput } from '../../../Forms'
 import { IncludeFeatureField } from './IncludeFeatureField';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +39,6 @@ const EditSubscription = ({setEditItem,edititem,getSubscriptionPlans,setState}) 
             setFeatureValues(convertBackToInput(data))
         }
     },[edititem])
-    console.log('editdata',edititem)
 
     function convertBackToInput(output) {
         const result = {}
