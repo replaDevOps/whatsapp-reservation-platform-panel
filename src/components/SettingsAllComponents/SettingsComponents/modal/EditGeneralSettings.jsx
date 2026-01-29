@@ -128,8 +128,6 @@ const EditGeneralSettings = ({visible,onClose,edititem,refetch}) => {
                                 <MyInput 
                                     label={t("Facebook")} 
                                     name="fb" 
-                                    required 
-                                    message={t("Please enter facebook link")} 
                                     placeholder={t("Enter facebook link")} 
                                 />
                             </Col>
@@ -137,8 +135,6 @@ const EditGeneralSettings = ({visible,onClose,edititem,refetch}) => {
                                 <MyInput 
                                     label={t("Instagram")} 
                                     name="instagram" 
-                                    required 
-                                    message={t("Please enter instagram link")} 
                                     placeholder={t("Enter instagram link")} 
                                 />
                             </Col>
@@ -146,17 +142,13 @@ const EditGeneralSettings = ({visible,onClose,edititem,refetch}) => {
                                 <MyInput 
                                     label={t("X (twitter)")} 
                                     name="x"
-                                    required 
-                                    message={t("Please enter X (twitter) link")} 
                                     placeholder={t("Enter X (twitter) link")} 
                                 />
                             </Col>
                             <Col span={24}>
                                 <MyInput 
                                     label={t("WhatsApp")} 
-                                    name="whatsapp" 
-                                    required 
-                                    message={t("Please enter whatsapp link")} 
+                                    name="whatsapp"  
                                     placeholder={t("Enter whatsapp link")} 
                                 />
                             </Col>
