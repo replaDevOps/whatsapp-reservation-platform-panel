@@ -68,6 +68,9 @@ const DropdownFilter = ({
         onClick: handleClick
       }}
       trigger={trigger}
+      classNames={{
+        root: 'class-dropdown scroll-style'
+      }}
     >
       <Button className={className}>
         <Flex justify="space-between" align="center" gap={10}>
