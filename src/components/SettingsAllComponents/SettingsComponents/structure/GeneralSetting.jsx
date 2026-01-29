@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Button, Card, Col, Flex, Form, Row, Typography } from 'antd'
 import { EditGeneralSettings, MyInput } from '../../../../components'
 import { useTranslation } from 'react-i18next'
-import { notifyError, notifySuccess, toArabicDigits } from '../../../../shared'
+import { toArabicDigits } from '../../../../shared'
 import { useQuery } from '@apollo/client/react'
 import { GET_USERS_BY_ID } from '../../../../graphql/query'
 import { getUserID } from '../../../../utils/auth'
@@ -19,6 +19,7 @@ const GeneralSetting = () => {
         variables: { getUserId: getUserID() },
         skip: !getUserID(),
     });
+
     useEffect(() => {
         if (!loading && data) {
             form.setFieldsValue({
