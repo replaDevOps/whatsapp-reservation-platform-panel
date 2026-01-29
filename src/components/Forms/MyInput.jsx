@@ -56,6 +56,7 @@ export const MyInput = ({withoutForm, maxLength, name, label, tooltip, type, siz
                                 value={value || ''}
                                 {...props}
                                 disabled={disabled || false}
+                                maxLength={maxLength}
                             /> :
                             oTp ?
                             <Input.OTP 
