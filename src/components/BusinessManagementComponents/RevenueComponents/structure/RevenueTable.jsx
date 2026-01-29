@@ -135,7 +135,7 @@ const RevenueTable = () => {
                         scroll={{ x: 1300 }}
                         rowHoverable={false}
                         pagination={false}
-                        rowKey={(record)=>record?.id}
+                        rowKey={"id"}
                         loading={
                             {
                                 ...TableLoader,
