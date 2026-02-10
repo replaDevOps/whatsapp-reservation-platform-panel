@@ -77,6 +77,7 @@ const TermsConditionPage = () => {
                       descriptionData={descriptionData}
                       onChange={handleDescriptionChange}
                     />
+                    
                     <Divider className='my-2 bg-divider' />
 
                     <Flex justify='end' gap={5}>

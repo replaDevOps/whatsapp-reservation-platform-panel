@@ -8,5 +8,9 @@ export default defineConfig({
     port: 4000,     // run on http://localhost:4000
     host: true,     // allow access from network / Docker / mobile (optional)
   },
+  optimizeDeps: {
+    include: ['react-quill'],
+  },
+
 })
  

@@ -3,7 +3,6 @@ import { Card, Flex, Typography} from 'antd';
 import ReactApexChart from 'react-apexcharts';
 import { ModuleTopHeading } from '../../PageComponent';
 import { MyDatepicker } from '../../Forms';
-import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { toArabicDigits } from '../../../shared';
 import { GET_BOOKING_STATS } from '../../../graphql/query';
