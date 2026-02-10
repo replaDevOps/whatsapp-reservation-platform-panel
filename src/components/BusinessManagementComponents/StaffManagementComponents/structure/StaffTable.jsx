@@ -158,7 +158,7 @@ const StaffTable = () => {
                         }
                     />
                     <CustomPagination 
-                        total={data?.getStaffMembers?.totalCount}
+                        total={data?.getSuperAdminPanelUsers?.totalCount}
                         current={current}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}

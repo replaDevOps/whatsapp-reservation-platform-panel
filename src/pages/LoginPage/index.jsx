@@ -32,7 +32,7 @@ const LoginPage = () => {
             }
         } catch (error) {
             console.error("Login error:", error);
-            notifyError(api,t("Login failed: Something went wrong"));
+            notifyError(api, error);
         }
     };
 
