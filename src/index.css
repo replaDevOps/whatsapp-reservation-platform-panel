@@ -1477,6 +1477,9 @@
     background-color: var(--brand-color);
 }
 
+.hidden{
+    display: none !important;
+}
 /* =================================================== media querry =============================================== */
 @media (max-width: 991px){
     .mbl-pt{
