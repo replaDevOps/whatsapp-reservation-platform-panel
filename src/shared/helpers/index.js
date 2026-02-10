@@ -64,9 +64,9 @@ const useDebounce = (value, delay = 500)=> {
 }
 
 
-const notifySuccess = (api, message, description, onClose) => {
+const notifySuccess = (api, title, description, onClose) => {
     api.success({
-        message,
+        title,
         description,
         showProgress: true,
         pauseOnHover: true,
@@ -77,7 +77,7 @@ const notifySuccess = (api, message, description, onClose) => {
 
 const notifyError = (api, error) => {
     api.error({
-        message: "Error",
+        title: "Error",
         description: error?.message || error,
         showProgress: true,
         pauseOnHover: true,
@@ -93,44 +93,6 @@ const FieldMerger = ({ object, fields = [], separator = " " }) => {
         .join(separator);                  // join with separator
 };
 
-
-const uploadFileToServer = async ({file,setPreviewImage}) => {
-        try {
-            let compressedFile = file;
-    
-            // Compress only if image
-            if (file.type.startsWith("image/")) {
-                compressedFile = await imageCompression(file, {
-                    maxSizeMB: 1,
-                    maxWidthOrHeight: 1024,
-                    useWebWorker: true,
-                });
-            }
-    
-            const formData = new FormData();
-            formData.append("file", compressedFile);
-    
-            const res = await fetch("https://backend.qloop.me/upload", {
-                method: "POST",
-                body: formData,
-            });
-    
-            if (!res.ok) throw new Error("Upload failed");
-            const data = await res.json();
-            setPreviewImage(data.fileUrl);
-            return {
-                fileName: data.fileName,
-                fileType: data.fileType,
-                filePath: data.fileUrl,
-            };
-    
-        } catch (err) {
-            console.error("Upload error:", err);
-            notifyError(api,t("Failed to upload file"));
-            throw err;
-        }
-    };
-
 const getInitials = (name) => {
     const safeName = typeof name === 'string' ? name : '';
     const parts = safeName.trim().split(' ').filter(Boolean);
@@ -141,6 +103,6 @@ const getInitials = (name) => {
     ).toUpperCase();
 };
 
-export {utcDateTimeToLocal, greaterThanEqualTo, handleApolloError, capitalizeTranslated, formatTime24to12, useDebounce, notifySuccess, notifyError,FieldMerger,utcDateToLocal, uploadFileToServer,getInitials}
+export {utcDateTimeToLocal, greaterThanEqualTo, handleApolloError, capitalizeTranslated, formatTime24to12, useDebounce, notifySuccess, notifyError,FieldMerger,utcDateToLocal,getInitials}
 export * from "./TableLoader"
 export * from "./SmLoader"
