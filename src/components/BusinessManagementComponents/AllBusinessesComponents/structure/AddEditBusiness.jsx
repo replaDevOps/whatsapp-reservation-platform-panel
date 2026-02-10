@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeftOutlined, ArrowRightOutlined, EditFilled } from '@ant-design/icons'
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
 import { Button, Card, Col, Divider, Flex, Form, notification, Row, Select, Spin, Typography } from 'antd'
-import { BreadCrumbCard, BusinessChooseSubscriptionPlan, ConfirmModal, MyInput, SingleFileUpload } from '../../../../components'
+import { BreadCrumbCard, BusinessChooseSubscriptionPlan, ConfirmModal, MyInput, UploadImage } from '../../../../components'
 import { MySelect } from '../../../Forms'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BusinessTitle, notifyError, notifySuccess, SmLoader, typeOps, uploadFileToServer, useDebounce } from '../../../../shared'
+import { BusinessTitle, notifyError, notifySuccess, SmLoader, typeOps, useDebounce } from '../../../../shared'
 import { GET_SUBSCRIBER_CUSTOMERS_LOOKUP, VERIFY_PROMOTION_CODE } from '../../../../graphql/query'
 import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { CREATE_BUSINESS } from '../../../../graphql/mutation'
@@ -138,34 +138,12 @@ const AddEditBusiness = () => {
                         >
                             <Row gutter={16}>
                                 <Col span={24} className='my-5'>
-                                    {
-                                        !previewimage ?
-                                        <SingleFileUpload
-                                            name="image"
-                                            title={t("Upload Logo")}
-                                            form={form}
-                                            onUpload={(file)=> uploadFileToServer({file,setPreviewImage})}
-                                            align="center"
-                                            width={100}
-                                            height={100}
-                                            acceptFileType='image'
-                                        />
-                                        :
-                                        <Flex vertical gap={5} justify='center' align='center'>
-                                            <img
-                                                src={previewimage}
-                                                alt="Category"
-                                                className='radius-12 mxw-mxh'
-                                                fetchPriority="high"
-                                            />
-                                            <div>
-                                                <Button type="link" className='fs-13 text-brand' onClick={handleChangeImage}>
-                                                    <EditFilled /> {t("Edit")}
-                                                </Button>
-                                            </div>
-                                        </Flex>
-
-                                    }
+                                    <UploadImage 
+                                        form={form}
+                                        src={previewimage}
+                                        setPreviewImage={setPreviewImage}
+                                        t={t}
+                                    />
                                 </Col>
                                 <Col span={24}>
                                     <MyInput 
