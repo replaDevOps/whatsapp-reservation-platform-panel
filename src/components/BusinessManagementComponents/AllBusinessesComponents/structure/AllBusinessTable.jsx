@@ -94,7 +94,7 @@ const AllBusinessTable = ({getSubscriptionsStats}) => {
                     <Row gutter={[16, 16]} justify="space-between" align="middle">
                         <Col xl={10} md={24} span={24}>        
                             <Row gutter={[16, 16]}>
-                                <Col span={24} md={24} lg={13}>
+                                <Col span={24} md={24} lg={16}>
                                     <SearchInput
                                         name='name'
                                         value={search}
@@ -108,7 +108,7 @@ const AllBusinessTable = ({getSubscriptionsStats}) => {
                                         allowClear
                                     />
                                 </Col>
-                                <Col span={24} lg={11}>
+                                <Col span={24} lg={8}>
                                     <Flex gap={5}>
                                         <DropdownFilter
                                             items={typeItems}
