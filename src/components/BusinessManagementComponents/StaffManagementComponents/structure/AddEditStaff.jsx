@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeftOutlined, ArrowRightOutlined, EditFilled} from '@ant-design/icons'
-import { Button, Card, Col, Flex, Form, message, notification, Row, Select, Spin, Typography } from 'antd'
+import { ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons'
+import { Button, Card, Col, Flex, Form, notification, Row, Select, Spin, Typography } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
-import { MyInput, MySelect, SingleFileUpload} from '../../../Forms'
-import { BusinessTitle, capitalizeTranslated, notifyError, notifySuccess, rolestaffopt, TableLoader, toArabicDigits, uploadFileToServer } from '../../../../shared'
-import { BreadCrumbCard } from '../../../Ui'
+import { MyInput, MySelect} from '../../../Forms'
+import { BusinessTitle, capitalizeTranslated, notifyError, notifySuccess, rolestaffopt, TableLoader, toArabicDigits } from '../../../../shared'
+import { BreadCrumbCard, UploadImage } from '../../../Ui'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from '@apollo/client/react'
 import { CREATE_STAFF, UPDATE_STAFF } from '../../../../graphql/mutation/mutations'
@@ -19,7 +19,6 @@ const AddEditStaff = () => {
     const title = BusinessTitle({t})
     const [form] = Form.useForm();
     const { id } = useParams()
-    const [messageApi] = message.useMessage();
     const [ api, contextHolder ] = notification.useNotification()
     const [ previewimage, setPreviewImage ] = useState(null)
     const [createstaff, { loading: creating }] = useMutation(CREATE_STAFF,{
@@ -128,33 +127,12 @@ const AddEditStaff = () => {
                             >
                                 <Row gutter={16}>
                                     <Col span={24} className='my-5'>
-                                        {
-                                            !previewimage ?
-                                            <SingleFileUpload
-                                                name="image"
-                                                title={t("Upload Image")}
-                                                form={form}
-                                                onUpload={(file)=>uploadFileToServer({file,setPreviewImage})}
-                                                align="center"
-                                                width={100}
-                                                height={100}
-                                                acceptFileType='image'
-                                            />
-                                            :
-                                            <Flex vertical gap={5} justify='center' align='center'>
-                                                <img
-                                                    src={previewimage}
-                                                    alt="staff-image"
-                                                    className='radius-12 mxw-mxh'
-                                                    fetchPriority="high"
-                                                />
-                                                <div>
-                                                    <Button type="link" className='fs-13 text-brand' onClick={handleChangeImage}>
-                                                        <EditFilled /> {t("Edit")}
-                                                    </Button>
-                                                </div>
-                                            </Flex>
-                                        }
+                                        <UploadImage 
+                                            form={form}
+                                            src={previewimage}
+                                            setPreviewImage={setPreviewImage}
+                                            t={t}
+                                        />
                                     </Col>
                                     <Col span={24} md={12}>
                                         <MyInput 
