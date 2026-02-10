@@ -24,64 +24,67 @@ const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscript
                                         }`}
                                         onClick={() => setSelectedSubscriptionPlan(plan)}
                                     >
-                                        <Flex gap={10} align="center" justify="space-between" wrap>
-                                            <Flex align="flex-start" gap={6}>
-                                                <Radio value={plan?.type} />
-                                                <Flex vertical gap={0}>
-                                                    <Text
-                                                        className={`fw-500 fs-16 ${
-                                                            plan?.type === selectedSubscriptionPlan?.type ? 'text-brand' : ''
-                                                        }`}
-                                                    >
-                                                        {t(capitalizeTranslated(plan?.type))}
-                                                    </Text>
-                                                    <Paragraph
-                                                        type="secondary"
-                                                        className={`fs-13`}
-                                                        ellipsis={{
-                                                            rows: 1,
-                                                            expandable:'collapsible',
-                                                            symbol: expanded ? <Text className="text-brand">less</Text> : <Text className="text-brand">more</Text>,
-                                                            onExpand: (_, info) => setExpanded(info.expanded),
-                                                        }}
-                                                    >
-                                                        {t(plan?.description)}
-                                                    </Paragraph>
+                                        <Row gutter={[12,12]} align="center" justify="space-between">
+                                            <Col span={24} md={12} lg={14} xl={16}>
+                                                <Flex align="flex-start" gap={6}>
+                                                    <Radio value={plan?.type} />
+                                                    <Flex vertical gap={0}>
+                                                        <Text
+                                                            className={`fw-500 fs-16 ${
+                                                                plan?.type === selectedSubscriptionPlan?.type ? 'text-brand' : ''
+                                                            }`}
+                                                        >
+                                                            {t(capitalizeTranslated(plan?.type))}
+                                                        </Text>
+                                                        <Paragraph
+                                                            type="secondary"
+                                                            className={`fs-13`}
+                                                            ellipsis={{
+                                                                rows: 1,
+                                                                expandable:'collapsible',
+                                                                symbol: expanded ? <Text className="text-brand">less</Text> : <Text className="text-brand">more</Text>,
+                                                                onExpand: (_, info) => setExpanded(info.expanded),
+                                                            }}
+                                                        >
+                                                            {t(plan?.description)}
+                                                        </Paragraph>
+                                                    </Flex>
                                                 </Flex>
-                                            </Flex>
-
-                                            <Title level={4} className="m-0">
-                                                <Space size={8}>
-                                                    <sup className="fs-12 fw-600 text-grey">{t("SAR")}</sup>
-                                                    {
-                                                        subscriptionValidity === 'ENTERPRISE' ? (
-                                                            "Custom Price"
-                                                        ) : subscriptionValidity === 'YEARLY' ? (
-                                                            (plan?.discountYearlyPrice > 0 && plan?.discountYearlyPrice !== plan?.yearlyPrice) ? (
+                                            </Col>
+                                            <Col span={24} md={12} lg={10} xl={8}>     
+                                                <Title level={4} className="m-0">
+                                                    <Flex justify='end' gap={4} wrap>
+                                                        <sup className="fs-12 fw-600 text-grey">{t("SAR")}</sup>
+                                                        {
+                                                            subscriptionValidity === 'ENTERPRISE' ? (
+                                                                "Custom Price"
+                                                            ) : subscriptionValidity === 'YEARLY' ? (
+                                                                (plan?.discountYearlyPrice > 0 && plan?.discountYearlyPrice !== plan?.yearlyPrice) ? (
+                                                                    <>
+                                                                        <Text delete className="fs-14 text-gray">
+                                                                            {plan?.yearlyPrice}
+                                                                        </Text>
+                                                                        {plan?.discountYearlyPrice}
+                                                                    </>
+                                                                ) : (
+                                                                    plan?.yearlyPrice
+                                                                )
+                                                            ) : (plan?.discountPrice > 0 && plan?.discountPrice !== plan?.price) ? (
                                                                 <>
                                                                     <Text delete className="fs-16 text-gray">
-                                                                        {plan?.yearlyPrice}
+                                                                        {plan?.price}
                                                                     </Text>
-                                                                    {plan?.discountYearlyPrice}
+                                                                    {plan?.discountPrice}
                                                                 </>
                                                             ) : (
-                                                                plan?.yearlyPrice
+                                                                plan?.price
                                                             )
-                                                        ) : (plan?.discountPrice > 0 && plan?.discountPrice !== plan?.price) ? (
-                                                            <>
-                                                                <Text delete className="fs-16 text-gray">
-                                                                    {plan?.price}
-                                                                </Text>
-                                                                {plan?.discountPrice}
-                                                            </>
-                                                        ) : (
-                                                            plan?.price
-                                                        )
-                                                    }
-                                                    <span className="fs-13 fw-500 text-gray">/{t(capitalizeTranslated(subscriptionValidity))}</span>
-                                                </Space>
-                                            </Title>
-                                        </Flex>
+                                                        }
+                                                        <span className="fs-12 fw-500 text-gray">/{t(capitalizeTranslated(subscriptionValidity))}</span>
+                                                    </Flex>
+                                                </Title>           
+                                            </Col>
+                                        </Row>
                                     </Card>
                                 </Col>
                         ))}
