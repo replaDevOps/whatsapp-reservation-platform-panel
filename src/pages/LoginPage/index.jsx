@@ -6,14 +6,14 @@ import { LanguageChange, MyInput } from "../../components";
 import { useTranslation } from "react-i18next";
 import { client } from "../../config/apolloClient";
 import { LOGIN_USER } from "../../graphql/mutation";
-import { notifyError, notifySuccess } from "../../shared";
+import { notifyError } from "../../shared";
 
 const { Title, Paragraph } = Typography;
 const LoginPage = () => {
     const navigate = useNavigate()
     const {t} = useTranslation()
     const [api, contextHolder] = notification.useNotification();
-    const [loginUser, { loading, error }] = useMutation(LOGIN_USER);
+    const [loginUser, { loading }] = useMutation(LOGIN_USER);
     const [form] = Form.useForm();
 
     const handleFinish = async () => {
@@ -25,7 +25,6 @@ const LoginPage = () => {
                 localStorage.setItem("accessToken", data.loginUser.token);
                 localStorage.setItem("user", JSON.stringify(data.loginUser.user));
                 await client.resetStore();
-                notifySuccess(api,t("Login successful!"));
                 navigate("/")
             } else {
                 notifyError(api,t("Login failed: Invalid credentials"));

@@ -93,7 +93,6 @@ const SubscriptionPlanCard = ({subscriptionPlan}) => {
                         ],
                         onClick: handleDurationClick
                     }}
-                    trigger={['click']}
                 >
                     <Button className="btncancel px-3 filter-bg fs-13 text-black">
                         <Flex justify="space-between" align="center" gap={30}>
