@@ -8,6 +8,7 @@ const GET_SUBSCRIBER_CUSTOMERS_LOOKUP = gql`
         id
         firstName
         lastName
+        createdAt
       }
     }
   }

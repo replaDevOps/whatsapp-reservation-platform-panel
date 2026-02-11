@@ -107,6 +107,8 @@ export const IncludeFeatureField = ({
                                         message={t("Please enter value")}
                                         disabled={!editable || !isActive || isRowDisabled}
                                         value={form ? undefined : current.value}
+                                        type={'number'}
+                                        min={0}
                                         onChange={(e) =>
                                             form ? null : handleInputChange(key, e.target.value)
                                         }

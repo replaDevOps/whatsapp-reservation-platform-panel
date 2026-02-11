@@ -16,8 +16,8 @@ const EditGeneralSettings = ({visible,onClose,edititem,refetch}) => {
     const isArabic = i18n?.language === 'ar';
     const [ api, contextHolder ] = notification.useNotification()
     const [ updateUser,  { loading: updaing } ] = useMutation(UPDATE_USER,{
-        onCompleted: () => {notifySuccess(api,t("Setting update"),t("Setting has been updated successfully"),()=> {refetch()});onClose()},
-        onError: (error) => {notifyError(api, error);},
+        onCompleted: () => {notifySuccess(api,t("Setting update"),t("Setting has been updated successfully"));refetch(),onClose()},
+        onError: (error) => {notifyError(api, error)},
     })
     useEffect(()=>{
         if(visible && edititem){

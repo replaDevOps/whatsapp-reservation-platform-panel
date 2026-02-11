@@ -60,7 +60,6 @@ const SubscriptionPlanTab = ({setState}) => {
         setActiveKey(key)
         setActiveSubscriptionPlan({...subscriptionPlans?.find(plan => plan?.type === key), title: key})
     }
-    console.log("subscriptionPlans:", activeSubscriptionPlan)
     return (
         <Row gutter={[24,24]}>
             <Col span={24} lg={9} xl={7} xxl={5}>
@@ -72,7 +71,7 @@ const SubscriptionPlanTab = ({setState}) => {
                             disabled: edititem
                         }))} 
                         onChange={onChange} 
-                        tabPosition='left'
+                        tabPlacement='left'
                         className='custom-tabs-css'
                     />
                 </Card>

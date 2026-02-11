@@ -9,6 +9,7 @@ import { BusinessTitle, notifyError, notifySuccess, SmLoader, typeOps, useDeboun
 import { GET_SUBSCRIBER_CUSTOMERS_LOOKUP, VERIFY_PROMOTION_CODE } from '../../../../graphql/query'
 import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { CREATE_BUSINESS } from '../../../../graphql/mutation'
+import dayjs from 'dayjs'
 
 const { Title, Text } = Typography
 const AddEditBusiness = () => {
@@ -28,7 +29,7 @@ const AddEditBusiness = () => {
     const [subscriptionValidity, setSubscriptionValidity] = useState('MONTHLY')
     const [selectedSubscriptionPlan, setSelectedSubscriptionPlan]= useState(null)
 
-    const [ getVerifyPromotion, { data: verifyPromotionData, loading:verifyingPromotion } ] = useLazyQuery(VERIFY_PROMOTION_CODE);
+    const [ getVerifyPromotion, { loading:verifyingPromotion } ] = useLazyQuery(VERIFY_PROMOTION_CODE);
     const [createBusiness, { loading, error, success }] = useMutation(CREATE_BUSINESS, {
         onCompleted: () => {
             notifySuccess(api,t("Business Create"),t("Business has been created successfully"),
@@ -56,18 +57,14 @@ const AddEditBusiness = () => {
     }, [getSubscriberCustomersLookup])
     useEffect(()=>{
         if(data?.getUsers?.users?.length)
-            setSubscriberCustomersLookup(data?.getUsers?.users?.map(({id, firstName, lastName}) => ({id, name: firstName + " " + lastName})))
+            setSubscriberCustomersLookup([...data?.getUsers?.users]?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map(({id, firstName, lastName}) => ({id, name: firstName + " " + lastName})))
     }, [data])
-
-    const handleChangeImage = () => {
-        setPreviewImage(null);
-    };
 
     const onFinish = async () => {
         let data = form.getFieldsValue()
-        const subscriptionPrice = subscriptionValidity === 'YEARLY' 
-            ? (selectedSubscriptionPlan?.discountYearlyPrice !== null && selectedSubscriptionPlan?.discountYearlyPrice > 0 ? selectedSubscriptionPlan?.discountYearlyPrice : selectedSubscriptionPlan?.yearlyPrice)
-            : (selectedSubscriptionPlan?.discountPrice !== null && selectedSubscriptionPlan?.discountPrice > 0 ? selectedSubscriptionPlan?.discountPrice : selectedSubscriptionPlan?.price)
+        const subscriptionPrice = subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.yearlyPrice : selectedSubscriptionPlan?.price
+            // ? (selectedSubscriptionPlan?.discountYearlyPrice !== null && selectedSubscriptionPlan?.discountYearlyPrice > 0 ? selectedSubscriptionPlan?.discountYearlyPrice : selectedSubscriptionPlan?.yearlyPrice)
+            // : (selectedSubscriptionPlan?.discountPrice !== null && selectedSubscriptionPlan?.discountPrice > 0 ? selectedSubscriptionPlan?.discountPrice : selectedSubscriptionPlan?.price)
         if (!previewimage) {
             notifyError(api, t('Please upload an image'));
             return;
@@ -163,6 +160,10 @@ const AddEditBusiness = () => {
                                         placeholder={t("Select customer name")} 
                                         options={subscriberCustomersLookup}
                                         disabled={!subscriberCustomersLookup?.length || !subscriberCustomersLookup}
+                                        filterOption={(input, option) => 
+                                            option?.children?.toLowerCase().includes(input.toLowerCase())
+                                        }
+                                        showSearch
                                     />
                                 </Col>
                                 <Col span={24} md={12}>
@@ -191,17 +192,37 @@ const AddEditBusiness = () => {
                                                     })
                                                 }
                                                 >
-                                                <Select.Option value="sa">
+                                                <Select value="sa">
                                                     +966
-                                                </Select.Option>
+                                                </Select>
 
-                                                <Select.Option value="ae">
+                                                <Select value="ae">
                                                     +971
-                                                </Select.Option>
+                                                </Select>
                                             </Select>
                                         }
                                         placeholder={t("Please enter phone number")}
                                         className='w-100'
+                                        type={'number'}
+                                        min={0}
+                                        maxLength={20}
+                                        onInput={(e) => {
+                                            e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 20);
+                                        }}
+                                        validator={
+                                            ({ getFieldValue }) => ({
+                                                validator(_, value) {
+                                                    if (!value) {
+                                                        return Promise.resolve();
+                                                    }
+                                                    const phoneLength = value.toString().length;
+                                                    if (phoneLength < 9 || phoneLength > 20) {
+                                                        return Promise.reject(new Error(t("Phone number must be between 9 and 20 digits")));
+                                                    }
+                                                    return Promise.resolve();
+                                                }
+                                            })
+                                        }
                                     />
                                 </Col>
                                 <Col span={24} md={12}>

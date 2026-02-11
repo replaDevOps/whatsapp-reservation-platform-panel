@@ -480,7 +480,7 @@ const submanageColumns = ({ setVisible, setEditItem, setUpgradePlan, setIsRenew,
     {
         title: t("Business ID"),
         dataIndex: "businessId",
-        render: (businessId) => '#'+businessId?.toUpperCase().slice(0,5)
+        render: (businessId) => businessId?.toUpperCase().slice(0,5)
     },
     {
         title: t('Business Logo'),
@@ -610,7 +610,7 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
     {
         title: t('Value'),
         dataIndex: 'value',
-        render: (value) => i18n.language === "ar" ? toArabicDigits(value) : value
+        render: (_,row) => row?.discountType === 'PERCENTAGE' ? `${row?.value}%` : `SAR ${row?.value}`
     },
     {
         title: t('Subscription Plan'),
@@ -634,7 +634,13 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
     {
         title: t('Used / Limit'),
         dataIndex: 'usedLimit',
-        render: (_,row) => i18n.language === "ar" ? toArabicDigits(row?.usageLimit+ '/' + row?.remainingLimit) : row?.usageLimit+ '/' +row?.remainingLimit
+        render: (_,row) => {
+            const usageLimit = row?.usageLimit === undefined || row?.usageLimit === null ? 0 : row?.usageLimit;
+            const usageCount = row?.usageCount === undefined || row?.usageCount === null ? 0 : row?.usageCount;
+            return(
+                `${usageCount}/${usageLimit}`
+            )
+        }
     },
     {
         title: t('Validity'),

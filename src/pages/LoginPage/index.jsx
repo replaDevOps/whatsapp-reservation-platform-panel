@@ -20,10 +20,10 @@ const LoginPage = () => {
         const values = form.getFieldsValue()
         try {
             const { email, password } = values;
-            const { data,error } = await loginUser({ variables: { email, password, role: 'SUPER_ADMIN'} });
+            const { data,error } = await loginUser({ variables: { email, password } });
             if (data) {
-                localStorage.setItem("accessToken", data.loginUser.token);
-                localStorage.setItem("user", JSON.stringify(data.loginUser.user));
+                localStorage.setItem("accessToken", data.loginAdmin.token);
+                localStorage.setItem("user", JSON.stringify(data.loginAdmin.user));
                 await client.resetStore();
                 navigate("/")
             } else {
@@ -31,6 +31,12 @@ const LoginPage = () => {
             }
         } catch (error) {
             console.error("Login error:", error);
+            // const errorMessage = error?.errors[0]?.extensions?.expectedRole;
+            // errorMessage ? notifyError(api,
+            //     t(`Only ${errorMessage === 'SUPER_ADMIN' ? 'Super Admin': 
+            //         errorMessage === 'DEMO_ADMIN' ? 'Demo Admin' : 
+            //         errorMessage === 'TECHNICAL_ADMIN' ? 'Technical Admin' : ''} role is allowed to login`)
+            // ) :
             notifyError(api, error);
         }
     };
