@@ -90,7 +90,7 @@ const DiscountTable = ({visible,setVisible}) => {
                     <Row gutter={[16, 16]} justify="space-between" align="middle">
                         <Col xl={10} md={24} span={24}>        
                             <Row gutter={[10, 10]}>
-                                <Col span={24} md={24} lg={10}>
+                                <Col span={24} md={24} lg={12}>
                                     <SearchInput
                                         name='name'
                                         placeholder={t('Search by Discount code')}
@@ -104,7 +104,7 @@ const DiscountTable = ({visible,setVisible}) => {
                                         allowClear
                                     />
                                 </Col>
-                                <Col span={24} lg={14}>
+                                <Col span={24} lg={12}>
                                     <Flex gap={5}>
                                         <DropdownFilter
                                             items={typeamountItem}

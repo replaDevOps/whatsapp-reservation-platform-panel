@@ -1,5 +1,6 @@
 import { Form, Input, Typography } from 'antd';
 import './index.css'
+import { handleNumberInput, handleNumberKeyDown } from '../../shared';
 export const MyInput = ({withoutForm, maxLength, name, label, tooltip, type, size, disabled, required, message, value, placeholder, textArea, oTp, nolabel=true, validator, ...props }) => {
     return (
         <>
@@ -81,6 +82,8 @@ export const MyInput = ({withoutForm, maxLength, name, label, tooltip, type, siz
                                 disabled={disabled || false}
                                 {...props}
                                 maxLength={maxLength}
+                                onKeyDown={type === 'number' ? handleNumberKeyDown : undefined}
+                                onInput={type === 'number' ? handleNumberInput : undefined}
                             />
                     }
                 </Form.Item>

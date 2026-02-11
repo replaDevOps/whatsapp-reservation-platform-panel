@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Divider, Dropdown, Flex, List, Space, Typography } from 'antd';
+import { Button, Col, Divider, Dropdown, Flex, List, Row, Space, Typography } from 'antd';
 import { CheckOutlined, DownOutlined } from '@ant-design/icons';
 import { ModuleTopHeading } from '../../../PageComponent';
 import { useTranslation } from 'react-i18next';
@@ -70,58 +70,52 @@ const SubscriptionPlanCard = ({subscriptionPlan}) => {
 
     return (
         <Flex vertical gap={20}>
-            <Flex justify='space-between' align='center' gap={10}>
-                <Flex vertical>
-                    <ModuleTopHeading level={4} name={t(capitalizeTranslated(subscriptionPlan?.title))} />
-                    <Paragraph
-                        className={`fs-14 text-gray`}
-                        ellipsis={{
-                            rows: 1,
-                            expandable:'collapsible',
-                            symbol: expanded ? <Text className="text-brand">less</Text> : <Text className="text-brand">more</Text>,
-                            onExpand: (_, info) => setExpanded(info.expanded),
-                        }}
-                    >
-                        {t(subscriptionPlan?.description)}
-                    </Paragraph>
-                </Flex>
-                <Dropdown
-                    menu={{
-                        items: [
-                            { key: 'Monthly', label: 'Monthly' },
-                            { key: 'Yearly', label: 'Yearly' },
-                        ],
-                        onClick: handleDurationClick
-                    }}
-                >
-                    <Button className="btncancel px-3 filter-bg fs-13 text-black">
-                        <Flex justify="space-between" align="center" gap={30}>
-                            {t(planDuration)}
-                            <DownOutlined />
-                        </Flex>
-                    </Button>
-                </Dropdown>
-            </Flex>
+            <Row gutter={[24,10]} justify='space-between' align='center'>
+                <Col span={24} md={16} lg={16} xl={18}>
+                    <Flex vertical>
+                        <ModuleTopHeading level={4} name={t(capitalizeTranslated(subscriptionPlan?.title))} />
+                        <Paragraph
+                            className={`fs-14 text-gray w-100`}
+                            ellipsis={{
+                                rows: 1,
+                                expandable:'collapsible',
+                                symbol: expanded ? <Text className="text-brand fs-12">less</Text> : <Text className="text-brand fs-12">more</Text>,
+                                onExpand: (_, info) => setExpanded(info.expanded),
+                            }}
+                        >
+                            {t(subscriptionPlan?.description)}
+                        </Paragraph>
+                    </Flex>
+                </Col>
+                <Col span={24} md={8} lg={8} xl={6}>
+                   <Flex justify="end">
+                        <Dropdown
+                            menu={{
+                                items: [
+                                    { key: 'Monthly', label: 'Monthly' },
+                                    { key: 'Yearly', label: 'Yearly' },
+                                ],
+                                onClick: handleDurationClick
+                            }}
+                        >
+                            <Button className="btncancel px-3 filter-bg fs-13 text-black">
+                                <Flex justify="space-between" align="center" gap={30}>
+                                    {t(planDuration)}
+                                    <DownOutlined />
+                                </Flex>
+                            </Button>
+                        </Dropdown>
+                   </Flex>
+                </Col>
+            </Row>
             <Title className={`m-0`}>
                 <Space size={8}>
                     <sup className={`fs-16 fw-600`}>{t("SAR")}</sup>
                     {
                         planDuration === 'Yearly' ? (
-                            (subscriptionPlan?.discountYearlyPrice > 0 && subscriptionPlan?.discountYearlyPrice !== subscriptionPlan?.yearlyPrice)  ? (
-                                <>
-                                    <Text delete className='fs-22 text-gray'>{subscriptionPlan?.yearlyPrice}</Text> {subscriptionPlan?.discountYearlyPrice}
-                                </>  
-                            ):  (
-                                subscriptionPlan?.yearlyPrice
-                            )
+                            subscriptionPlan?.yearlyPrice
                         ) : (
-                            (subscriptionPlan?.discountPrice > 0 && subscriptionPlan?.discountPrice !== subscriptionPlan?.price) ? (
-                                <>
-                                    <Text delete className='fs-22 text-gray'>{subscriptionPlan?.price}</Text> {subscriptionPlan?.discountPrice}
-                                </>
-                            ): (
-                                subscriptionPlan?.price
-                            )
+                            subscriptionPlan?.price
                         )
                     }
                     <span className='fs-16 fw-500 text-gray'>/{t(planDuration)}</span>

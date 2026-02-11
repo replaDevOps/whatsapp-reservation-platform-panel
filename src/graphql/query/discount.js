@@ -14,8 +14,8 @@ const GET_DISCOUNTS = gql`
                     id
                     type
                 }
+                usageCount
                 usageLimit
-                remainingLimit
                 startDate
                 expiryDate
                 status

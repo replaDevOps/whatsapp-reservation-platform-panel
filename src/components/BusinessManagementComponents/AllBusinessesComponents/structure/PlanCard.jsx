@@ -74,24 +74,18 @@ const PlanCard = ({subscriptionPlan,subscriptionValidity}) => {
                         <sup className={`fs-13 fw-600 text-grey`}>{t("SAR")}</sup>
                         {
                             subscriptionValidity === 'YEARLY' ? (
-                                subscriptionPlan?.discountYearlyPrice > 0 ? (
-                                <>
-                                    <Text delete className="fs-16 text-gray">
-                                        {subscriptionPlan?.yearlyPrice}
-                                    </Text>
-                                    {subscriptionPlan?.discountYearlyPrice}
-                                </>
-                                ) : (
-                                    subscriptionPlan?.yearlyPrice
-                                )
-                            ) : subscriptionPlan?.discountPrice > 0 ? (
-                                <>
-                                    <Text delete className="fs-16 text-gray">
-                                        {subscriptionPlan?.price}
-                                    </Text>
-                                    {subscriptionPlan?.discountPrice}
-                                </>
-                            ) : (
+                                // subscriptionPlan?.discountYearlyPrice > 0 ? (
+                                // <>
+                                //     <Text delete className="fs-16 text-gray">
+                                //         {subscriptionPlan?.yearlyPrice}
+                                //     </Text>
+                                //     {subscriptionPlan?.discountYearlyPrice}
+                                // </>
+                                // ) : (
+                                    
+                                // )
+                                subscriptionPlan?.yearlyPrice
+                            ) :(
                                 subscriptionPlan?.price
                             )
                         }

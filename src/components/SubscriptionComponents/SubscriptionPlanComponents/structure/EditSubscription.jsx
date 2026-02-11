@@ -299,7 +299,7 @@ const EditSubscription = ({setEditItem,edititem,getSubscriptionPlans,setState}) 
                     </Col>
                     <Col span={24}>
                         <Flex justify='end' gap={5} >
-                            <Button type='button' onClick={()=>setEditItem(null)} className='btncancel text-black border-gray' >
+                            <Button type='button' onClick={()=>{setEditItem(null);setState(null)}} className='btncancel text-black border-gray' >
                                 {t("Cancel")}
                             </Button>
                             <Button loading={loading} htmlType='submit'  className={`btnsave border-0 text-white brand-bg`}>

@@ -181,6 +181,8 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     message={t('Please enter value')}
                                     placeholder={t('Enter value')}
                                     suffix={(((selectDiscountType ?? edititem?.discountType) || '').toUpperCase() === 'PERCENTAGE') ? '%' : null}
+                                    min={0}
+                                    type={'number'}
                                 />
                             </Col>
                             <Col span={24}>
@@ -190,6 +192,8 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     required
                                     message={t('Please enter limit')}
                                     placeholder={t('Enter limit')}
+                                    min={0}
+                                    type={'number'}
                                 />
                             </Col>
                             <Col span={24}>
@@ -211,7 +215,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     required
                                     message={t('Please select start date')}
                                     placeholder={t('Select date')}
-                                    disabledDate={(value)=> value && value < dayjs().startOf('month')}
+                                    disabledDate={(value)=> value && value  < dayjs().startOf('day')}
                                 />
                             </Col>
                             <Col span={24}>
@@ -222,7 +226,7 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
                                     placeholder={t('Select date')}
                                     required
                                     message={t('Please select expiry date')}
-                                    disabledDate={(value)=> value && value < dayjs().startOf('month')}
+                                    disabledDate={(value)=> value && value < dayjs().startOf('day')}
                                 />
                             </Col>
                         </Row>

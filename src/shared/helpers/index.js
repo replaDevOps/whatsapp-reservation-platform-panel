@@ -103,6 +103,17 @@ const getInitials = (name) => {
     ).toUpperCase();
 };
 
-export {utcDateTimeToLocal, greaterThanEqualTo, handleApolloError, capitalizeTranslated, formatTime24to12, useDebounce, notifySuccess, notifyError,FieldMerger,utcDateToLocal,getInitials}
+const handleNumberKeyDown = (e) => {
+    if (['e', 'E', '+', '-', '.', ','].includes(e.key)) {
+        e.preventDefault();
+    }
+};
+
+const handleNumberInput = (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+};
+
+
+export {utcDateTimeToLocal, greaterThanEqualTo, handleApolloError, capitalizeTranslated, formatTime24to12, useDebounce, notifySuccess, notifyError,FieldMerger,utcDateToLocal,getInitials,handleNumberKeyDown,handleNumberInput}
 export * from "./TableLoader"
 export * from "./SmLoader"

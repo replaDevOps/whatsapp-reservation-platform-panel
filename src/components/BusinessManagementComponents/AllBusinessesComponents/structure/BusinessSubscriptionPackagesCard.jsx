@@ -59,23 +59,17 @@ const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscript
                                                             subscriptionValidity === 'ENTERPRISE' ? (
                                                                 "Custom Price"
                                                             ) : subscriptionValidity === 'YEARLY' ? (
-                                                                (plan?.discountYearlyPrice > 0 && plan?.discountYearlyPrice !== plan?.yearlyPrice) ? (
-                                                                    <>
-                                                                        <Text delete className="fs-14 text-gray">
-                                                                            {plan?.yearlyPrice}
-                                                                        </Text>
-                                                                        {plan?.discountYearlyPrice}
-                                                                    </>
-                                                                ) : (
-                                                                    plan?.yearlyPrice
-                                                                )
-                                                            ) : (plan?.discountPrice > 0 && plan?.discountPrice !== plan?.price) ? (
-                                                                <>
-                                                                    <Text delete className="fs-16 text-gray">
-                                                                        {plan?.price}
-                                                                    </Text>
-                                                                    {plan?.discountPrice}
-                                                                </>
+                                                                // (plan?.discountYearlyPrice > 0 && plan?.discountYearlyPrice !== plan?.yearlyPrice) ? (
+                                                                //     <>
+                                                                //         <Text delete className="fs-14 text-gray">
+                                                                //             {plan?.yearlyPrice}
+                                                                //         </Text>
+                                                                //         {plan?.discountYearlyPrice}
+                                                                //     </>
+                                                                // ) : (
+                                                                    
+                                                                // )
+                                                                plan?.yearlyPrice
                                                             ) : (
                                                                 plan?.price
                                                             )
