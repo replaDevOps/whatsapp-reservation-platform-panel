@@ -16,7 +16,8 @@ const RenewPlanModal = ({visible,onClose,edititem,refetch}) => {
     const [ api, contextHolder ] = notification.useNotification()
     const [renewSubscriberSubscription, { loading }] = useMutation(RENEW_SUBSCRIBER_SUBSCRIPTION, {
         onCompleted: () => {
-            notifySuccess(api,t("Renew Plan Update"), t("Renew plan update successfully"),()=> {refetch()});
+            notifySuccess(api,t("Renew Plan Update"), t("Renew plan update successfully"));
+            refetch();
             onClose()
         },
         onError: (error) => {

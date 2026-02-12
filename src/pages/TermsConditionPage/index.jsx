@@ -17,7 +17,7 @@ const TermsConditionPage = () => {
     const [ api, contextHolder ] = notification.useNotification()
     const { data, refetch, loading } = useQuery(GET_TERMS)
     const [updateTermsCondition, { loading: updating }] = useMutation(UPDATE_TERMS,{
-      onCompleted:()=>{notifySuccess(api,t("Terms & Condition Update"),t("Terms & Condition has been updated successfully"),()=>refetch())},
+      onCompleted:()=>{notifySuccess(api,t("Terms & Condition Update"),t("Terms & Condition has been updated successfully"));refetch()},
       onError: (error) => {notifyError(api, error)},
     })
 

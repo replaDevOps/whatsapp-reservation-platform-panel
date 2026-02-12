@@ -19,8 +19,8 @@ const UpgradePlanModal = ({visible,onClose,edititem,refetch}) => {
                 api,
                 t("Subscription Plan Upgrade"),
                 t("Subscription plan has been upgraded successfully"),
-                ()=> {refetch()}
             );
+            refetch();
             onClose()
         },
         onError: (error) => {

@@ -678,7 +678,10 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
             return (
                 status === 'ACTIVE' ? (
                     <Text className='btnpill fs-12 success'>{t("Active")}</Text>
-                ) : (
+                ) : 
+                status === 'PENDING' ? (
+                    <Text className='btnpill fs-12 pending'>{t("Pending")}</Text>
+                ) :(
                     <Text className='btnpill fs-12 inactive'>{t("Expire")}</Text>
                 )
             );

@@ -14,8 +14,7 @@ const EditSubscription = ({setEditItem,edititem,getSubscriptionPlans,setState}) 
     const [ api, contextHolder ] = notification.useNotification()
     const [featureValues, setFeatureValues] = useState({})
     const [updateSubscriptionPlan, { loading, error, success }] = useMutation(UPDATE_SUBSCRIPTION_PLAN, {
-        onCompleted: () => {notifySuccess(api,t("Subscription Plan Update"),t("Subscription Plan has been updated successfully"),()=>{getSubscriptionPlans();setEditItem(null);setState(null)})
-    },
+        onCompleted: () => {notifySuccess(api,t("Subscription Plan Update"),t("Subscription Plan has been updated successfully"));getSubscriptionPlans();setEditItem(null);setState(null)},
         onError:(error)=>{notifyError(api,error)}
     });
     console.log("featureValues:", success)

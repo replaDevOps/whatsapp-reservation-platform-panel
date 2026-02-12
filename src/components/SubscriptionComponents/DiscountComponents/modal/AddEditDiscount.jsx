@@ -20,11 +20,11 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
         fetchPolicy:'network-only'
     })
     const [ updateDiscounts, {loading: updating} ] = useMutation(UPDATE_DISCOUNTS,{
-        onCompleted: () => {notifySuccess(api,t("Discount Update"),t("Discount has been updated successfully"),()=> {refetch()});onClose()},
+        onCompleted: () => {notifySuccess(api,t("Discount Update"),t("Discount has been updated successfully"));refetch();onClose()},
         onError: (error) => {notifyError(api, error);},
     })
     const [ createDiscount, { loading: creating } ] = useMutation(CREATE_DISCOUNTS,{
-        onCompleted: () => {notifySuccess(api,t("Discount Create"),t("Discount has been created successfully"),()=> {refetch()});onClose()},
+        onCompleted: () => {notifySuccess(api,t("Discount Create"),t("Discount has been created successfully"));refetch();onClose()},
         onError: (error) => {notifyError(api, error);},
     })
     

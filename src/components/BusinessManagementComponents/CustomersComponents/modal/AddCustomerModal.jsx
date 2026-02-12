@@ -14,7 +14,7 @@ const AddCustomerModal = ({visible,onClose,refetch}) => {
     const isArabic = i18n?.language === 'ar'
     const [ api, contextHolder ] = notification.useNotification()
     const [createSubscriberCustomer, { loading }] = useMutation(CREATE_SUBSCRIBER_CUSTOMER, {
-        onCompleted: () => {notifySuccess(api,t("Customer Create"),t("Customer has been created successfully"),()=> {refetch()});onClose();form.resetFields()},
+        onCompleted: () => {notifySuccess(api,t("Customer Create"),t("Customer has been created successfully"));refetch();onClose();form.resetFields()},
         onError: (error) => {notifyError(api, error);},
      });
 

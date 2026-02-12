@@ -35,7 +35,8 @@ const StaffTable = () => {
     })
     const [updatestaff, {loading: updating}] = useMutation(UPDATE_STAFF,{
         onCompleted: () => {
-            notifySuccess(api,t('Staff Status Update'),t('Staff status has been updated successfully'),()=>fetchStaffs());
+            notifySuccess(api,t('Staff Status Update'),t('Staff status has been updated successfully'));
+            fetchStaffs();
             setStatusChange(null);
         },onError:(error)=>{notifyError(api,error)}
     })
@@ -55,7 +56,8 @@ const StaffTable = () => {
     }
     const [deleteStaff, { loading: deleting }] = useMutation(DELETE_STAFF,{
         onCompleted: ()=>{
-            notifySuccess(api,t("Staff Delete"),t("Staff has been deleted successfully."), ()=> {fetchStaffs(); setDeleteItem(null)})
+            notifySuccess(api,t("Staff Delete"),t("Staff has been deleted successfully."));
+            fetchStaffs(); setDeleteItem(null)
         },
         onError: (error) => {
             notifyError(api, error);

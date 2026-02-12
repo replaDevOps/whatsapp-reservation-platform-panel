@@ -31,7 +31,7 @@ const DiscountTable = ({visible,setVisible}) => {
         fetchPolicy: 'network-only'
     })
     const [expireStaffPackage] = useMutation(EXPIRE_DISCOUNT,{
-        onCompleted: ()=>{notifySuccess(api,t("Discount Expire"),t("Discount has been expired successfully"),()=>{fetchDiscounts();setExpireItem(null)})},
+        onCompleted: ()=>{notifySuccess(api,t("Discount Expire"),t("Discount has been expired successfully"));fetchDiscounts();setExpireItem(null)},
     });
 
     const fetchDiscounts = () => {

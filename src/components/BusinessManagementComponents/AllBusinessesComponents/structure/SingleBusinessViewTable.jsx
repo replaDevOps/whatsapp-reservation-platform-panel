@@ -26,7 +26,8 @@ const SingleBusinessViewTable = ({setViewItem,id}) => {
     const [ branchBusinessData, setBranchBusinessData ] = useState([])
     const [changeBusinessStatus, { loading: statusChanging }] = useMutation(CHANGE_BUSINESS_STATUS,{
         onCompleted: ()=>{
-            notifySuccess(api,t("Business status change"),t("Business status changes successfully"),()=>{setStatusChange(null);navigate('/allbusiness')} )
+            notifySuccess(api,t("Business status change"),t("Business status changes successfully")),
+            setStatusChange(null);navigate('/allbusiness')
         },
         onError: (error) => {
             notifyError(api, error);
