@@ -6,7 +6,7 @@ import { capitalizeTranslated, toArabicDigits } from '../../../../shared';
 import { useEffect, useState } from 'react';
 
 const { Title,Text } = Typography;
-const PlanCard = ({subscriptionPlan,subscriptionValidity}) => {
+const PlanCard = ({subscriptionPlan,subscriptionValidity, discountData}) => {
     const {t,i18n} = useTranslation()
     const isArabic = i18n?.language === 'ar'
     const [features, setFeatures]= useState([])
@@ -84,9 +84,9 @@ const PlanCard = ({subscriptionPlan,subscriptionValidity}) => {
                                 // ) : (
                                     
                                 // )
-                                subscriptionPlan?.yearlyPrice
+                                discountData?.discount?.packageType === subscriptionPlan?.type ? discountData?.finalPrice ?? subscriptionPlan?.yearlyPrice : subscriptionPlan?.yearlyPrice
                             ) :(
-                                subscriptionPlan?.price
+                                 discountData?.discount?.packageType === subscriptionPlan?.type ? discountData?.finalPrice ?? subscriptionPlan?.price : subscriptionPlan?.price
                             )
                         }
                         <span className='fs-13 fw-500 text-gray'>/{t(capitalizeTranslated(subscriptionValidity))}</span>
