@@ -22,7 +22,8 @@ const FaqsTable = ({ visible, setVisible }) => {
         fetchPolicy: 'network-only'
     })
     const [deleteFaqs, { loading: deleting }] = useMutation(DELETE_FAQS,{
-        onCompleted: ()=>{notifySuccess(api,t("FAQ Delete"),t("FAQ has been deleted successfully"),()=>{fetchFaqs()}),
+        onCompleted: ()=>{notifySuccess(api,t("FAQ Delete"),t("FAQ has been deleted successfully")),
+            fetchFaqs();
             setDeleteItem(null)    
         },onError: (error)=> notifyError(api,error)
     });

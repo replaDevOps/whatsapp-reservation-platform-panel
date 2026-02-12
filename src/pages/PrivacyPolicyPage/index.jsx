@@ -16,7 +16,7 @@ const PrivacyPolicyPage = () => {
     const [ api, contextHolder ] = notification.useNotification()
     const { data, refetch,loading } = useQuery(GETPRIVACYPOLICY)
     const [privacypolicyCondition, { loading: updating }] = useMutation(UPDATE_PRIVACY_POLICY,{
-      onCompleted:()=>{notifySuccess(api,t("Privacy Policy Update"),t("Privacy Policy has been updated successfully"),()=>refetch())},
+      onCompleted:()=>{notifySuccess(api,t("Privacy Policy Update"),t("Privacy Policy has been updated successfully"));refetch()},
       onError: (error) => {notifyError(api, error)},
     })
 

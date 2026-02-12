@@ -16,7 +16,7 @@ const ChangePasswordSetting = () => {
     const {t} = useTranslation()
 
     const [ changePassword, { loading } ] = useMutation(CHANGE_PASSWORD_USER,{
-        onCompleted:()=>{notifySuccess(api,t("Password Change"),t("Password has been changed successfully"),()=> {form.resetFields()})},
+        onCompleted:()=>{notifySuccess(api,t("Password Change"),t("Password has been changed successfully"));form.resetFields()}, 
         onError: (error) => {notifyError(api, error);},
     });
 

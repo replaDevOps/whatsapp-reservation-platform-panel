@@ -48,7 +48,8 @@ const AllBusinessTable = ({getSubscriptionsStats}) => {
     };
     const [changeBusinessStatus, { loading: statusChanging }] = useMutation(CHANGE_BUSINESS_STATUS,{
         onCompleted: ()=>{
-            notifySuccess(api,t("Business status change"),t("Business status changes successfully"), ()=> {fetchBusinesses();});
+            notifySuccess(api,t("Business status change"),t("Business status changes successfully"));
+            fetchBusinesses();
             setStatusChange(null)
         },
         onError: (error) => {
@@ -57,8 +58,9 @@ const AllBusinessTable = ({getSubscriptionsStats}) => {
     });
      const [deleteBusiness, {loading: deleting}] = useMutation(DELETE_BUSINESS, {
         onCompleted: () => {
-            notifySuccess(api,t("Business Delete"),t("Business deleted successfully"),()=> {fetchBusinesses();getSubscriptionsStats()});
+            notifySuccess(api,t("Business Delete"),t("Business deleted successfully"));
             setDeleteItem(false)
+            fetchBusinesses();
         },
         onError: (error) => {
             notifyError(api, error);

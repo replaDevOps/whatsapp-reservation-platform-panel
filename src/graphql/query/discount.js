@@ -44,4 +44,21 @@ const VERIFY_PROMOTION_CODE = gql`
     }
 `
 
-export {GET_DISCOUNTS,GET_PLANS_LOOKUPS,VERIFY_PROMOTION_CODE}
+const VERIFY_DISCOUNT = gql`
+    query CheckDiscountCode($code: String!, $subscriberId: ID!, $subscriptionId: ID!) {
+        checkDiscountCode(code: $code, subscriberId: $subscriberId, subscriptionId: $subscriptionId) {
+            discountAmount
+            message
+            isValid
+            finalPrice
+            originalPrice
+            discount {
+                id
+                code
+                packageType
+            }
+        }
+    }
+`
+
+export {GET_DISCOUNTS,GET_PLANS_LOOKUPS,VERIFY_PROMOTION_CODE,VERIFY_DISCOUNT}

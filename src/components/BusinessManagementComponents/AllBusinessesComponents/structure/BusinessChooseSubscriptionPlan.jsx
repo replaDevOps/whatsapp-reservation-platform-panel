@@ -2,14 +2,13 @@ import { Col, Flex, Row, Tabs, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { BusinessSubscriptionPackagesCard } from './BusinessSubscriptionPackagesCard';
 import { PlanCard } from './PlanCard';
-import { subplanData } from '../../../../data';
 import { useTranslation } from 'react-i18next';
 import { GET_SUBSCRIPTION_PLANS } from '../../../../graphql/query';
 import { useLazyQuery } from '@apollo/client/react';
 
 const { Text } = Typography;
 
-const BusinessChooseSubscriptionPlan = ({subscriptionValidity, setSubscriptionValidity, selectedSubscriptionPlan, setSelectedSubscriptionPlan}) => {
+const BusinessChooseSubscriptionPlan = ({subscriptionValidity, setSubscriptionValidity, selectedSubscriptionPlan, setSelectedSubscriptionPlan, discountData}) => {
 
     const {t} = useTranslation()
     const [subscriptionPlans, setSubscriptionPlans]= useState([]) 
@@ -48,7 +47,7 @@ const BusinessChooseSubscriptionPlan = ({subscriptionValidity, setSubscriptionVa
                     </Flex>
 
                     <BusinessSubscriptionPackagesCard
-                        {...{subscriptionPlans, selectedSubscriptionPlan, setSelectedSubscriptionPlan, subscriptionValidity}}
+                        {...{subscriptionPlans, selectedSubscriptionPlan, setSelectedSubscriptionPlan, subscriptionValidity,discountData}}
                     />
                 </Flex>
             </Col>
@@ -57,6 +56,7 @@ const BusinessChooseSubscriptionPlan = ({subscriptionValidity, setSubscriptionVa
                 <PlanCard
                     subscriptionPlan={selectedSubscriptionPlan}
                     subscriptionValidity={subscriptionValidity}
+                    discountData={discountData}
                 />
             </Col>
         </Row>

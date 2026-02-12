@@ -1,4 +1,4 @@
-import { Card, Col, Flex, Radio, Row, Space, Typography } from 'antd';
+import { Card, Col, Flex, Radio, Row, Typography } from 'antd';
 import { MyInput } from '../../../Forms';
 import { useTranslation } from 'react-i18next';
 import { capitalizeTranslated } from '../../../../shared';
@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 const { Text, Title, Paragraph } = Typography;
 
-const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscriptionPlan, setSelectedSubscriptionPlan, subscriptionValidity}) => {
+const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscriptionPlan, setSelectedSubscriptionPlan, subscriptionValidity, discountData}) => {
     const {t} = useTranslation()
     const [expanded, setExpanded] = useState(false);
     return (
@@ -59,19 +59,9 @@ const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscript
                                                             subscriptionValidity === 'ENTERPRISE' ? (
                                                                 "Custom Price"
                                                             ) : subscriptionValidity === 'YEARLY' ? (
-                                                                // (plan?.discountYearlyPrice > 0 && plan?.discountYearlyPrice !== plan?.yearlyPrice) ? (
-                                                                //     <>
-                                                                //         <Text delete className="fs-14 text-gray">
-                                                                //             {plan?.yearlyPrice}
-                                                                //         </Text>
-                                                                //         {plan?.discountYearlyPrice}
-                                                                //     </>
-                                                                // ) : (
-                                                                    
-                                                                // )
-                                                                plan?.yearlyPrice
+                                                                discountData?.discount?.packageType === plan?.type ? discountData?.finalPrice ?? plan?.yearlyPrice : plan?.yearlyPrice
                                                             ) : (
-                                                                plan?.price
+                                                                discountData?.discount?.packageType === plan?.type ? discountData?.finalPrice ?? plan?.price : plan?.price
                                                             )
                                                         }
                                                         <span className="fs-12 fw-500 text-gray">/{t(capitalizeTranslated(subscriptionValidity))}</span>

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons'
-import { Button, Card, Col, Divider, Flex, Form, notification, Row, Select, Spin, Typography } from 'antd'
+import { Button, Card, Col, Divider, Flex, Form, notification, Row, Select, Spin, Tag, Typography } from 'antd'
 import { BreadCrumbCard, BusinessChooseSubscriptionPlan, ConfirmModal, MyInput, UploadImage } from '../../../../components'
 import { MySelect } from '../../../Forms'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BusinessTitle, notifyError, notifySuccess, SmLoader, typeOps, useDebounce } from '../../../../shared'
-import { GET_SUBSCRIBER_CUSTOMERS_LOOKUP, VERIFY_PROMOTION_CODE } from '../../../../graphql/query'
+import { GET_SUBSCRIBER_CUSTOMERS_LOOKUP, VERIFY_DISCOUNT } from '../../../../graphql/query'
 import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { CREATE_BUSINESS } from '../../../../graphql/mutation'
-import dayjs from 'dayjs'
+
 
 const { Title, Text } = Typography
 const AddEditBusiness = () => {
@@ -20,16 +20,15 @@ const AddEditBusiness = () => {
     const [ api, contextHolder ] = notification.useNotification()
     const [ previewimage, setPreviewImage ] = useState(null)
     const [ confirmsubmit, setConfirmSubmit ] = useState(false)
-    const [promoCode, setPromoCode] = useState('');
-    const debouncedPromo = useDebounce(promoCode, 500);
-    const [ promoId, setPromoId ] = useState(null)
-    const [ promostatus, setPromoStatus ] = useState(null)
+    const [ discountData, setDiscountData ] = useState(null)
+    const [ discountstatus, setDiscountStatus ] = useState(null)
     const navigate = useNavigate()
     const [subscriberCustomersLookup, setSubscriberCustomersLookup]= useState([])
     const [subscriptionValidity, setSubscriptionValidity] = useState('MONTHLY')
     const [selectedSubscriptionPlan, setSelectedSubscriptionPlan]= useState(null)
-
-    const [ getVerifyPromotion, { loading:verifyingPromotion } ] = useLazyQuery(VERIFY_PROMOTION_CODE);
+    const [ getVerifyDiscount, { loading:verifyingDiscount } ] = useLazyQuery(VERIFY_DISCOUNT,{
+        fetchPolicy:'network-only',
+    });
     const [createBusiness, { loading, error, success }] = useMutation(CREATE_BUSINESS, {
         onCompleted: () => {
             notifySuccess(api,t("Business Create"),t("Business has been created successfully"),
@@ -63,8 +62,6 @@ const AddEditBusiness = () => {
     const onFinish = async () => {
         let data = form.getFieldsValue()
         const subscriptionPrice = subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.yearlyPrice : selectedSubscriptionPlan?.price
-            // ? (selectedSubscriptionPlan?.discountYearlyPrice !== null && selectedSubscriptionPlan?.discountYearlyPrice > 0 ? selectedSubscriptionPlan?.discountYearlyPrice : selectedSubscriptionPlan?.yearlyPrice)
-            // : (selectedSubscriptionPlan?.discountPrice !== null && selectedSubscriptionPlan?.discountPrice > 0 ? selectedSubscriptionPlan?.discountPrice : selectedSubscriptionPlan?.price)
         if (!previewimage) {
             notifyError(api, t('Please upload an image'));
             return;
@@ -75,42 +72,49 @@ const AddEditBusiness = () => {
             subscriberId: subscriberCustomersLookup?.find(subscriber => subscriber?.id === data?.subscriberId)?.id,
             subscriptionId: selectedSubscriptionPlan?.id,
             subscriptionType: selectedSubscriptionPlan?.type,
-            subscriptionPrice: selectedSubscriptionPlan?.type === 'ENTERPRISE' ? Number(data?.customPrice): subscriptionPrice,
+            subscriptionPrice: selectedSubscriptionPlan?.type === 'ENTERPRISE' ? Number(data?.customPrice) : discountData?.finalPrice ?? subscriptionPrice,
             subscriptionValidity,
-            discountCode: promoId
+            discountCode: discountData?.discount?.id
         }
         delete data?.customPrice
+        delete data?.code
         console.log('create business',data)
+        // return;
         await createBusiness({ variables: { input: {...data} } })
     }
-
     useEffect(() => {
-        if (!debouncedPromo?.trim()) {
-            setPromoStatus(null);
-            setPromoId(null);
+        if (selectedSubscriptionPlan && discountData?.discount?.id) {
+            checkDiscountCode();
+        }
+    }, [selectedSubscriptionPlan]);
+
+    const checkDiscountCode = async () => {
+        const data = form.getFieldValue();
+        if (!data) {
+            setDiscountStatus(null);
+            setDiscountData(null);
+            form.setFields([{ name: 'code', errors: [] }]);
             return;
         }
-        const verify = async () => {
-            try {
-            const res = await getVerifyPromotion({
-                variables: { name: debouncedPromo }
+        try {
+            setDiscountData(null);
+            const res = await getVerifyDiscount({ variables: { 
+                    code: data?.code, 
+                    subscriberId: subscriberCustomersLookup?.find(subscriber => subscriber?.id === data?.subscriberId)?.id,
+                    subscriptionId: selectedSubscriptionPlan?.id 
+                } 
             });
-            const promo = res?.data?.verifyPromotion;
-            if (promo?.id) {
-                setPromoStatus(true);
-                setPromoId(promo.id);
-            } else {
-                setPromoStatus(false);
-                setPromoId(null);
+            setDiscountStatus(res?.data?.checkDiscountCode?.isValid === true);
+            setDiscountData(res?.data?.checkDiscountCode);
+            if (res?.data?.checkDiscountCode?.isValid === false) {
+                notifyError(api,res?.data?.checkDiscountCode?.message);
             }
-            } catch (e) {
-                setPromoStatus(false);
-                setPromoId(null);
-            } 
-        };
-        verify();
-    }, [debouncedPromo]);
-
+        } catch (error) {
+            setDiscountStatus(false);
+            setDiscountData(null);
+            console.error(error);
+        }
+    };
     return (
         <>
             {contextHolder}
@@ -164,6 +168,7 @@ const AddEditBusiness = () => {
                                             option?.children?.toLowerCase().includes(input.toLowerCase())
                                         }
                                         showSearch
+                                        allowClear
                                     />
                                 </Col>
                                 <Col span={24} md={12}>
@@ -235,23 +240,38 @@ const AddEditBusiness = () => {
                                 <Col span={24}>
                                     <MyInput
                                         label={t("Discount Code")}
-                                        name="discountCode"
+                                        name="code"
                                         placeholder={t("Enter discount code")}
                                         className="w-100"
-                                        onChange={(e) => {setPromoCode(e.target.value);setPromoStatus(null)}}
-                                        suffix= {
-                                            <Flex align="center" justify="center" gap={2}>
-                                                {verifyingPromotion && <Spin {...SmLoader} size="small" />}
+                                        onChange={(e) => {setDiscountStatus(null)}}
+                                        // suffix= {
+                                        //     <Flex align="center" justify="center" gap={2}>
+                                        //         {verifyingDiscount && <Spin {...SmLoader} size="small" />}
 
-                                                {!verifyingPromotion && promostatus !== null && (
-                                                    promostatus ? (
+                                        //         {!verifyingDiscount && discountstatus !== null && (
+                                        //             discountstatus ? (
+                                        //             <Text className="text-green fs-12">{t("Valid")}</Text>
+                                        //             ) : (
+                                        //             <Text className="text-red fs-12">{t("Invalid")}</Text>
+                                        //             )
+                                        //         )}
+                                        //     </Flex>
+                                        // }
+                                        suffix={
+                                            <Flex align='center' gap={2}>
+                                                {verifyingDiscount && <Spin {...SmLoader} size="small" />}
+
+                                                {discountstatus !== null && !verifyingDiscount && (
+                                                discountstatus ? (
                                                     <Text className="text-green fs-12">{t("Valid")}</Text>
-                                                    ) : (
+                                                ) : (
                                                     <Text className="text-red fs-12">{t("Invalid")}</Text>
-                                                    )
+                                                )
                                                 )}
+                                                <Tag onClick={checkDiscountCode} className='cursor'>{t('Check')}</Tag>
                                             </Flex>
                                         }
+                                        disabled={!Form.useWatch("subscriberId", form)}
                                     />
                                 </Col>
                                 <Col span={24}>
@@ -259,7 +279,7 @@ const AddEditBusiness = () => {
                                 </Col> 
                                 <Col span={24}>
                                     <BusinessChooseSubscriptionPlan 
-                                        {...{subscriptionValidity, setSubscriptionValidity, selectedSubscriptionPlan, setSelectedSubscriptionPlan}}
+                                        {...{subscriptionValidity, setSubscriptionValidity, selectedSubscriptionPlan, setSelectedSubscriptionPlan, discountData}}
                                     />
                                 </Col>
                                 <Col span={24}> 
