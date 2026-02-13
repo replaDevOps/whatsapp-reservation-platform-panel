@@ -20,16 +20,24 @@ const RouteF = () => {
           window.removeEventListener('storage', handleStorageChange);
       };
     }, []);
+
+    const PublicRoute = ({ children }) => {
+      if (isAuthenticated()) {
+        return <Navigate to="/" replace />;
+      }
+      return children;
+    } 
+
   return (
     
       <Routes>
         <Route
           path="/login"
-          element={!isAuthenticated() ? <LoginPage /> : <Navigate to="/" replace />}
+          element={<PublicRoute><LoginPage /></PublicRoute>}
         />
         <Route
           path="/forgotpassword"
-          element={!isAuthenticated() ? <ForgotPassword /> : <Navigate to="/" replace />}
+          element={<PublicRoute><ForgotPassword /></PublicRoute>}
         />
         <Route
           path="/*"
