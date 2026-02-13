@@ -8,7 +8,7 @@ const Fallback = () => {
   return(
   <div className='center w-100 h-100vh'>
     <Space
-      direction='vertical'
+      orientation='vertical'
       align='center'
       className='w-100 h-100 justify-center'
     >
