@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { PlusOutlined, MinusCircleFilled } from "@ant-design/icons";
 import { Upload, Form, Flex } from "antd";
+import { notifyError } from "../../shared";
+import { useTranslation } from "react-i18next";
 
 const { Dragger } = Upload;
 
@@ -16,9 +18,11 @@ const SingleFileUpload = ({
   align = "center",
   width = 150,
   height = 150,
-  acceptFileType = "all"
+  acceptFileType = "all",
+  api=null,
 }) => {
   const [fileList, setFileList] = useState([]);
+  const {t} = useTranslation()
 
   // Map acceptFileType to Ant Design accept format
   const getAcceptFormat = () => {
@@ -29,9 +33,25 @@ const SingleFileUpload = ({
     return acceptMap[acceptFileType] || null;
   };
 
+  // Validate file type if acceptFileType is 'image'
+  const isValidFileType = (file) => {
+    if (acceptFileType === "image") {
+      return file.type.startsWith("image/");
+    }
+    return true;
+  };
+
   const handleChange = async (info) => {
     let newFileList = [...info.fileList];
 
+    // Filter files if acceptFileType is 'image'
+    if (acceptFileType === "image") {
+      const filtered = newFileList.filter((file) => isValidFileType(file.originFileObj || file));
+      if (filtered.length !== newFileList.length) {
+        notifyError(api, t("Only image files are allowed."));
+      }
+      newFileList = filtered;
+    }
     if (!multiple) {
       newFileList = newFileList.slice(-1);
     }

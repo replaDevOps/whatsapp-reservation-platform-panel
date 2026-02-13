@@ -124,15 +124,8 @@ const Sidebar = () => {
           setCollapsed(broken)
         }} trigger={null} collapsible collapsed={collapsed} className={collapsed ? 'addclass overflowstyle h-100vh overflowy-auto border-right-side' :'overflowstyle h-100vh overflowy-auto border-right-side'}>
         <Flex className="logo" align='center' gap={10}>
-          {
-            getUserImage() ?
-            <Avatar size={collapsed ? 40 : 40} src={getUserImage()} alt='logo image' fetchPriority="high" />
-            :
-            <Avatar size={40} className='fs-14 text-white fw-bold brand-bg'>
-              {getUserFirstName()?.charAt(0).toUpperCase() + getUserLastName()?.charAt(0).toUpperCase()}
-            </Avatar>
-          }
-          <Text strong className='fs-14'>{getUserName()}</Text>
+          <Image src='/assets/images/logo.webp' width={40} preview={false} alt='logo' fetchPriority="high" />
+          <Text strong className='fs-16'>Qloop</Text>
         </Flex>
         <Divider className='m-0 bg-divider' />
         <Menu

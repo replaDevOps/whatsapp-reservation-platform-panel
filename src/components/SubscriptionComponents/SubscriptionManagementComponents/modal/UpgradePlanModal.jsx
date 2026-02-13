@@ -153,6 +153,7 @@ const UpgradePlanModal = ({visible,onClose,edititem,refetch}) => {
                                                 form.setFieldValue("endDate", value.add(1, 'year'))
                                         }
                                     }}
+                                    disabledDate={(value)=> value && value  < dayjs().startOf('day')}
                                 />
                             </Col>
                             <Col span={24}>

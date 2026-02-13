@@ -93,7 +93,7 @@ const ForgotPassword = () => {
                                         }
                                     }}
                                     className='w-100'
-                                    min={1}
+                                    min={0}
                                 />
                             </Col>
                         )}

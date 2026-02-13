@@ -26,6 +26,16 @@ const RenewPlanModal = ({visible,onClose,edititem,refetch}) => {
     });
     useEffect(()=>{
         if(visible && edititem){
+            const today = dayjs();
+            let newExpiry = today;
+
+            // Calculate based on current validity
+            if (edititem?.validity === "MONTHLY") {
+                newExpiry = today.add(1, "month");
+            } 
+            else if (edititem?.validity === "YEARLY") {
+                newExpiry = today.add(1, "year");
+            }
             form.setFieldsValue({
                 name: edititem?.business?.name,
                 businessType: edititem?.business?.businessType,
@@ -35,7 +45,8 @@ const RenewPlanModal = ({visible,onClose,edititem,refetch}) => {
                 validity: capitalizeTranslated(edititem?.validity),
                 currentexpDate: dayjs(edititem?.endDate),
                 startDate: dayjs(edititem?.startDate),
-                endDate: dayjs(edititem?.endDate)
+                endDate: dayjs(edititem?.endDate),
+                newendDate: newExpiry
             })
         }
         else {
@@ -132,7 +143,7 @@ const RenewPlanModal = ({visible,onClose,edititem,refetch}) => {
                                     disabled={edititem}
                                 />
                             </Col>
-                            <Col span={24}>
+                            {/* <Col span={24}>
                                 <MySelect 
                                     label={t("Renew Period")} 
                                     name="validity" 
@@ -156,12 +167,12 @@ const RenewPlanModal = ({visible,onClose,edititem,refetch}) => {
                                             form.setFieldValue("endDate", dayjs().add(1, 'year'))
                                     }}
                                 />
-                            </Col>
+                            </Col> */}
                             <Col span={24}>
                                 <MyDatepicker
                                     datePicker
                                     label={t('New Expiry Date')}
-                                    name='endDate'
+                                    name='newendDate'
                                     placeholder={t('Select date')}
                                     disabled={edititem}
                                 />

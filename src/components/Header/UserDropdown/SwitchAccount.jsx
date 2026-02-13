@@ -43,6 +43,8 @@ const SwitchAccount = ({visible , onClose})=> {
                                     size='large'
                                     name='accountNo'
                                     className='w-100'
+                                    type={'number'}
+                                    min={0}
                                     value={form.getFieldValue('accountNo') || ''}
                                 />
                                 <Button 

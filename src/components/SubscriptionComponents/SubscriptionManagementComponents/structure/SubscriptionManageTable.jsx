@@ -75,7 +75,7 @@ const SubscriptionManageTable = () => {
                                 <Col span={24} md={24} lg={24} xl={12}>
                                     <SearchInput
                                         name='name'
-                                        placeholder={t('Search by business name')}
+                                        placeholder={t('Search By Business Name/ID')}
                                         value={search}
                                         prefix={<img src='/assets/icons/search.webp' width={14} alt='search icon' fetchPriority="high" />}
                                         className='border-light-gray pad-x ps-0 radius-8 fs-13'

@@ -121,9 +121,9 @@ export const IncludeFeatureField = ({
                                                 onChange={(value) => handleSelectChange(key, value)}
                                             >
                                                 {options.map((opt) => (
-                                                    <Select.Option key={opt.value} value={opt.value}>
+                                                    <Select key={opt.value} value={opt.value}>
                                                         {t(opt.label)}
-                                                    </Select.Option>
+                                                    </Select>
                                                 ))}
                                             </Select>
                                             )

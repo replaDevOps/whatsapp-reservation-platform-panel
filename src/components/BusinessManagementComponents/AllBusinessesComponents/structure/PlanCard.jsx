@@ -84,9 +84,22 @@ const PlanCard = ({subscriptionPlan,subscriptionValidity, discountData}) => {
                                 // ) : (
                                     
                                 // )
-                                discountData?.discount?.packageType === subscriptionPlan?.type ? discountData?.finalPrice ?? subscriptionPlan?.yearlyPrice : subscriptionPlan?.yearlyPrice
+
+                                discountData?.discount?.packageType === subscriptionPlan?.type ? 
+                                    <>
+                                        <Text delete className="fs-16 text-gray">
+                                            {subscriptionPlan?.yearlyPrice}
+                                        </Text>
+                                        {discountData?.yearlyFinalPrice}
+                                    </> : subscriptionPlan?.yearlyPrice
                             ) :(
-                                 discountData?.discount?.packageType === subscriptionPlan?.type ? discountData?.finalPrice ?? subscriptionPlan?.price : subscriptionPlan?.price
+                                 discountData?.discount?.packageType === subscriptionPlan?.type ? 
+                                    <>
+                                        <Text delete className="fs-16 text-gray">
+                                            {subscriptionPlan?.price}
+                                        </Text>
+                                        {discountData?.finalPrice}
+                                    </> : subscriptionPlan?.price
                             )
                         }
                         <span className='fs-13 fw-500 text-gray'>/{t(capitalizeTranslated(subscriptionValidity))}</span>

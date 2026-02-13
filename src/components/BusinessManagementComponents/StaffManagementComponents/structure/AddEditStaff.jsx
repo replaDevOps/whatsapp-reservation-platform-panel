@@ -132,6 +132,7 @@ const AddEditStaff = () => {
                                             src={previewimage}
                                             setPreviewImage={setPreviewImage}
                                             t={t}
+                                            api={api}
                                         />
                                     </Col>
                                     <Col span={24} md={12}>
@@ -168,16 +169,18 @@ const AddEditStaff = () => {
                                                         })
                                                     }
                                                     >
-                                                    <Select.Option value="sa">
+                                                    <Select value="sa">
                                                         +{isArabic ? toArabicDigits(966) : 966}
-                                                    </Select.Option>
+                                                    </Select>
 
-                                                    <Select.Option value="ae">
+                                                    <Select value="ae">
                                                         +{isArabic ? toArabicDigits(971) : 971}
-                                                    </Select.Option>
+                                                    </Select>
                                                 </Select>
                                             }
                                             className="w-100"
+                                            type={'number'}
+                                            min={0}
                                             maxLength={20}
                                             onInput={(e) => {
                                                 e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 20);

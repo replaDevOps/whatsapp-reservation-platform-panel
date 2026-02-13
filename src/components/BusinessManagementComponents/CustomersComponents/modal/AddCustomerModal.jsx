@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { notifyError, notifySuccess, toArabicDigits } from '../../../../shared'
 import { useMutation } from '@apollo/client/react'
 import { CREATE_SUBSCRIBER_CUSTOMER } from '../../../../graphql/mutation/mutations'
+import { useEffect } from 'react'
 
 const { Title } = Typography
 const AddCustomerModal = ({visible,onClose,refetch}) => {
@@ -17,6 +18,12 @@ const AddCustomerModal = ({visible,onClose,refetch}) => {
         onCompleted: () => {notifySuccess(api,t("Customer Create"),t("Customer has been created successfully"));refetch();onClose();form.resetFields()},
         onError: (error) => {notifyError(api, error);},
      });
+
+     useEffect(()=>{
+        return () => {
+            form.resetFields();
+        }
+    }, [visible, form])
 
     const AddEditSubsriberCustomer= async () => {
         const data= form.getFieldsValue()
@@ -98,15 +105,16 @@ const AddCustomerModal = ({visible,onClose,refetch}) => {
                                                 })
                                             }
                                             >
-                                            <Select.Option value="sa">
+                                            <Select value="sa">
                                                 +{isArabic ? toArabicDigits(966) : 966}
-                                            </Select.Option>
+                                            </Select>
 
-                                            <Select.Option value="ae">
+                                            <Select value="ae">
                                                 +{isArabic ? toArabicDigits(971) : 971}
-                                            </Select.Option>
+                                            </Select>
                                         </Select>
                                     }
+                                    min={0}
                                     maxLength={20}
                                     onInput={(e) => {
                                         e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 20);

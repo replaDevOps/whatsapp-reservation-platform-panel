@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useMutation } from '@apollo/client/react';
 import { notifySuccess, notifyError } from '../../../../shared';
 import { UPDATE_DEMO_REQUEST } from '../../../../graphql/mutation/mutations';
+import { useEffect } from 'react';
 
 const { Title } = Typography
 const MeetingNoteModal = ({visible,onClose,refetch,id}) => {
@@ -29,6 +30,11 @@ const MeetingNoteModal = ({visible,onClose,refetch,id}) => {
             console.error(e); 
         }
     }
+    useEffect(()=>{
+        if(!visible){
+            form.resetFields()
+        }
+    },[visible])
 
     return (
         <>

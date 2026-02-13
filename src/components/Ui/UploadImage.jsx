@@ -4,7 +4,7 @@ import { Button, Flex } from 'antd';
 import { SingleFileUpload } from '../Forms';
 import { uploadFileToServer } from '../../services';
 
-const UploadImage = ({setPreviewImage,src,t,form,disabled=false}) => {
+const UploadImage = ({setPreviewImage,src,t,form,disabled=false,api=null}) => {
 
     const fileInputRef = useRef(null);
     const handleFileChange = (e) => {
@@ -36,6 +36,7 @@ const UploadImage = ({setPreviewImage,src,t,form,disabled=false}) => {
                         width={100}
                         height={100}
                         acceptFileType='image'
+                        api={api}
                     />
                     :
                     <Flex vertical gap={5} justify='center' align='center'>
