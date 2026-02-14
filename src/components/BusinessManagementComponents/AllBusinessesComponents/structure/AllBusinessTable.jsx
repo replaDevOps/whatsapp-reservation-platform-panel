@@ -61,6 +61,7 @@ const AllBusinessTable = ({getSubscriptionsStats}) => {
             notifySuccess(api,t("Business Delete"),t("Business deleted successfully"));
             setDeleteItem(false)
             fetchBusinesses();
+            setCurrent(1);
         },
         onError: (error) => {
             notifyError(api, error);
@@ -78,7 +79,7 @@ const AllBusinessTable = ({getSubscriptionsStats}) => {
         selectedDate
     ])
     useEffect(()=>{
-        setBusinesses(data?.getBusinesses?.businesses || []);
+        setBusinesses(data?.getBusinesses?.businessess || []);
     }, [data])
 
     
@@ -94,9 +95,9 @@ const AllBusinessTable = ({getSubscriptionsStats}) => {
             <Card className='radius-12 card-cs border-gray h-100'>
                 <Form layout="vertical" form={form} className='mb-3'>
                     <Row gutter={[16, 16]} justify="space-between" align="middle">
-                        <Col xl={10} md={24} span={24}>        
+                        <Col span={24} md={24} xl={14}>        
                             <Row gutter={[16, 16]}>
-                                <Col span={24} md={24} lg={16}>
+                                <Col span={24} md={24} lg={18} xl={16}>
                                     <SearchInput
                                         name='name'
                                         value={search}
@@ -110,7 +111,7 @@ const AllBusinessTable = ({getSubscriptionsStats}) => {
                                         allowClear
                                     />
                                 </Col>
-                                <Col span={24} lg={8}>
+                                <Col span={24} lg={6} xl={8}>
                                     <Flex gap={5}>
                                         <DropdownFilter
                                             items={typeItems}

@@ -59,9 +59,21 @@ const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscript
                                                             subscriptionValidity === 'ENTERPRISE' ? (
                                                                 "Custom Price"
                                                             ) : subscriptionValidity === 'YEARLY' ? (
-                                                                discountData?.discount?.packageType === plan?.type ? discountData?.finalPrice ?? plan?.yearlyPrice : plan?.yearlyPrice
+                                                                discountData?.discount?.packageType === plan?.type ? 
+                                                                    <>
+                                                                        <Text delete className="fs-16 text-gray">
+                                                                           {plan?.yearlyPrice}
+                                                                        </Text>
+                                                                        {discountData?.yearlyFinalPrice}
+                                                                    </> : plan?.yearlyPrice
                                                             ) : (
-                                                                discountData?.discount?.packageType === plan?.type ? discountData?.finalPrice ?? plan?.price : plan?.price
+                                                                discountData?.discount?.packageType === plan?.type ? 
+                                                                    <>
+                                                                        <Text delete className="fs-16 text-gray">
+                                                                           {plan?.price}
+                                                                        </Text>
+                                                                        {discountData?.finalPrice}
+                                                                    </> : plan?.price
                                                             )
                                                         }
                                                         <span className="fs-12 fw-500 text-gray">/{t(capitalizeTranslated(subscriptionValidity))}</span>
@@ -88,6 +100,7 @@ const BusinessSubscriptionPackagesCard = ({ subscriptionPlans, selectedSubscript
                         placeholder={t("Enter price")}
                         className="w-100"
                         type={'number'}
+                        min={0}
                     />
                 </Col>
             }

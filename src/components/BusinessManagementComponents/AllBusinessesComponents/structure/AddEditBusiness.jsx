@@ -78,8 +78,8 @@ const AddEditBusiness = () => {
         }
         delete data?.customPrice
         delete data?.code
-        console.log('create business',data)
-        // return;
+
+        console.log("final data to submit", data)
         await createBusiness({ variables: { input: {...data} } })
     }
     useEffect(() => {
@@ -90,7 +90,7 @@ const AddEditBusiness = () => {
 
     const checkDiscountCode = async () => {
         const data = form.getFieldValue();
-        if (!data) {
+        if (!data || !data.code || data.code.trim() === "") {
             setDiscountStatus(null);
             setDiscountData(null);
             form.setFields([{ name: 'code', errors: [] }]);
@@ -144,6 +144,7 @@ const AddEditBusiness = () => {
                                         src={previewimage}
                                         setPreviewImage={setPreviewImage}
                                         t={t}
+                                        api={api}
                                     />
                                 </Col>
                                 <Col span={24}>
@@ -243,20 +244,12 @@ const AddEditBusiness = () => {
                                         name="code"
                                         placeholder={t("Enter discount code")}
                                         className="w-100"
-                                        onChange={(e) => {setDiscountStatus(null)}}
-                                        // suffix= {
-                                        //     <Flex align="center" justify="center" gap={2}>
-                                        //         {verifyingDiscount && <Spin {...SmLoader} size="small" />}
-
-                                        //         {!verifyingDiscount && discountstatus !== null && (
-                                        //             discountstatus ? (
-                                        //             <Text className="text-green fs-12">{t("Valid")}</Text>
-                                        //             ) : (
-                                        //             <Text className="text-red fs-12">{t("Invalid")}</Text>
-                                        //             )
-                                        //         )}
-                                        //     </Flex>
-                                        // }
+                                        onChange={(e) => {
+                                            setDiscountStatus(null);
+                                            if (e.target.value === "") {
+                                                setDiscountData(null)
+                                            }
+                                        }}
                                         suffix={
                                             <Flex align='center' gap={2}>
                                                 {verifyingDiscount && <Spin {...SmLoader} size="small" />}

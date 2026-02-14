@@ -25,6 +25,7 @@ const FaqsTable = ({ visible, setVisible }) => {
         onCompleted: ()=>{notifySuccess(api,t("FAQ Delete"),t("FAQ has been deleted successfully")),
             fetchFaqs();
             setDeleteItem(null)    
+            setCurrent(1)
         },onError: (error)=> notifyError(api,error)
     });
 

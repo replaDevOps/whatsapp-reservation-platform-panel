@@ -1457,6 +1457,11 @@
     height: 150px;
     overflow-y: auto;
     overflow-x: hidden;
+    box-shadow: none !important;
+}
+
+.ant-dropdown .ant-dropdown-menu{
+    box-shadow: none !important;
 }
 
 .scroll-style::-webkit-scrollbar-track

@@ -23,7 +23,6 @@ const CustomerTable = () => {
     const [selectedDate, setSelectedDate] = useState([null, null]);
     const [ search, setSearch ] = useState('')
     const debouncedSearch = useDebounce(search, 500);
-    const [isFetchingAll, setIsFetchingAll] = useState(false);
     const [subscriberCustomers, setSubscriberCustomers]= useState([])
     const handlePageChange = (page, size) => {
         setCurrent(page);
@@ -56,7 +55,7 @@ const CustomerTable = () => {
     }, [getSubscriberCustomers,debouncedSearch,selectedDate,current,pageSize])
 
     useEffect(()=>{
-        setSubscriberCustomers(data?.getSubscribers?.subscribers)
+        setSubscriberCustomers(data?.getSubscribers?.subscriberss)
     }, [data])
 
     const tableColumns = customerColumn({ t, i18n })
@@ -121,7 +120,7 @@ const CustomerTable = () => {
                     <Table
                         size='large'
                         columns={tableColumns}
-                        dataSource={subscriberCustomers}
+                        dataSource={subscriberCustomers || []}
                         className={ i18n?.language === 'ar' ? 'pagination table-cs table right-to-left w-100' : 'w-100 pagination table-cs table left-to-right'}
                         showSorterTooltip={false}
                         scroll={{ x: 1000 }}
@@ -130,8 +129,8 @@ const CustomerTable = () => {
                         rowKey={'id'}
                         loading={{
                             ...TableLoader,
-                            spinning: !isFetchingAll && loading
-                        }}
+                            spinning: loading
+                        }}               
                     />
                     <CustomPagination 
                         total={data?.getSubscribers?.totalCount}

@@ -69,9 +69,11 @@ const AddEditDiscount = ({visible,onClose,edititem,refetch}) => {
             subscriptionIds: data.subscriptionIds || [],
             usageLimit: data.usageLimit ? Number(data.usageLimit) : 0,
             validity: data?.validity,
-            startDate: data.startDate,
-            expiryDate: data.expiryDate
+            startDate: dayjs(data.startDate).format('YYYY/MM/DD'),
+            expiryDate: dayjs(data.expiryDate).format('YYYY/MM/DD')
         };
+        console.log('discount input:', input)
+        // return 
         try {
             if (edititem?.id) {
                 await updateDiscounts({variables: {editDiscountId: edititem.id,input}});

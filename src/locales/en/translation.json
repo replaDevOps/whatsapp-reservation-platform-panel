@@ -537,7 +537,10 @@
   "Renew plan update successfully":"Renew plan update successfully",
 
   "Please upload image":"Please upload image",
-  "Start date cannot be greater than expiry date":"Start date cannot be greater than expiry date"
+  "Start date cannot be greater than expiry date":"Start date cannot be greater than expiry date",
+
+  "Search By Business Name/ID":"Search By Business Name/ID",
+  "Only image files are allowed.":"Only image files are allowed."
 
 
 }

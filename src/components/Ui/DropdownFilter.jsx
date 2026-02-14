@@ -23,7 +23,7 @@ const DropdownFilter = ({
   className = "btncancel px-3 filter-bg fs-13 text-black",
   t = (key) => key,
   showClearIcon = true,
-  trigger = ['hover']
+  trigger = ['click']
 }) => {
   const handleClick = ({ key }) => {
     // Handle empty string key (for clearing/resetting)

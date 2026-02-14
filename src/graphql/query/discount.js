@@ -52,6 +52,9 @@ const VERIFY_DISCOUNT = gql`
             isValid
             finalPrice
             originalPrice
+            yearlyDiscountAmount
+            yearlyFinalPrice
+            yearlyOriginalPrice
             discount {
                 id
                 code

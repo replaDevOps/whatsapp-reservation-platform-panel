@@ -542,6 +542,8 @@
   "Renew Plan Update": "تحديث تجديد الخطة",
   "Renew plan update successfully": "تم تحديث تجديد الخطة بنجاح",
   "Please upload image": "يرجى تحميل صورة",
-  "Start date cannot be greater than expiry date": "لا يمكن أن يكون تاريخ البدء أكبر من تاريخ الانتهاء"
+  "Start date cannot be greater than expiry date": "لا يمكن أن يكون تاريخ البدء أكبر من تاريخ الانتهاء",
+  "Search By Business Name/ID": "البحث باسم المنشأة / المعرف",
+  "Only image files are allowed.": "يسمح فقط بملفات الصور."
 
 }

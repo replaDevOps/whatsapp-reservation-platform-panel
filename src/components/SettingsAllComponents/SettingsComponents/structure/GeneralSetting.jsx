@@ -74,6 +74,7 @@ const GeneralSetting = () => {
                                     placeholder={t("Enter phone number")} 
                                     addonBefore={ isArabic ? `${toArabicDigits(966)}+`: `+${966}`}
                                     disabled
+                                    min={0}
                                 />
                             </Col>
                             <Col span={24} md={12}>

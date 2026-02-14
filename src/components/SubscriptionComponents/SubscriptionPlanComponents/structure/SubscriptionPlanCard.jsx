@@ -108,19 +108,30 @@ const SubscriptionPlanCard = ({subscriptionPlan}) => {
                    </Flex>
                 </Col>
             </Row>
-            <Title className={`m-0`}>
-                <Space size={8}>
-                    <sup className={`fs-16 fw-600`}>{t("SAR")}</sup>
-                    {
-                        planDuration === 'Yearly' ? (
-                            subscriptionPlan?.yearlyPrice
-                        ) : (
-                            subscriptionPlan?.price
-                        )
-                    }
-                    <span className='fs-16 fw-500 text-gray'>/{t(planDuration)}</span>
-                </Space> 
-            </Title>
+                {
+                    subscriptionPlan?.title === 'ENTERPRISE' ? (
+                        <Title className={`m-0`} level={4}>
+                            {t("Custom Price")}
+                        </Title>
+                    ) : (
+                        
+                        <Title className={`m-0`}>
+                            <Space size={8}>
+                                <sup className={`fs-16 fw-600`}>{t("SAR")}</sup>
+                                {
+                                    planDuration === 'Yearly' ? (
+                                        subscriptionPlan?.yearlyPrice
+                                    ) : (
+                                        subscriptionPlan?.price
+                                    )
+                                }
+                                <span className='fs-16 fw-500 text-gray'>/{t(planDuration)}</span>
+                            </Space> 
+                        </Title>
+                    )
+                }
+                
+            
             <Divider className='my-2 bg-divider' />
             <Flex vertical gap={10}>
                 <Title level={5} className='m-0 fw-500'>{t("Included Features")}:</Title>

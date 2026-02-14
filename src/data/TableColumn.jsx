@@ -662,14 +662,12 @@ const discountColumns = ({ setVisible, setEditItem, setExpireItem,t,i18n }) => [
     {
         title: t('Start Date'),
         dataIndex: 'startDate',
-        render: (startDate) => i18n.language === "ar"  ? 
-            toArabicDigits(dayjs(startDate).format("YYYY-MM-DD"))
-            : dayjs(startDate).format("YYYY-MM-DD")
+        render: (startDate) => dayjs(startDate).utc().format("YYYY-MM-DD")
     },
     {
         title: t('End Date'),
         dataIndex: 'expiryDate',
-        render: (expiryDate) => dayjs(expiryDate).format("YYYY-MM-DD")
+        render: (expiryDate) => dayjs(expiryDate).utc().format("YYYY-MM-DD")
     },
     {
         title: t('Status'),
