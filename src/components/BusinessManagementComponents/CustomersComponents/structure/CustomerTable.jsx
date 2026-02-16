@@ -55,9 +55,10 @@ const CustomerTable = () => {
     }, [getSubscriberCustomers,debouncedSearch,selectedDate,current,pageSize])
 
     useEffect(()=>{
-        setSubscriberCustomers(data?.getSubscribers?.subscriberss)
+        setSubscriberCustomers(data?.getSubscribers?.subscribers)
     }, [data])
 
+    console.log(data)
     const tableColumns = customerColumn({ t, i18n })
     const handleExport = () => {
         exportToExcel({

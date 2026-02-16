@@ -79,9 +79,10 @@ const AllBusinessTable = ({getSubscriptionsStats}) => {
         selectedDate
     ])
     useEffect(()=>{
-        setBusinesses(data?.getBusinesses?.businessess || []);
+        setBusinesses(data?.getBusinesses?.businesses || []);
     }, [data])
 
+    console.log(data)
     
 
     const handlePageChange = (page, size) => {
