@@ -15,6 +15,10 @@ const BusinessSubscriptionPackagesCard = ({
 }) => {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
+  console.log("selected subscription plane", selectedSubscriptionPlan);
+  console.log("subscription plans", subscriptionPlans);
+  console.log("subscription validity", subscriptionValidity);
+  console.log("discount data", discountData);
   return (
     <Row gutter={[12, 12]}>
       <Col span={24}>
@@ -22,6 +26,11 @@ const BusinessSubscriptionPackagesCard = ({
           <Row gutter={[24, 12]}>
             {subscriptionPlans?.map((plan) => (
               <Col span={24} key={plan.id}>
+                {console.log({
+                  planType: plan?.type,
+                  discountType: discountData?.discount?.packageType,
+                  match: discountData?.discount?.packageType === plan?.type,
+                })}
                 <Card
                   hoverable
                   className={`border-gray bg-transparent card-cs ${
