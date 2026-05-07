@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react';
-import { EditFilled } from '@ant-design/icons';
-import { Button, Flex, Spin } from 'antd';
-import { SingleFileUpload } from '../Forms';
-import { uploadFileToServer } from '../../services';
-import { TableLoader } from '../../shared';
+import { useRef, useState } from "react";
+import { EditFilled } from "@ant-design/icons";
+import { Button, Flex, Spin } from "antd";
+import { SingleFileUpload } from "../Forms";
+import { uploadFileToServer } from "../../services";
+import { TableLoader } from "../../shared";
 
 const UploadImage = ({
   setPreviewImage,
@@ -11,9 +11,8 @@ const UploadImage = ({
   t,
   form,
   disabled = false,
-  api = null
+  api = null,
 }) => {
-
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +41,7 @@ const UploadImage = ({
     }
   };
 
-  const hasValidImage = !!src && src !== 'null';
+  const hasValidImage = !!src && src !== "null";
 
   return (
     <>
@@ -51,17 +50,17 @@ const UploadImage = ({
         type="file"
         accept="image/*"
         onChange={handleFileChange}
-        hidden
+        className="hidden"
       />
 
       {loading ? (
-        <Flex justify="center" align="center" style={{ height: '100px' }}>
-          <Spin {...TableLoader} size='small' />
+        <Flex justify="center" align="center" style={{ height: "100px" }}>
+          <Spin {...TableLoader} size="small" />
         </Flex>
       ) : !hasValidImage ? (
         <SingleFileUpload
           name="document"
-          title={t('Upload Image')}
+          title={t("Upload Image")}
           form={form}
           onUpload={handleUpload}
           align="center"
@@ -85,7 +84,7 @@ const UploadImage = ({
               className="fs-13 text-brand"
               onClick={handleEditClick}
             >
-              <EditFilled /> {t('Edit')}
+              <EditFilled /> {t("Edit")}
             </Button>
           </div>
         </Flex>
