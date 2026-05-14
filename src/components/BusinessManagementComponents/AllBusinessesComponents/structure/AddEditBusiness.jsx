@@ -176,6 +176,7 @@ const AddEditBusiness = () => {
       console.error(error);
     }
   };
+  // console.log("selected plan id:", selectedSubscriptionPlan?.id);
   return (
     <>
       {contextHolder}

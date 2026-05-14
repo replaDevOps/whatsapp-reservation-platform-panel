@@ -15,10 +15,7 @@ const BusinessSubscriptionPackagesCard = ({
 }) => {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
-  console.log("selected subscription plane", selectedSubscriptionPlan);
-  console.log("subscription plans", subscriptionPlans);
-  console.log("subscription validity", subscriptionValidity);
-  console.log("discount data", discountData);
+  console.log("Discount data", discountData);
   return (
     <Row gutter={[12, 12]}>
       <Col span={24}>
@@ -26,11 +23,6 @@ const BusinessSubscriptionPackagesCard = ({
           <Row gutter={[24, 12]}>
             {subscriptionPlans?.map((plan) => (
               <Col span={24} key={plan.id}>
-                {console.log({
-                  planType: plan?.type,
-                  discountType: discountData?.discount?.packageType,
-                  match: discountData?.discount?.packageType === plan?.type,
-                })}
                 <Card
                   hoverable
                   className={`border-gray bg-transparent card-cs ${
@@ -38,7 +30,9 @@ const BusinessSubscriptionPackagesCard = ({
                       ? "active-radio"
                       : ""
                   }`}
-                  onClick={() => setSelectedSubscriptionPlan(plan)}
+                  onClick={() => {
+                    setSelectedSubscriptionPlan(plan);
+                  }}
                 >
                   <Row gutter={[12, 12]} align="center" justify="space-between">
                     <Col span={24} md={12} lg={14} xl={16}>
@@ -83,8 +77,7 @@ const BusinessSubscriptionPackagesCard = ({
                             "Custom Price"
                           ) : subscriptionValidity === "YEARLY" ? (
                             discountData?.isValid === true &&
-                            discountData?.discount?.packageType ===
-                              plan?.type ? (
+                            discountData?.selectedPackageType === plan?.type ? (
                               <>
                                 <Text delete className="fs-16 text-gray">
                                   {plan?.yearlyPrice}
@@ -95,8 +88,7 @@ const BusinessSubscriptionPackagesCard = ({
                               plan?.yearlyPrice
                             )
                           ) : discountData?.isValid === true &&
-                            discountData?.discount?.packageType ===
-                              plan?.type ? (
+                            discountData?.selectedPackageType === plan?.type ? (
                             <>
                               <Text delete className="fs-16 text-gray">
                                 {plan?.price}
