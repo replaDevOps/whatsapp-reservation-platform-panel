@@ -215,6 +215,7 @@ const AddEditStaff = () => {
                       }
                       className="w-100"
                       type={"number"}
+                      isPhoneNumber
                       min={0}
                       maxLength={20}
                       onInput={(e) => {

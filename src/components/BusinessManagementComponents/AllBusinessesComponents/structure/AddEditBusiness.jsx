@@ -275,6 +275,7 @@ const AddEditBusiness = () => {
                     }
                     placeholder={t("Please enter phone number")}
                     className="w-100"
+                    isPhoneNumber
                     type={"number"}
                     min={0}
                     maxLength={20}
